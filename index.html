@@ -1542,7 +1542,6 @@
     background: rgba(7,176,232,0.03); border-radius: 14px;
     border: 1px solid rgba(7,176,232,0.08);
     overflow: hidden;
-    display: none;
     animation: fade-up 0.3s ease-out;
   }
   .vt-transcript-header {
@@ -3103,7 +3102,7 @@ function showToast(msg, raven) {
 
   function vtUpdateTranscript() {
     if (!vtTranscriptText.trim()) return;
-    vtTranscript.style.display = '';
+    vtTranscript.style.display = 'block';
     vtTranscriptBody.textContent = vtTranscriptText;
     const words = vtTranscriptText.trim().split(/\s+/).filter(Boolean).length;
     vtWordCount.textContent = words + ' word' + (words !== 1 ? 's' : '');
