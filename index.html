@@ -1247,32 +1247,30 @@
   }
   .forge-modal-close:hover { background: rgba(255,255,255,0.14); color: #ccc; }
 
-  /* Forge Setup Wizard Overlay */
+  /* Forge Loading Gate */
   .forge-gate {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    background: rgba(20,20,20,0.92);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    background: rgba(16,16,16,0.95);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
     border-radius: 14px;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
     padding: 32px 24px;
   }
   .forge-gate.dismissed { opacity: 0; visibility: hidden; pointer-events: none; }
-  .forge-setup {
-    max-width: 340px; width: 100%; text-align: center;
-  }
-  .forge-setup-icon { width: 36px; height: 36px; border-radius: 10px; opacity: 0.5; margin-bottom: 14px; }
+  .forge-setup { max-width: 380px; width: 100%; text-align: center; }
+  .forge-setup-icon { width: 40px; height: 40px; border-radius: 10px; opacity: 0.5; margin-bottom: 16px; }
   .forge-setup-title {
-    font-family: 'Nunito Sans', sans-serif; font-size: 18px; font-weight: 800;
-    color: #eee; margin-bottom: 6px;
+    font-family: 'Nunito Sans', sans-serif; font-size: 20px; font-weight: 800;
+    color: #f0f0f0; margin-bottom: 8px;
   }
   .forge-setup-sub {
-    font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 20px;
+    font-size: 13px; color: #bbb; line-height: 1.7; margin-bottom: 24px;
   }
   .forge-setup-btn {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 12px 28px; border-radius: 10px;
+    padding: 13px 32px; border-radius: 10px;
     background: #F8B42C; color: #000; border: none; cursor: pointer;
     font-family: 'Nunito Sans', sans-serif; font-size: 13px;
     font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
@@ -1280,24 +1278,44 @@
     box-shadow: 0 2px 16px rgba(248,180,44,0.25);
   }
   .forge-setup-btn:hover { background: #f9c35a; transform: translateY(-1px); }
-  .forge-setup-btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+  .forge-setup-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
   .forge-spin {
     width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
     border-top-color: #000; border-radius: 50%;
     animation: forge-spin 0.6s linear infinite;
   }
   @keyframes forge-spin { to { transform: rotate(360deg); } }
+  /* Loading progress area */
+  .forge-load-progress {
+    margin-top: 28px; width: 100%;
+  }
   .forge-load-bar {
-    margin-top: 20px; height: 4px; border-radius: 2px; width: 100%;
-    background: rgba(255,255,255,0.06); overflow: hidden;
+    height: 6px; border-radius: 3px; width: 100%;
+    background: rgba(255,255,255,0.08); overflow: hidden;
   }
   .forge-load-fill {
-    height: 100%; width: 0%; border-radius: 2px;
-    background: #F8B42C; transition: width 0.3s;
+    height: 100%; width: 0%; border-radius: 3px;
+    background: linear-gradient(90deg, #F8B42C, #f9c35a);
+    transition: width 0.4s ease;
+  }
+  .forge-load-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 10px;
+  }
+  .forge-load-pct {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    font-weight: 700; color: #F8B42C;
+  }
+  .forge-load-timer {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: #777;
   }
   .forge-load-status {
     font-family: 'DM Mono', monospace; font-size: 10px;
-    color: #aaa; margin-top: 8px;
+    color: #999; margin-top: 12px; line-height: 1.5;
+  }
+  .forge-load-hint {
+    font-size: 12px; color: #666; margin-top: 16px;
+    font-style: italic;
   }
   .forge-setup-error {
     font-size: 12px; color: #FF6B6B; margin-top: 14px; line-height: 1.6;
@@ -1864,13 +1882,20 @@
         <div class="forge-setup">
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
           <div class="forge-setup-title">RAVEN Forge</div>
-          <p class="forge-setup-sub">3B-parameter AI runs entirely in your browser.<br>First load downloads ~1.7 GB, then it's cached. No data ever leaves.</p>
+          <p class="forge-setup-sub">3B-parameter AI runs entirely in your browser.<br>First load downloads ~1.7 GB, then it's cached locally. No data ever leaves your device.</p>
           <button class="forge-setup-btn" id="forgeLoadBtn" onclick="forgeStartEngine()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span id="forgeLoadBtnText">Load AI Model</span>
           </button>
-          <div class="forge-load-bar" id="forgeLoadBar" style="display:none;"><div class="forge-load-fill" id="forgeLoadFill"></div></div>
-          <div class="forge-load-status" id="forgeLoadStatus" style="display:none;"></div>
+          <div class="forge-load-progress" id="forgeLoadProgress" style="display:none;">
+            <div class="forge-load-bar"><div class="forge-load-fill" id="forgeLoadFill"></div></div>
+            <div class="forge-load-meta">
+              <span class="forge-load-pct" id="forgeLoadPct">0%</span>
+              <span class="forge-load-timer" id="forgeLoadTimer">0s elapsed</span>
+            </div>
+            <div class="forge-load-status" id="forgeLoadStatus">Preparing download...</div>
+            <div class="forge-load-hint">Feel free to leave this tab open in the background.</div>
+          </div>
           <div class="forge-setup-error" id="forgeLoadError" style="display:none;"></div>
         </div>
       </div>
@@ -1883,9 +1908,6 @@
         </div>
         <div class="forge-head-right">
           <span class="forge-pill">IN-BROWSER</span>
-          <button class="forge-gear" onclick="forgeClearChat()" title="New chat">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          </button>
           <button class="forge-gear" onclick="forgeToggleSettings()" title="Settings">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
@@ -1913,7 +1935,7 @@
 
         <!-- Bar -->
         <div class="forge-bar">
-          <button class="forge-attach" onclick="forgeToggleDocs()" title="Documents">
+          <button class="forge-attach" onclick="document.getElementById('forgeFileInput').click()" title="Attach documents">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="forge-attach-badge" id="forgeDocBadge" style="display:none;">0</span>
           </button>
@@ -2477,14 +2499,26 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
   // ---- DOCUMENTS ----
   window.forgeAddFiles = async function(files) {
+    let added = 0;
     for (const f of files) {
       if (forgeDocs.find(d => d.name === f.name && d.size === f.size)) continue;
-      const text = await extractFileText(f);
-      forgeDocs.push({ name: f.name, size: f.size, text });
+      // Show file immediately with "processing" state
+      const idx = forgeDocs.length;
+      forgeDocs.push({ name: f.name, size: f.size, text: '', loading: true });
+      forgeRenderDocs();
+      if (!docDrawer.classList.contains('open')) docDrawer.classList.add('open');
+      try {
+        const text = await extractFileText(f);
+        forgeDocs[idx].text = text;
+        forgeDocs[idx].loading = false;
+        added++;
+      } catch (e) {
+        forgeDocs[idx].text = `[Error reading ${f.name}]`;
+        forgeDocs[idx].loading = false;
+      }
+      forgeRenderDocs();
     }
-    forgeRenderDocs();
-    if (forgeDocs.length) forgeAddSysMsg(`${forgeDocs.length} document${forgeDocs.length>1?'s':''} loaded as context`);
-    if (!docDrawer.classList.contains('open')) docDrawer.classList.add('open');
+    if (added) forgeAddSysMsg(`${forgeDocs.length} document${forgeDocs.length>1?'s':''} loaded as context`);
   };
 
   window.forgeRemoveDoc = function(i) { forgeDocs.splice(i, 1); forgeRenderDocs(); };
@@ -2498,10 +2532,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     docList.innerHTML = forgeDocs.map((d, i) => {
       const c = extColor(d.name);
       const ext = d.name.split('.').pop().toUpperCase();
+      const status = d.loading ? '<span style="color:#F8B42C;font-size:10px;font-family:DM Mono,monospace;">parsing...</span>' : `<span class="forge-doc-size">${fmtSize(d.size)}</span>`;
       return `<div class="forge-doc-item">
         <span class="forge-doc-ext" style="background:${c.bg};border:1px solid ${c.border};color:${c.color}">${ext}</span>
-        <span class="forge-doc-name">${d.name}</span>
-        <span class="forge-doc-size">${fmtSize(d.size)}</span>
+        <span class="forge-doc-name">${esc(d.name)}</span>
+        ${status}
         <button class="forge-doc-x" onclick="forgeRemoveDoc(${i})">✕</button>
       </div>`;
     }).join('');
@@ -2511,9 +2546,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     if (!forgeDocs.length && docDrawer.classList.contains('open')) docDrawer.classList.remove('open');
   }
 
-  window.forgeToggleDocs = function() {
-    docDrawer.classList.toggle('open');
-  };
+  window.forgeToggleDocs = function() { docDrawer.classList.toggle('open'); };
 
   // ---- CHAT ----
   function forgeBuildPayload() {
@@ -2655,13 +2688,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   const gateEl = document.getElementById('forgeGate');
   const loadBtn = document.getElementById('forgeLoadBtn');
   const loadBtnText = document.getElementById('forgeLoadBtnText');
-  const loadBar = document.getElementById('forgeLoadBar');
+  const loadProgress = document.getElementById('forgeLoadProgress');
   const loadFill = document.getElementById('forgeLoadFill');
+  const loadPct = document.getElementById('forgeLoadPct');
+  const loadTimer = document.getElementById('forgeLoadTimer');
   const loadStatus = document.getElementById('forgeLoadStatus');
   const loadError = document.getElementById('forgeLoadError');
 
   window.forgeStartEngine = async function() {
-    // Check WebGPU
     if (!navigator.gpu) {
       loadError.style.display = 'block';
       loadError.innerHTML = 'Your browser doesn\'t support WebGPU.<br>Use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>.';
@@ -2669,12 +2703,19 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     }
 
     loadBtn.disabled = true;
-    loadBtnText.textContent = 'Initializing...';
+    loadBtnText.textContent = 'Downloading...';
     loadBtn.querySelector('svg').style.display = 'none';
-    loadBar.style.display = 'block';
-    loadStatus.style.display = 'block';
+    loadProgress.style.display = 'block';
     loadError.style.display = 'none';
-    loadStatus.textContent = 'Loading WebLLM engine...';
+
+    // Elapsed timer
+    const startTime = Date.now();
+    const timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      loadTimer.textContent = mins > 0 ? `${mins}m ${secs}s elapsed` : `${secs}s elapsed`;
+    }, 1000);
 
     try {
       const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
@@ -2683,17 +2724,20 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         initProgressCallback: (report) => {
           const pct = Math.floor(report.progress * 100);
           loadFill.style.width = pct + '%';
+          loadPct.textContent = pct + '%';
           loadStatus.textContent = report.text;
         },
       });
 
-      // Success — dismiss gate
+      clearInterval(timerInterval);
       loadFill.style.width = '100%';
+      loadPct.textContent = '100%';
       loadStatus.textContent = 'Ready!';
-      loadBtnText.textContent = '✓ Loaded';
-      setTimeout(() => gateEl.classList.add('dismissed'), 500);
+      loadBtnText.textContent = 'Loaded';
+      setTimeout(() => gateEl.classList.add('dismissed'), 600);
 
     } catch (e) {
+      clearInterval(timerInterval);
       loadBtn.disabled = false;
       loadBtnText.textContent = 'Retry';
       loadBtn.querySelector('svg').style.display = '';
@@ -2715,14 +2759,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   };
 
   // ---- MEMORY (restore chat history) ----
-  window.forgeClearChat = function() {
-    forgeMessages = [];
-    localStorage.removeItem('forge_history');
-    chatEl.innerHTML = '';
-    chatEl.appendChild(welcomeEl);
-    welcomeEl.style.display = '';
-  };
-
   // Restore previous messages into the UI
   if (forgeMessages.length) {
     welcomeEl.style.display = 'none';
