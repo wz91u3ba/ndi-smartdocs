@@ -539,34 +539,24 @@
   .btn-process.done .btn-label { opacity: 1; }
 
   /* ===== RESULT ===== */
-  .result-section { display: none; margin-top: 6px; }
+  .result-section { display: none; margin-top: 8px; }
   .result-section.visible { display: block; animation: fade-up 0.4s ease-out; }
-  .result-meta {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--text-tertiary); letter-spacing: 0.3px;
-    margin-bottom: 8px; padding-left: 2px;
-  }
-  .result-actions { display: flex; gap: 2px; width: 100%; }
+  .result-actions { display: flex; gap: 6px; width: 100%; }
   .btn-action {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    height: 50px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 42px;
     font-family: 'DM Mono', monospace;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
-    text-transform: uppercase; cursor: pointer;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    cursor: pointer;
     transition: all 0.2s; border: none;
-    background: var(--surface-1); color: var(--text-secondary);
-    border: 1px solid var(--border);
+    background: #e8eaed; color: #2a2a2a;
+    border-radius: 8px;
   }
   .btn-action:hover {
-    background: var(--surface-2); color: var(--d-blue);
-    border-color: rgba(7,176,232,0.25);
+    background: #d5d8dc; color: #111;
   }
-  .btn-action-download {
-    flex: 4; border-radius: 8px 0 0 8px;
-  }
-  .btn-action-copy {
-    flex: 1; border-radius: 0 8px 8px 0;
-  }
+  .btn-action-download { flex: 3; }
+  .btn-action-copy { flex: 2; }
 
   /* ===== PROMPT SECTION ===== */
   .prompt-section {
@@ -1312,7 +1302,6 @@
 
     <!-- RESULT (directly under button) -->
     <div class="result-section" id="resultSection">
-      <div class="result-meta" id="resultMeta"></div>
       <div class="result-actions">
         <button class="btn-action btn-action-download" onclick="downloadCorpus()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12m0 0l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1803,7 +1792,6 @@ async function beginProcess() {
   const btnLaser = document.getElementById('btnLaser');
   const processStatus = document.getElementById('processStatus');
   const resultSection = document.getElementById('resultSection');
-  const resultMeta = document.getElementById('resultMeta');
 
   // Random duration between 3.2–5.3s
   const totalMs = 3200 + Math.random() * 2100;
@@ -1876,25 +1864,37 @@ async function beginProcess() {
   processStatus.innerHTML = '';
   processBtn.querySelector('.btn-label').textContent = 'SERIALIZATION COMPLETE';
 
-  const corpusSize = (new Blob([masterCorpus]).size / 1024).toFixed(1);
-  resultMeta.textContent = `${stagedFiles.length} document${stagedFiles.length > 1 ? 's' : ''} serialized · ${corpusSize} KB corpus`;
   resultSection.classList.add('visible');
 }
 
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ========== ACTIONS ==========
+// Lightweight keyword extractor — picks 1-3 top words from corpus content
+function extractSmartName() {
+  const stop = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','shall','should','may','might','must','can','could','this','that','these','those','it','its','i','you','he','she','we','they','me','him','her','us','them','my','your','his','our','their','what','which','who','whom','how','when','where','why','not','no','nor','so','if','then','than','too','very','just','also','as','about','up','out','all','each','every','any','some','into','over','after','before','between','under','above','below','more','most','other','such','only','same','new','old','first','last','next','few','many','much','well','back','still','even','here','there','now','one','two','three','four','five','six','seven','eight','nine','ten','get','got','make','made','take','took','come','came','go','went','see','saw','know','knew','think','thought','say','said','use','used','way','like','need','want','look','work','part','time','year','people','day','man','woman','thing','child','world','life','hand','long','own','right','left','good','great','high','small','large','company','number','group','point','end','case','place','set','per','nbsp','amp','lt','gt','meta','body','doc','smartdocs']);
+  // Strip XML tags and system prompt, take just body content
+  const bodyContent = masterCorpus.replace(/<[^>]+>/g, ' ').replace(/SmartDocs_Instructions[\s\S]*?SmartDocs_Instructions/g, '');
+  const words = bodyContent.toLowerCase().match(/[a-z]{4,}/g) || [];
+  const freq = {};
+  for (const w of words) { if (!stop.has(w)) freq[w] = (freq[w] || 0) + 1; }
+  const top = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
+  if (top.length === 0) return 'SmartDoc';
+  // Title case, join with underscores
+  return top.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+}
+
 function downloadCorpus() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([masterCorpus], { type: 'text/plain' }));
-  const d = new Date(); const mm = String(d.getMonth()+1).padStart(2,'0'); const dd = String(d.getDate()).padStart(2,'0'); const yy = String(d.getFullYear()).slice(-2);
-  a.download = `NDi_SmartDoc_${mm}-${dd}-${yy}.txt`;
+  const smartName = extractSmartName();
+  a.download = `${smartName}.txt`;
   a.click(); URL.revokeObjectURL(a.href);
-  showToast('Corpus downloaded');
+  showToast('SmartDoc downloaded');
 }
 
 function copyCorpus() {
-  navigator.clipboard.writeText(masterCorpus).then(() => showToast('Corpus copied to clipboard'));
+  navigator.clipboard.writeText(masterCorpus).then(() => showToast('SmartDoc Contents Copied to Clipboard!'));
 }
 
 function copySuperPrompt() {
