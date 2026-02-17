@@ -1103,11 +1103,12 @@
     line-height: 1.6; white-space: pre-wrap; word-break: break-all;
   }
   .forge-cursor {
-    display: inline-block; width: 2px; height: 14px;
-    background: #F8B42C; margin-left: 2px; vertical-align: text-bottom;
-    animation: forge-blink 0.8s step-end infinite;
+    display: inline-block; width: 2px; height: 15px;
+    background: #F8B42C; margin-left: 1px; vertical-align: text-bottom;
+    animation: forge-blink 1s ease-in-out infinite;
+    border-radius: 1px;
   }
-  @keyframes forge-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes forge-blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
   .forge-sys {
     text-align: center; font-family: 'DM Mono', monospace;
     font-size: 11px; color: #888; letter-spacing: 0.3px;
@@ -1863,7 +1864,7 @@
         <div class="forge-setup">
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
           <div class="forge-setup-title">RAVEN Forge</div>
-          <p class="forge-setup-sub">AI runs entirely in your browser.<br>No installs. No servers. No data leaves your machine.</p>
+          <p class="forge-setup-sub">3B-parameter AI runs entirely in your browser.<br>First load downloads ~1.7 GB, then it's cached. No data ever leaves.</p>
           <button class="forge-setup-btn" id="forgeLoadBtn" onclick="forgeStartEngine()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span id="forgeLoadBtnText">Load AI Model</span>
@@ -2452,7 +2453,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   let forgeStreaming = false;
   let forgeEngine = null;
 
-  const FORGE_MODEL = 'SmolLM2-360M-Instruct-q4f16_1-MLC';
+  const FORGE_MODEL = 'Qwen2.5-3B-Instruct-q4f16_1-MLC';
 
   // Config with localStorage persistence
   const FC = {
@@ -2592,6 +2593,20 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     const msgDiv = forgeRenderMsg('assistant', '', true);
     const bubble = msgDiv.querySelector('.forge-msg-bubble');
     let full = '';
+    let renderQueued = false;
+
+    function renderStream() {
+      renderQueued = false;
+      bubble.innerHTML = forgeMd(full) + '<span class="forge-cursor"></span>';
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    function queueRender() {
+      if (!renderQueued) {
+        renderQueued = true;
+        requestAnimationFrame(renderStream);
+      }
+    }
 
     try {
       const chunks = await forgeEngine.chat.completions.create({
@@ -2605,8 +2620,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         const token = chunk.choices?.[0]?.delta?.content || '';
         if (token) {
           full += token;
-          bubble.innerHTML = forgeMd(full) + '<span class="forge-cursor"></span>';
-          chatEl.scrollTop = chatEl.scrollHeight;
+          queueRender();
         }
       }
     } catch (e) {
