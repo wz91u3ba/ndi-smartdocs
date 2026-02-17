@@ -3118,9 +3118,10 @@ function showToast(msg, raven) {
       vtRecBtn.classList.add('processing');
       try { await vtLoadModel(); } catch(e) {
         console.error('EVA model load failed:', e);
-        vtPillStatus.textContent = 'Failed to load';
+        vtPillStatus.textContent = 'Error: ' + (e.message || e).toString().slice(0, 60);
         vtPill.classList.remove('loading');
         vtRecBtn.classList.remove('processing');
+        setTimeout(() => { vtPillStatus.textContent = ''; }, 8000);
         return;
       }
       vtRecBtn.classList.remove('processing');
