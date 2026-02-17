@@ -764,15 +764,16 @@
     max-width: 1050px; margin: 0 auto;
     padding: 56px 32px 0;
   }
-  /* Certification logos bar */
+  /* Certification logos bar — full width above bottom */
   .footer-certs {
     display: flex; align-items: center; justify-content: center;
-    gap: 0; padding: 32px 0;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    margin-bottom: 48px;
   }
   .footer-certs img {
-    height: 52px; object-fit: contain;
+    width: 100%; max-width: 100%; height: auto;
+    object-fit: contain;
     opacity: 0.85; transition: opacity 0.2s;
   }
   .footer-certs img:hover { opacity: 1; }
@@ -1324,11 +1325,6 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-inner">
-      <!-- Certification Logos -->
-      <div class="footer-certs">
-        <img src="footer.jpeg" alt="SDVOSB · CMMI ML3 · ISO · CSfC Certifications" style="height:auto;max-height:60px;width:auto;max-width:100%;">
-      </div>
-
       <!-- Footer Grid -->
       <div class="footer-grid">
         <!-- Brand Column -->
@@ -1337,7 +1333,7 @@
           <p class="footer-brand-desc">NDi Auto is the AI &amp; Automation Research Division of Network Designs, Inc. — a Service-Disabled Veteran-Owned Small Business delivering mission-critical IT solutions for three decades.</p>
           <div class="footer-sdvosb">
             <span class="footer-sdvosb-dot"></span>
-            SDVOSB Certified
+            ALL SYSTEMS OPERATIONAL · <span id="footerDate"></span>
           </div>
           <div class="footer-social">
             <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" aria-label="LinkedIn">
@@ -1363,7 +1359,7 @@
           <div class="footer-col-title">Company</div>
           <ul class="footer-links">
             <li><a href="https://netdes.com" target="_blank">netdes.com</a></li>
-            <li><a href="https://netdes.com/our-company/" target="_blank">About NDi</a></li>
+            <li><a href="https://netdes.com/about/" target="_blank">About NDi</a></li>
             <li><a href="https://netdes.com/veterans-first/" target="_blank">Veterans First</a></li>
             <li><a href="https://netdes.com/contracts/" target="_blank">Contracts</a></li>
             <li><a href="https://netdes.com/capabilities/" target="_blank">Capabilities</a></li>
@@ -1387,6 +1383,11 @@
             <a href="mailto:info@netdes.com">info@netdes.com</a>
           </div>
         </div>
+      </div>
+
+      <!-- Certification Logos — full width -->
+      <div class="footer-certs">
+        <img src="footer.jpeg" alt="SDVOSB · CMMI ML3 · ISO · CSfC Certifications">
       </div>
 
       <!-- Bottom Bar -->
@@ -1657,6 +1658,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
   window.addEventListener('scroll', updateActiveNav, { passive: true });
   updateActiveNav();
+})();
+
+// ========== FOOTER DATE ==========
+(function() {
+  const d = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('footerDate').textContent = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 })();
 </script>
 </body>
