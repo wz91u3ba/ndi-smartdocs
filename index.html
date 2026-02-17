@@ -1338,7 +1338,7 @@
   .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
   .forge-tagline-text em { color: #444; font-style: normal; font-weight: 400; }
 
-  /* ===== VOICETYPE ===== */
+  /* ===== EVA ===== */
   .vt-hero {
     position: relative; overflow: hidden;
     background: #fff;
@@ -1396,7 +1396,7 @@
     width: 1px; height: 32px; background: rgba(255,255,255,0.15);
   }
 
-  /* VoiceType Tool */
+  /* EVA Tool */
   .vt-wrap {
     background: #fff;
     padding: 48px 24px 40px;
@@ -1535,7 +1535,7 @@
   }
   .vt-btn-download:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-  /* VoiceType works-with */
+  /* EVA works-with */
   .vt-works-wrap {
     background: #fff; padding: 0 24px;
     max-width: 1098px; margin: 0 auto;
@@ -1812,7 +1812,7 @@
     <a href="#superprompt"><span class="nav-dot"></span>SuperPrompt</a>
     <a href="#raven"><span class="nav-dot"></span>RAVEN</a>
     <a href="#forge"><span class="nav-dot"></span>Forge</a>
-    <a href="#voicetype"><span class="nav-dot"></span>VoiceType</a>
+    <a href="#eva"><span class="nav-dot"></span>EVA</a>
   </nav>
 
   <!-- ===== HERO ===== -->
@@ -2206,26 +2206,26 @@
 
   </div><!-- /forge-dark-zone -->
 
-  <!-- ===== VOICETYPE HERO ===== -->
-  <div class="vt-hero" id="voicetype">
+  <!-- ===== EVA HERO ===== -->
+  <div class="vt-hero" id="eva">
     <div class="vt-hero-glow"></div>
     <div class="vt-hero-content">
       <div class="vt-hero-badge">Voice Intelligence</div>
-      <h2 class="vt-hero-title">NDi <span>VoiceType</span></h2>
-      <p class="vt-hero-sub"><strong style="color:var(--n-blue);font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text powered by the Web Speech API. Zero latency. Zero cloud.</p>
+      <h2 class="vt-hero-title">NDi <span>EVA</span></h2>
+      <p class="vt-hero-sub"><strong style="color:var(--n-blue);font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text running entirely in your browser. Zero latency.</p>
       <div class="vt-hero-stats">
+        <div class="vt-hero-stat"><span class="vt-hero-stat-value">Whisper</span><span class="vt-hero-stat-label">OpenAI Model</span></div>
+        <div class="vt-hero-stat-divider"></div>
+        <div class="vt-hero-stat"><span class="vt-hero-stat-value">WASM</span><span class="vt-hero-stat-label">Accelerated</span></div>
+        <div class="vt-hero-stat-divider"></div>
         <div class="vt-hero-stat"><span class="vt-hero-stat-value">Real-Time</span><span class="vt-hero-stat-label">Transcription</span></div>
-        <div class="vt-hero-stat-divider"></div>
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value">Native</span><span class="vt-hero-stat-label">Speech API</span></div>
-        <div class="vt-hero-stat-divider"></div>
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value">48-Bar</span><span class="vt-hero-stat-label">Waveform</span></div>
         <div class="vt-hero-stat-divider"></div>
         <div class="vt-hero-stat"><span class="vt-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="vt-hero-stat-label">No Cloud</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ===== VOICETYPE TOOL ===== -->
+  <!-- ===== EVA TOOL ===== -->
   <div class="main">
     <div class="vt-tool">
       <!-- Timer -->
@@ -2760,19 +2760,22 @@ function showToast(msg, raven) {
   setTimeout(() => t.classList.remove('visible'), 2400);
 }
 
-// ========== VOICETYPE ==========
+// ========== NDi EVA ==========
 (function() {
   // State
   let vtRecording = false;
+  let vtProcessing = false;
   let vtStream = null;
   let vtAudioCtx = null;
   let vtAnalyser = null;
   let vtAnimFrame = null;
-  let vtRecognition = null;
+  let vtMediaRecorder = null;
+  let vtChunks = [];
   let vtTranscriptText = '';
-  let vtInterimText = '';
   let vtTimerInterval = null;
   let vtSeconds = 0;
+  let vtWhisperPipeline = null;
+  let vtModelLoaded = false;
 
   // DOM refs
   const vtTimer = document.getElementById('vtTimer');
@@ -2828,64 +2831,58 @@ function showToast(msg, raven) {
     vtBars.forEach(bar => { bar.style.height = '4px'; bar.classList.remove('active'); });
   }
 
-  // Speech Recognition setup
-  function vtInitRecognition() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      vtStatusText.textContent = 'Speech API not supported';
-      vtRecBtn.disabled = true;
-      return null;
-    }
-    const rec = new SR();
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.lang = 'en-US';
+  // Load Whisper model via Transformers.js
+  async function vtLoadModel() {
+    if (vtWhisperPipeline) return vtWhisperPipeline;
+    vtStatusText.textContent = 'Loading Whisper model...';
+    vtRecLabel.textContent = 'Downloading model (~40MB)';
+    const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.1');
+    vtWhisperPipeline = await pipeline(
+      'automatic-speech-recognition',
+      'onnx-community/whisper-tiny.en',
+      { dtype: 'q8', device: 'wasm' }
+    );
+    vtModelLoaded = true;
+    vtStatusText.textContent = 'Ready';
+    vtRecLabel.textContent = 'Tap to record';
+    return vtWhisperPipeline;
+  }
 
-    rec.onresult = (e) => {
-      let interim = '';
-      let final = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) {
-          final += t + ' ';
-        } else {
-          interim += t;
-        }
-      }
-      if (final) vtTranscriptText += final;
-      vtInterimText = interim;
-      vtUpdateTranscript();
-    };
-
-    rec.onerror = (e) => {
-      if (e.error === 'no-speech') return;
-      console.warn('VoiceType recognition error:', e.error);
-      if (vtRecording) vtStopRecording();
-    };
-
-    rec.onend = () => {
-      // Auto-restart if still recording (browser may stop after silence)
-      if (vtRecording) {
-        try { rec.start(); } catch(e) {}
-      }
-    };
-
-    return rec;
+  // Convert audio blob to Float32Array at 16kHz (Whisper input format)
+  async function vtBlobToFloat32(blob) {
+    const arrayBuf = await blob.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+    const decoded = await audioCtx.decodeAudioData(arrayBuf);
+    const float32 = decoded.getChannelData(0);
+    audioCtx.close();
+    return float32;
   }
 
   function vtUpdateTranscript() {
-    const full = vtTranscriptText + vtInterimText;
-    if (!full.trim()) return;
+    if (!vtTranscriptText.trim()) return;
     vtTranscript.style.display = '';
-    vtTranscriptBody.innerHTML = vtTranscriptText +
-      (vtInterimText ? '<span style="opacity:0.5">' + vtInterimText + '</span>' : '');
-    const words = full.trim().split(/\s+/).filter(Boolean).length;
+    vtTranscriptBody.textContent = vtTranscriptText;
+    const words = vtTranscriptText.trim().split(/\s+/).filter(Boolean).length;
     vtWordCount.textContent = words + ' word' + (words !== 1 ? 's' : '');
     vtTranscriptBody.scrollTop = vtTranscriptBody.scrollHeight;
   }
 
   // Start recording
   async function vtStartRecording() {
+    // Load model first if needed
+    if (!vtModelLoaded) {
+      vtRecBtn.classList.add('processing');
+      try {
+        await vtLoadModel();
+      } catch(e) {
+        console.error('EVA model load failed:', e);
+        vtStatusText.textContent = 'Model load failed';
+        vtRecBtn.classList.remove('processing');
+        return;
+      }
+      vtRecBtn.classList.remove('processing');
+    }
+
     try {
       vtStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch(e) {
@@ -2894,6 +2891,7 @@ function showToast(msg, raven) {
     }
 
     vtRecording = true;
+    vtChunks = [];
     vtRecBtn.classList.add('recording');
     vtRecBtn.querySelector('.vt-mic-icon').style.display = 'none';
     vtRecBtn.querySelector('.vt-stop-icon').style.display = '';
@@ -2901,7 +2899,7 @@ function showToast(msg, raven) {
     vtTimer.classList.add('active');
     vtStatus.classList.add('recording');
     vtStatus.querySelector('.vt-status-dot').style.display = 'inline-block';
-    vtStatusText.textContent = 'Listening...';
+    vtStatusText.textContent = 'Recording...';
 
     // Audio analyser for waveform
     vtAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2911,65 +2909,78 @@ function showToast(msg, raven) {
     source.connect(vtAnalyser);
     vtAnimateWaveform();
 
-    // Start timer
-    vtStartTimer();
+    // MediaRecorder to capture audio
+    vtMediaRecorder = new MediaRecorder(vtStream, { mimeType: 'audio/webm;codecs=opus' });
+    vtMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) vtChunks.push(e.data); };
+    vtMediaRecorder.start(1000);
 
-    // Start speech recognition
-    vtRecognition = vtInitRecognition();
-    if (vtRecognition) {
-      try { vtRecognition.start(); } catch(e) {}
-    }
+    vtStartTimer();
   }
 
-  // Stop recording
-  function vtStopRecording() {
+  // Stop recording and transcribe
+  async function vtStopRecording() {
     vtRecording = false;
     vtRecBtn.classList.remove('recording');
     vtRecBtn.querySelector('.vt-mic-icon').style.display = '';
     vtRecBtn.querySelector('.vt-stop-icon').style.display = 'none';
-    vtRecLabel.textContent = 'Tap to record';
     vtTimer.classList.remove('active');
     vtStatus.classList.remove('recording');
     vtStatus.querySelector('.vt-status-dot').style.display = 'none';
-    vtStatusText.textContent = vtTranscriptText.trim() ? 'Complete' : 'Ready';
-
-    // Stop mic stream
-    if (vtStream) {
-      vtStream.getTracks().forEach(t => t.stop());
-      vtStream = null;
-    }
-
-    // Stop audio context
-    if (vtAudioCtx) {
-      vtAudioCtx.close();
-      vtAudioCtx = null;
-      vtAnalyser = null;
-    }
-    vtStopWaveform();
     vtStopTimer();
 
-    // Stop recognition
-    if (vtRecognition) {
-      try { vtRecognition.stop(); } catch(e) {}
-      vtRecognition = null;
+    // Stop mic
+    if (vtStream) { vtStream.getTracks().forEach(t => t.stop()); vtStream = null; }
+    if (vtAudioCtx) { vtAudioCtx.close(); vtAudioCtx = null; vtAnalyser = null; }
+    vtStopWaveform();
+
+    // Stop recorder and transcribe
+    if (vtMediaRecorder && vtMediaRecorder.state !== 'inactive') {
+      vtMediaRecorder.stop();
     }
 
-    // Finalize interim text
-    if (vtInterimText) {
-      vtTranscriptText += vtInterimText;
-      vtInterimText = '';
-      vtUpdateTranscript();
+    // Wait a tick for final chunks
+    await new Promise(r => setTimeout(r, 200));
+
+    if (vtChunks.length === 0) {
+      vtStatusText.textContent = 'Ready';
+      vtRecLabel.textContent = 'Tap to record';
+      return;
     }
+
+    // Transcribe
+    vtProcessing = true;
+    vtRecBtn.classList.add('processing');
+    vtStatusText.textContent = 'Transcribing...';
+    vtRecLabel.textContent = 'Processing audio locally';
+
+    try {
+      const blob = new Blob(vtChunks, { type: 'audio/webm' });
+      const audioData = await vtBlobToFloat32(blob);
+      const result = await vtWhisperPipeline(audioData, {
+        language: 'en',
+        task: 'transcribe',
+        chunk_length_s: 30,
+        stride_length_s: 5,
+      });
+      vtTranscriptText += (vtTranscriptText ? ' ' : '') + result.text.trim();
+      vtUpdateTranscript();
+      vtStatusText.textContent = 'Complete';
+    } catch(e) {
+      console.error('EVA transcription error:', e);
+      vtStatusText.textContent = 'Transcription failed';
+    }
+
+    vtProcessing = false;
+    vtRecBtn.classList.remove('processing');
+    vtRecLabel.textContent = 'Tap to record';
   }
 
   // Toggle
   window.vtToggleRecord = function() {
+    if (vtProcessing) return;
     if (vtRecording) {
       vtStopRecording();
     } else {
-      // Clear previous if any
-      vtTranscriptText = '';
-      vtInterimText = '';
       vtStartRecording();
     }
   };
@@ -2993,15 +3004,15 @@ function showToast(msg, raven) {
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'voicetype-transcript-' + new Date().toISOString().slice(0,10) + '.txt';
+    a.download = 'eva-transcript-' + new Date().toISOString().slice(0,10) + '.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   };
 
-  // Spacebar toggle (only when not typing in an input/textarea)
+  // Spacebar toggle (only when not in an input and EVA is visible)
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !['INPUT','TEXTAREA'].includes(e.target.tagName) && !e.target.isContentEditable) {
-      const vtSection = document.getElementById('voicetype');
+      const vtSection = document.getElementById('eva');
       const rect = vtSection.getBoundingClientRect();
       if (rect.top < window.innerHeight && rect.bottom > 0) {
         e.preventDefault();
@@ -3024,7 +3035,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     { id: 'superprompt', el: document.getElementById('superprompt') },
     { id: 'raven', el: document.getElementById('raven') },
     { id: 'forge', el: document.getElementById('forge') },
-    { id: 'voicetype', el: document.getElementById('voicetype') },
+    { id: 'eva', el: document.getElementById('eva') },
   ];
   const ravenIds = new Set(['raven', 'forge']);
   const ravenEl = document.getElementById('raven');
