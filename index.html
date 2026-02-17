@@ -3173,11 +3173,19 @@ function showToast(msg, raven) {
     try {
       const blob = new Blob(vtChunks, { type: 'audio/webm' });
       const audioData = await vtBlobToFloat32(blob);
+      console.log('EVA: audio length', audioData.length, 'samples (' + (audioData.length/16000).toFixed(1) + 's)');
       const result = await vtWhisperPipeline(audioData, {
         chunk_length_s: 30, stride_length_s: 5,
       });
-      vtTranscriptText += (vtTranscriptText ? ' ' : '') + result.text.trim();
-      vtUpdateTranscript();
+      console.log('EVA: pipeline result', JSON.stringify(result).slice(0, 300));
+      const text = (result.text || (Array.isArray(result) && result[0]?.text) || '').trim();
+      if (text) {
+        vtTranscriptText += (vtTranscriptText ? ' ' : '') + text;
+        vtUpdateTranscript();
+      } else {
+        vtPillStatus.textContent = 'No speech detected';
+        setTimeout(() => { vtPillStatus.textContent = ''; }, 3000);
+      }
     } catch(e) {
       console.error('EVA transcription error:', e);
       vtPillStatus.textContent = 'Error: ' + (e.message || e).toString().slice(0, 50);
