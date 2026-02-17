@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Home | NDi Auto</title>
 <meta name="description" content="NDi Auto by Network Designs, Inc. — AI & Automation Research Division. Client-side document serialization for AI-ready corpus generation.">
-<link rel="icon" href="robooo.png" type="image/png">
+<link rel="icon" href="robot_white.png" type="image/png">
 
 <!-- Fonts: Nunito Sans (closest free match to Avenir) + DM Mono for data -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,6 +93,10 @@
     background: rgba(1,26,46,0.8);
     position: sticky; top: 0; z-index: 100;
   }
+  .topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+  }
   .topbar-left { display: flex; align-items: center; gap: 16px; }
   .ndi-logo { height: 30px; opacity: 0.95; }
   .topbar-divider { width: 1px; height: 20px; background: var(--border); }
@@ -156,7 +160,7 @@
   .hero-layout {
     position: relative; z-index: 1;
     display: flex; align-items: center; gap: 60px;
-    max-width: 1100px; margin: 0 auto; width: 100%;
+    max-width: 1200px; margin: 0 auto; width: 100%;
   }
   .hero-text { flex: 1; min-width: 0; }
   .hero-eyebrow {
@@ -310,7 +314,15 @@
   }
 
   /* ===== MAIN CONTENT ===== */
-  .main { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+  .main { max-width: 1200px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ===== NO-CLOUD ICON (replaces "Free Forever") ===== */
+  .no-cloud-icon {
+    display: inline-block; position: relative;
+    width: 22px; height: 18px; vertical-align: -3px; margin-right: 4px;
+  }
+  .no-cloud-icon svg { width: 100%; height: 100%; }
+
 
   /* ===== DROP ZONE ===== */
   .drop-zone {
@@ -623,7 +635,7 @@
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
-  .sp-hero-content { position: relative; z-index: 1; }
+  .sp-hero-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
   .sp-hero-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 12px;
@@ -747,6 +759,7 @@
     text-align: center; padding: 40px;
     font-size: 13px; color: #8fa4b3;
     letter-spacing: 0.5px; line-height: 2.2;
+    max-width: 1200px; margin: 0 auto;
   }
   .footer a { color: var(--d-blue); text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
@@ -825,7 +838,7 @@
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
-  .sd-hero-content { position: relative; z-index: 1; }
+  .sd-hero-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
   .sd-hero-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 12px;
@@ -881,7 +894,7 @@
     background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(7,176,232,0.06) 0%, transparent 70%);
     pointer-events: none;
   }
-  .research-content { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+  .research-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
   .research-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 11px;
@@ -903,7 +916,7 @@
   }
   .research-cards {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-    max-width: 720px; margin: 0 auto;
+    max-width: 1200px; margin: 0 auto;
   }
   .research-card {
     padding: 28px 20px; border-radius: 12px;
@@ -959,16 +972,18 @@
 
   <!-- ===== TOPBAR ===== -->
   <div class="topbar">
-    <div class="topbar-left">
-      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="ndiautolight.png" alt="NDi Auto" class="ndi-logo"></a>
-      <div class="topbar-divider"></div>
-      <a href="https://netdes.com" target="_blank" class="topbar-attribution">
-        <span class="topbar-attribution-text">A Division of</span>
-        <img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="Network Designs, Inc." class="topbar-attribution-logo">
-      </a>
-    </div>
-    <div class="topbar-right">
-      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-partner">PARTNER WITH US<span class="btn-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB Certified" class="sdvosb-logo"></a>
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="ndiautolight.png" alt="NDi Auto" class="ndi-logo"></a>
+        <div class="topbar-divider"></div>
+        <a href="https://netdes.com" target="_blank" class="topbar-attribution">
+          <span class="topbar-attribution-text">A Division of</span>
+          <img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="Network Designs, Inc." class="topbar-attribution-logo">
+        </a>
+      </div>
+      <div class="topbar-right">
+        <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-partner">PARTNER WITH US<span class="btn-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB Certified" class="sdvosb-logo"></a>
+      </div>
     </div>
   </div>
 
@@ -1009,7 +1024,7 @@
         <div class="hero-bracket hero-bracket-br"></div>
         <div class="hero-scan-line"></div>
         <div class="hero-robot-container">
-          <img src="robooo.png" alt="NDi Auto AI">
+          <img src="robot_white.png" alt="NDi Auto AI">
         </div>
         <div class="hero-robot-status">AI CORE ACTIVE</div>
       </div>
@@ -1049,11 +1064,11 @@
       <div class="sd-hero-stats">
         <div class="sd-hero-stat"><span class="sd-hero-stat-value"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px;color:var(--success)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>100%</span><span class="sd-hero-stat-label">Local &amp; Secure</span></div>
         <div class="sd-hero-stat-divider"></div>
-        <div class="sd-hero-stat"><span class="sd-hero-stat-value">6</span><span class="sd-hero-stat-label">File Formats</span></div>
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value">Any</span><span class="sd-hero-stat-label">Document</span></div>
         <div class="sd-hero-stat-divider"></div>
         <div class="sd-hero-stat"><span class="sd-hero-stat-value">XML</span><span class="sd-hero-stat-label">Output Format</span></div>
         <div class="sd-hero-stat-divider"></div>
-        <div class="sd-hero-stat"><span class="sd-hero-stat-value">Free</span><span class="sd-hero-stat-label">Forever</span></div>
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="sd-hero-stat-label">No Cloud</span></div>
       </div>
     </div>
   </div>
@@ -1161,9 +1176,9 @@
         <div class="sp-hero-stat-divider"></div>
         <div class="sp-hero-stat"><span class="sp-hero-stat-value">4-Phase</span><span class="sp-hero-stat-label">Cognitive Protocol</span></div>
         <div class="sp-hero-stat-divider"></div>
-        <div class="sp-hero-stat"><span class="sp-hero-stat-value">10+</span><span class="sp-hero-stat-label">Models Supported</span></div>
+        <div class="sp-hero-stat"><span class="sp-hero-stat-value">1,000+</span><span class="sp-hero-stat-label">Models Supported</span></div>
         <div class="sp-hero-stat-divider"></div>
-        <div class="sp-hero-stat"><span class="sp-hero-stat-value">Free</span><span class="sp-hero-stat-label">Forever</span></div>
+        <div class="sp-hero-stat"><span class="sp-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="sp-hero-stat-label">No Cloud</span></div>
       </div>
     </div>
   </div>
@@ -1174,7 +1189,7 @@
       <div class="super-prompt-header">
         <div class="super-prompt-header-left">
           <div class="super-prompt-icon">
-            <img src="robooo.png" alt="NDi Bot" style="width:36px;height:36px;border-radius:8px;">
+            <img src="robot_white.png" alt="NDi Bot" style="width:36px;height:36px;border-radius:8px;">
           </div>
           <div>
             <div class="super-prompt-title">NDi SuperPrompt™</div>
