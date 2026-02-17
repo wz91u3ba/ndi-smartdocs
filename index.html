@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home | NDi Auto</title>
+<title>NDi Auto | Home</title>
 <meta name="description" content="NDi Auto by Network Designs, Inc. — AI & Automation Research Division. Client-side document serialization for AI-ready corpus generation.">
 <link rel="icon" href="robot_white.png" type="image/png">
 
@@ -772,34 +772,12 @@
 
   /* ===== RAVEN CTA ===== */
   .raven-cta-wrap {
-    padding: 48px 24px;
-    background: var(--surface-0);
+    padding: 56px 24px;
+    background: #ffffff;
   }
   .raven-cta {
     max-width: 1050px; margin: 0 auto;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 16px;
-    padding: 48px 48px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
-  }
-  .raven-cta::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,0,0,0.015) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .raven-cta-inner {
-    position: relative; z-index: 1;
-    display: flex; align-items: center; gap: 36px;
-  }
-  .raven-cta-icon {
-    flex-shrink: 0;
-    width: 96px; height: 96px; border-radius: 20px;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+    display: flex; align-items: center; gap: 40px;
   }
   .raven-cta-text {
     text-align: left;
@@ -813,35 +791,54 @@
   .raven-cta-desc {
     font-size: 14px; color: #555; line-height: 1.7;
   }
+  .raven-cta-icon {
+    flex-shrink: 0;
+    width: 96px; height: 96px; border-radius: 20px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+  }
   .raven-cta-action {
     flex-shrink: 0;
     display: flex; flex-direction: column;
-    align-items: center; gap: 10px;
+    align-items: center; gap: 0;
   }
-  .raven-cta-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 20px; font-weight: 800;
-    letter-spacing: 6px; color: #1a1a1a;
-    text-transform: uppercase;
+  .raven-cta-action-link {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+    text-decoration: none; color: inherit;
+    transition: transform 0.3s ease;
+    cursor: pointer;
   }
-  .raven-cta-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 28px; border-radius: 10px;
-    background: #1a1a1a; color: #fff;
-    text-decoration: none;
-    font-family: 'Nunito Sans', sans-serif;
-    font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
-    text-transform: uppercase; transition: all 0.3s;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  .raven-cta-action-link:hover {
+    transform: translateY(-3px);
   }
-  .raven-cta-btn:hover {
+  .raven-cta-action-link:hover .raven-cta-social {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.28), 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .raven-cta-action-link:hover .raven-cta-btn {
     background: #000;
     box-shadow: 0 8px 28px rgba(0,0,0,0.25);
-    transform: translateY(-2px);
+  }
+  .raven-cta-social {
+    width: 240px;
+    border-radius: 14px 14px 0 0;
+    object-fit: cover;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+  }
+  .raven-cta-btn {
+    width: 240px; box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 13px 28px;
+    border-radius: 0 0 14px 14px;
+    background: #1a1a1a; color: #fff;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.08);
   }
   @media (max-width: 768px) {
-    .raven-cta { padding: 32px 24px; }
-    .raven-cta-inner { flex-direction: column; gap: 24px; text-align: center; }
+    .raven-cta { flex-direction: column; gap: 28px; text-align: center; }
     .raven-cta-icon { width: 72px; height: 72px; }
     .raven-cta-text { text-align: center; }
     .raven-cta-desc { margin: 0 auto; }
@@ -1419,19 +1416,19 @@
   <!-- ===== RAVEN CTA ===== -->
   <div class="raven-cta-wrap">
     <div class="raven-cta">
-      <div class="raven-cta-inner">
-        <img src="raven-icon.png" alt="RAVEN" class="raven-cta-icon">
-        <div class="raven-cta-text">
-          <div class="raven-cta-title">Classified Streaming Over Public Infrastructure</div>
-          <p class="raven-cta-desc">RAVEN delivers secure, classified-level video and data streaming across untrusted networks. The same mission-grade engineering. Different attack surface.</p>
-        </div>
-        <div class="raven-cta-action">
-          <div class="raven-cta-label">RAVEN</div>
-          <a href="https://ravensecurenetworks.com" target="_blank" class="raven-cta-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <img src="raven-icon.png" alt="RAVEN" class="raven-cta-icon">
+      <div class="raven-cta-text">
+        <div class="raven-cta-title">Classified Streaming Over Public Infrastructure</div>
+        <p class="raven-cta-desc">RAVEN delivers secure, classified-level video and data streaming across untrusted networks. The same mission-grade engineering. Different attack surface.</p>
+      </div>
+      <div class="raven-cta-action">
+        <a href="https://ravensecurenetworks.com" target="_blank" class="raven-cta-action-link">
+          <img src="raven-social.png" alt="RAVEN Secure Networks" class="raven-cta-social">
+          <div class="raven-cta-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit RAVEN
-          </a>
-        </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
