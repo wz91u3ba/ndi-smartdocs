@@ -890,36 +890,38 @@
 
   /* ===== FOOTER ===== */
   .footer {
-    border-top: 1px solid var(--border);
-    background: var(--surface-0);
+    border-top: 1px solid rgba(2,38,64,0.08);
+    background: #fff;
     padding: 0;
   }
   .footer-inner {
     max-width: 975px; margin: 0 auto;
     padding: 56px 32px 0;
   }
-  /* Certification logos bar — full width above bottom */
+  /* Certification logos bar — full width, dark blue tint */
   .footer-certs {
     display: flex; align-items: center; justify-content: center;
     padding: 16px 0;
+    position: relative;
   }
   .footer-certs img {
     width: 100%; max-width: 100%; height: auto;
     object-fit: contain;
-    opacity: 0.85; transition: opacity 0.2s;
+    filter: brightness(0) saturate(100%) invert(10%) sepia(60%) saturate(1200%) hue-rotate(180deg) brightness(0.7);
+    opacity: 0.7; transition: opacity 0.2s;
   }
-  .footer-certs img:hover { opacity: 1; }
+  .footer-certs img:hover { opacity: 0.9; }
   /* Main footer grid */
   .footer-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr 1fr 1fr;
     gap: 40px;
     padding-bottom: 48px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(2,38,64,0.08);
   }
   .footer-brand-logo { height: 28px; margin-bottom: 16px; opacity: 0.9; }
   .footer-brand-desc {
-    font-size: 13px; color: #8fa4b3; line-height: 1.75; margin-bottom: 20px;
+    font-size: 13px; color: #5a7485; line-height: 1.75; margin-bottom: 20px;
   }
   .footer-sdvosb {
     display: inline-flex; align-items: center; gap: 8px;
@@ -933,22 +935,22 @@
   }
   .footer-col-title {
     font-family: 'DM Mono', monospace; font-size: 10px;
-    color: var(--d-blue); letter-spacing: 2px;
+    color: var(--n-blue); letter-spacing: 2px;
     text-transform: uppercase; font-weight: 700;
     margin-bottom: 20px;
   }
   .footer-links { list-style: none; }
   .footer-links li { margin-bottom: 10px; }
   .footer-links a {
-    font-size: 13px; color: #8fa4b3; text-decoration: none;
+    font-size: 13px; color: #5a7485; text-decoration: none;
     transition: color 0.2s; letter-spacing: 0.2px;
   }
-  .footer-links a:hover { color: #fff; }
+  .footer-links a:hover { color: var(--n-blue); }
   .footer-contact-item {
-    font-size: 13px; color: #8fa4b3; margin-bottom: 10px;
+    font-size: 13px; color: #5a7485; margin-bottom: 10px;
     line-height: 1.6;
   }
-  .footer-contact-item strong { color: #c0d0dc; font-weight: 700; }
+  .footer-contact-item strong { color: var(--n-blue); font-weight: 700; }
   .footer-contact-item a { color: var(--d-blue); text-decoration: none; }
   .footer-contact-item a:hover { text-decoration: underline; }
   /* Social */
@@ -958,21 +960,21 @@
   .footer-social a {
     display: flex; align-items: center; justify-content: center;
     width: 36px; height: 36px; border-radius: 8px;
-    background: rgba(7,176,232,0.06);
-    border: 1px solid var(--border);
-    color: #8fa4b3; transition: all 0.2s;
+    background: rgba(2,38,64,0.04);
+    border: 1px solid rgba(2,38,64,0.1);
+    color: #5a7485; transition: all 0.2s;
   }
   .footer-social a:hover {
     border-color: var(--d-blue); color: var(--d-blue);
-    background: rgba(7,176,232,0.1);
+    background: rgba(7,176,232,0.06);
   }
   /* Bottom bar */
   .footer-bottom {
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px 0;
-    font-size: 12px; color: #5a6f7e; letter-spacing: 0.3px;
+    font-size: 12px; color: #8fa4b3; letter-spacing: 0.3px;
   }
-  .footer-bottom a { color: #8fa4b3; text-decoration: none; transition: color 0.2s; }
+  .footer-bottom a { color: #5a7485; text-decoration: none; transition: color 0.2s; }
   .footer-bottom a:hover { color: var(--d-blue); }
   .footer-bottom-links { display: flex; gap: 20px; }
 
@@ -2413,7 +2415,7 @@
       <div class="footer-grid">
         <!-- Brand Column -->
         <div>
-          <img src="ndiautolight.png" alt="NDi Auto" class="footer-brand-logo">
+          <img src="ndiautodark.png" alt="NDi Auto" class="footer-brand-logo">
           <p class="footer-brand-desc">NDi Auto is the AI &amp; Automation Research Division of Network Designs, Inc. — a Service-Disabled Veteran-Owned Small Business delivering mission-critical IT solutions for three decades.</p>
           <div class="footer-sdvosb">
             <span class="footer-sdvosb-dot"></span>
@@ -3067,6 +3069,7 @@ function showToast(msg, raven) {
     if (vtModelLoaded) return;
     const files = [
       EVA_CDN + '/lib/transformers.min.js',
+      EVA_CDN + '/lib/ort.bundle.min.mjs',
       EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.wasm',
       EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.mjs',
       EVA_CDN + '/models/onnx-community/whisper-tiny.en/config.json',
@@ -3257,7 +3260,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     { id: 'forge', el: document.getElementById('forge') },
     { id: 'eva', el: document.getElementById('eva') },
   ];
-  const ravenIds = new Set(['raven', 'forge', 'eva']);
+  const ravenIds = new Set(['raven', 'forge']);
   const ravenEl = document.getElementById('raven');
 
   function updateActiveNav() {
