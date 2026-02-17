@@ -439,13 +439,22 @@
     font-family: 'DM Mono', monospace; font-size: 14px; color: #c0d0dc; font-weight: 500;
   }
   .staged-count { color: var(--d-blue); font-weight: 500; }
-  .btn-clear-all {
+  .staged-actions { display: flex; align-items: center; gap: 8px; }
+  .btn-sort, .btn-clear-all {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 14px; border-radius: 6px;
     background: rgba(140,140,140,0.1); border: 1px solid rgba(140,140,140,0.2);
     color: #8fa4b3; font-family: 'DM Mono', monospace;
     font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
     cursor: pointer; transition: all 0.2s;
+  }
+  .btn-sort:hover {
+    background: rgba(7,176,232,0.1); border-color: rgba(7,176,232,0.3);
+    color: var(--d-blue);
+  }
+  .btn-sort.active {
+    background: rgba(7,176,232,0.08); border-color: rgba(7,176,232,0.25);
+    color: var(--d-blue);
   }
   .btn-clear-all:hover {
     background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3);
@@ -1279,7 +1288,13 @@
     <!-- STAGED BAR -->
     <div class="staged-bar" id="stagedBar">
       <div class="staged-text"><span class="staged-count" id="stagedCount">0</span> documents staged · <span id="stagedSize">0 KB</span></div>
-      <button class="btn-clear-all" onclick="clearAllFiles()">✕ Clear All</button>
+      <div class="staged-actions">
+        <button class="btn-sort" id="sortBtn" onclick="cycleSort()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/></svg>
+          <span id="sortLabel">Uploaded</span>
+        </button>
+        <button class="btn-clear-all" onclick="clearAllFiles()">✕ Clear All</button>
+      </div>
     </div>
 
     <!-- PROCESS BUTTON -->
@@ -1605,7 +1620,34 @@ function removeFile(i) { stagedFiles.splice(i, 1); renderFiles(); }
 function clearAllFiles() {
   if (stagedFiles.length === 0) return;
   if (!confirm(`Remove all ${stagedFiles.length} staged documents?`)) return;
-  stagedFiles = []; renderFiles();
+  stagedFiles = []; sortMode = 'uploaded'; renderFiles();
+}
+
+// Sort modes: uploaded → size-asc → size-desc → type
+let sortMode = 'uploaded';
+const sortModes = ['uploaded', 'size-asc', 'size-desc', 'type'];
+const sortLabels = { 'uploaded': 'Uploaded', 'size-asc': 'Size ↑', 'size-desc': 'Size ↓', 'type': 'File Type' };
+
+function cycleSort() {
+  const idx = sortModes.indexOf(sortMode);
+  sortMode = sortModes[(idx + 1) % sortModes.length];
+  renderFiles();
+}
+
+function getSortedFiles() {
+  const files = stagedFiles.map((f, i) => ({ file: f, origIdx: i }));
+  if (sortMode === 'uploaded') return files;
+  if (sortMode === 'size-asc') return files.sort((a, b) => a.file.size - b.file.size);
+  if (sortMode === 'size-desc') return files.sort((a, b) => b.file.size - a.file.size);
+  if (sortMode === 'type') {
+    return files.sort((a, b) => {
+      const extA = a.file.name.split('.').pop().toLowerCase();
+      const extB = b.file.name.split('.').pop().toLowerCase();
+      if (extA !== extB) return extA.localeCompare(extB);
+      return b.file.size - a.file.size;
+    });
+  }
+  return files;
 }
 
 // File type color map
@@ -1632,7 +1674,8 @@ function formatSize(bytes) {
 }
 
 function renderFiles() {
-  fileListEl.innerHTML = stagedFiles.map((f, i) => {
+  const sorted = getSortedFiles();
+  fileListEl.innerHTML = sorted.map(({ file: f, origIdx }) => {
     const ext = f.name.split('.').pop().toLowerCase();
     const extUp = ext.toUpperCase();
     const c = extColors[ext] || defaultExtColor;
@@ -1643,10 +1686,18 @@ function renderFiles() {
       </div>
       <div class="file-meta">
         <span class="file-size">${formatSize(f.size)}</span>
-        <button class="file-remove" onclick="removeFile(${i})">✕</button>
+        <button class="file-remove" onclick="removeFile(${origIdx})">✕</button>
       </div>
     </div>`;
   }).join('');
+
+  // Update sort button
+  const sortBtn = document.getElementById('sortBtn');
+  const sortLabel = document.getElementById('sortLabel');
+  if (sortBtn && sortLabel) {
+    sortLabel.textContent = sortLabels[sortMode];
+    sortBtn.classList.toggle('active', sortMode !== 'uploaded');
+  }
 
   if (stagedFiles.length) {
     const totalBytes = stagedFiles.reduce((s,f) => s + f.size, 0);
