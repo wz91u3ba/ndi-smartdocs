@@ -1069,12 +1069,12 @@
     font-family: 'DM Mono', monospace; font-size: 12px;
     color: #666; letter-spacing: 0.5px;
   }
-  .forge-msg { display: flex; align-items: flex-start; gap: 10px; max-width: 85%; animation: fade-up 0.25s ease-out; }
+  .forge-msg { display: flex; gap: 8px; max-width: 85%; animation: fade-up 0.25s ease-out; }
   .forge-msg-ai { align-self: flex-start; }
   .forge-msg-user { align-self: flex-end; flex-direction: row-reverse; }
   .forge-msg-avatar {
-    width: 22px; height: 22px; border-radius: 6px;
-    flex-shrink: 0; margin-top: 4px;
+    width: 20px; height: 20px; border-radius: 5px;
+    flex-shrink: 0; margin-top: 11px; /* 10px bubble padding + 1px to center with first text line */
   }
   .forge-msg-user .forge-msg-avatar { display: none; }
   .forge-msg-bubble {
@@ -1105,6 +1105,22 @@
   .forge-msg-bubble strong { color: #f0f0f0; }
   .forge-msg-bubble ul, .forge-msg-bubble ol { padding-left: 18px; margin: 6px 0; }
   .forge-msg-bubble li { margin: 3px 0; }
+  /* Error bubble */
+  .forge-error-details {
+    margin-top: 10px; border: none; font-size: 11px;
+  }
+  .forge-error-details summary {
+    cursor: pointer; color: #555; font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.5px; user-select: none;
+    padding: 4px 0;
+  }
+  .forge-error-details summary:hover { color: #888; }
+  .forge-error-details pre {
+    margin: 6px 0 0; padding: 10px; border-radius: 6px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+    color: #555; font-family: 'DM Mono', monospace; font-size: 10px;
+    line-height: 1.6; white-space: pre-wrap; word-break: break-all;
+  }
   .forge-cursor {
     display: inline-block; width: 2px; height: 14px;
     background: #F8B42C; margin-left: 2px; vertical-align: text-bottom;
@@ -1283,6 +1299,21 @@
     max-width: 320px; line-height: 1.6;
   }
   .forge-gate-desc strong { color: #aaa; }
+  .forge-gate-status {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: #F8B42C; letter-spacing: 0.3px;
+    min-height: 16px; transition: opacity 0.3s;
+  }
+  .forge-gate-status.error { color: #ff6b6b; }
+  .forge-gate-btn:disabled { opacity: 0.5; cursor: wait; }
+  .forge-gate-btn .forge-gate-spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
+    border-top-color: #000; border-radius: 50%;
+    animation: forge-spin 0.6s linear infinite; display: none;
+  }
+  .forge-gate-btn.loading .forge-gate-spinner { display: block; }
+  .forge-gate-btn.loading svg { display: none; }
+  @keyframes forge-spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 768px) {
     .forge { height: 500px; }
@@ -1890,11 +1921,13 @@
       <!-- Gate Overlay -->
       <div class="forge-gate" id="forgeGate">
         <img src="raven-icon.png" alt="RAVEN" class="forge-gate-icon">
-        <button class="forge-gate-btn" onclick="forgeRequestAccess()">
+        <button class="forge-gate-btn" id="forgeGateBtn" onclick="forgeRequestAccess()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Connect to Local AI
+          <div class="forge-gate-spinner"></div>
+          <span id="forgeGateBtnText">Connect to Local AI</span>
         </button>
         <p class="forge-gate-desc">Talk to a browser-run LLM.<br><strong>No data leakage. Totally secure.</strong></p>
+        <div class="forge-gate-status" id="forgeGateStatus"></div>
       </div>
 
       <!-- Header -->
@@ -2604,29 +2637,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
-  // Debug helper — renders error with full context into a bubble
-  function forgeDebugError(bubble, step, err, extra) {
-    const errName = err?.name || 'Unknown';
-    const errMsg = err?.message || String(err);
-    const codeStyle = 'background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:"DM Mono",monospace;font-size:10px';
-    const dimStyle = 'color:#666;font-size:10px;font-family:"DM Mono",monospace;word-break:break-all';
+  // Render a clean error with hidden debug dropdown
+  function forgeShowError(bubble, msg, debugInfo) {
     bubble.innerHTML = `<div style="font-size:13px;line-height:1.7">
-      <strong style="color:#ff6b6b">⚡ Error at: ${step}</strong><br>
-      <span style="color:#ff8a80;font-size:12px">${esc(errName)}: ${esc(errMsg.slice(0,300))}</span>
-      ${extra ? `<div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:6px;border:1px solid rgba(255,255,255,0.06)">
-        <div style="${dimStyle}">${extra}</div>
-      </div>` : ''}
-      <div style="margin-top:10px;color:#999;font-size:12px;line-height:1.6">
-        <strong style="color:#bbb">Checklist:</strong>
-        <ol style="margin:4px 0 0 16px">
-          <li>Ollama running? → <code style="${codeStyle}">ollama serve</code></li>
-          <li>Model pulled? → <code style="${codeStyle}">ollama pull ${FC.model}</code></li>
-          <li>Loopback allowed? → Click Allow when browser asks</li>
-        </ol>
-      </div>
-      <div style="margin-top:8px;${dimStyle}">
-        url: ${esc(FC.url)}<br>model: ${esc(FC.model)} · temp: ${FC.temp} · max_tokens: ${FC.tokens}
-      </div>
+      <span style="color:#ccc">${msg}</span>
+      <details class="forge-error-details">
+        <summary>Debug info ▸</summary>
+        <pre>${esc(debugInfo)}</pre>
+      </details>
     </div>`;
   }
 
@@ -2646,8 +2664,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     let step = 'init';
 
     try {
-      // Step 1: Build payload
-      step = 'Building payload';
+      step = 'build_payload';
       const payload = {
         model: FC.model,
         messages: forgeBuildPayload(),
@@ -2656,39 +2673,34 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         max_tokens: FC.tokens,
       };
 
-      // Step 2: Send fetch
-      step = 'Fetching ' + FC.url;
+      step = 'fetch';
       const res = await fetch(FC.url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      // Step 3: Check response status
-      step = 'Checking response (HTTP ' + res.status + ')';
+      step = 'status_' + res.status;
       if (!res.ok) {
         const errBody = await res.text();
-        forgeDebugError(bubble, step, { name: 'HTTP ' + res.status, message: errBody.slice(0,300) || res.statusText },
-          'content-type: ' + (res.headers.get('content-type') || 'none'));
-        forgeMessages.push({ role: 'assistant', content: `(Error ${res.status})` });
+        forgeShowError(bubble,
+          res.status === 404 ? 'Model <strong>' + esc(FC.model) + '</strong> not found. Run: <code>ollama pull ' + esc(FC.model) + '</code>'
+          : 'Server returned error ' + res.status + '.',
+          'step: ' + step + '\nstatus: ' + res.status + ' ' + res.statusText + '\nbody: ' + errBody.slice(0,500) + '\nurl: ' + FC.url + '\nmodel: ' + FC.model
+        );
+        forgeMessages.push({ role: 'assistant', content: '(Error)' });
         forgeStreaming = false;
         return;
       }
 
-      // Step 4: Get reader
-      step = 'Opening stream reader';
-      if (!res.body) throw new Error('Response body is null — streaming not supported');
+      step = 'stream';
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = '';
-      let chunkCount = 0;
 
-      // Step 5: Read stream
-      step = 'Reading stream';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        chunkCount++;
         buf += dec.decode(value, { stream: true });
         const lines = buf.split('\n');
         buf = lines.pop() || '';
@@ -2704,25 +2716,23 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
               bubble.innerHTML = forgeMd(full) + '<span class="forge-cursor"></span>';
               chatEl.scrollTop = chatEl.scrollHeight;
             }
-          } catch (parseErr) {
-            // Log SSE parse errors but don't break
-            console.warn('[Forge] SSE parse error on chunk #' + chunkCount + ':', data.slice(0, 100), parseErr);
-          }
+          } catch (pe) { console.warn('[Forge] SSE parse:', pe.message); }
         }
       }
-      step = 'Stream complete (' + chunkCount + ' chunks, ' + full.length + ' chars)';
-
     } catch (e) {
       if (!full) {
-        forgeDebugError(bubble, step, e);
-        forgeMessages.push({ role: 'assistant', content: '(Error: ' + step + ')' });
+        const isNetwork = e.name === 'TypeError' && e.message.includes('fetch');
+        forgeShowError(bubble,
+          isNetwork ? 'Can\'t reach Ollama. Is it running? → <code>ollama serve</code>' : e.message,
+          'step: ' + step + '\nerror: ' + e.name + ': ' + e.message + '\nurl: ' + FC.url + '\nmodel: ' + FC.model + '\ntemp: ' + FC.temp + '\nmax_tokens: ' + FC.tokens
+        );
+        forgeMessages.push({ role: 'assistant', content: '(Error)' });
         forgeStreaming = false;
         return;
       }
     }
 
-    // Finalize
-    bubble.innerHTML = forgeMd(full || '(Empty response — 0 tokens received)');
+    bubble.innerHTML = forgeMd(full || '(Empty response)');
     forgeMessages.push({ role: 'assistant', content: full });
     forgeStreaming = false;
   };
@@ -2740,24 +2750,76 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     sendBtn.classList.toggle('active', hasText);
   };
 
-  // ---- GATE (loopback permission) ----
-  // Skip gate if already granted (persisted in localStorage)
-  if (localStorage.getItem('forge_access_granted')) {
-    document.getElementById('forgeGate').classList.add('dismissed');
+  // ---- GATE (smart one-click connection) ----
+  const gateEl = document.getElementById('forgeGate');
+  const gateBtn = document.getElementById('forgeGateBtn');
+  const gateBtnText = document.getElementById('forgeGateBtnText');
+  const gateStatus = document.getElementById('forgeGateStatus');
+
+  // Skip gate only if we previously confirmed Ollama was actually reachable
+  if (localStorage.getItem('forge_connected')) {
+    gateEl.classList.add('dismissed');
   }
 
-  window.forgeRequestAccess = function() {
-    // Fire a dummy fetch to localhost — this triggers the browser's loopback permission dialog
-    fetch(FC.url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: FC.model, messages: [{ role: 'user', content: 'ping' }], max_tokens: 1 }),
-    }).then(() => {
-      localStorage.setItem('forge_access_granted', '1');
-      document.getElementById('forgeGate').classList.add('dismissed');
-    }).catch(() => {
-      // Permission granted but server not running, or user denied — dismiss anyway since browser asked
-      localStorage.setItem('forge_access_granted', '1');
-      document.getElementById('forgeGate').classList.add('dismissed');
-    });
+  function gateSetStatus(msg, isError) {
+    gateStatus.textContent = msg;
+    gateStatus.classList.toggle('error', !!isError);
+  }
+
+  window.forgeRequestAccess = async function() {
+    gateBtn.disabled = true;
+    gateBtn.classList.add('loading');
+    gateBtnText.textContent = 'Connecting...';
+    gateSetStatus('');
+
+    // Base URL: strip /v1/chat/completions to get Ollama root
+    const base = FC.url.replace(/\/v1\/chat\/completions\/?$/, '');
+
+    // Step 1: Check if Ollama is reachable at all
+    try {
+      gateSetStatus('Checking Ollama...');
+      const tagRes = await fetch(base + '/api/tags');
+      if (!tagRes.ok) throw new Error('tags endpoint returned ' + tagRes.status);
+      const tagData = await tagRes.json();
+      const models = (tagData.models || []).map(m => m.name || m.model);
+
+      // Step 2: Check if desired model is available
+      const wanted = FC.model;
+      const hasModel = models.some(m => m === wanted || m.startsWith(wanted + ':'));
+
+      if (hasModel) {
+        gateSetStatus('Connected — ' + wanted + ' ready');
+        localStorage.setItem('forge_connected', '1');
+        setTimeout(() => gateEl.classList.add('dismissed'), 400);
+        return;
+      }
+
+      // Model not found — try to use whatever is available
+      if (models.length > 0) {
+        const fallback = models[0].split(':')[0];
+        gateSetStatus('Using ' + fallback + ' (preferred ' + wanted + ' not found)');
+        localStorage.setItem('forge_model', fallback);
+        localStorage.setItem('forge_connected', '1');
+        // Update settings inputs
+        document.getElementById('forgeSettingModel').value = fallback;
+        setTimeout(() => gateEl.classList.add('dismissed'), 600);
+        return;
+      }
+
+      // Ollama running but no models
+      gateSetStatus('Ollama running but no models installed. Run: ollama pull ' + wanted, true);
+      gateBtn.disabled = false;
+      gateBtn.classList.remove('loading');
+      gateBtnText.textContent = 'Retry';
+
+    } catch (e) {
+      // Fetch failed — either loopback blocked or Ollama not running
+      // The browser loopback dialog fires on the first fetch attempt
+      gateSetStatus('Ollama not reachable. Start it: ollama serve', true);
+      gateBtn.disabled = false;
+      gateBtn.classList.remove('loading');
+      gateBtnText.textContent = 'Retry';
+    }
   };
 
   // ---- SETTINGS ----
