@@ -3081,11 +3081,24 @@ function showToast(msg, raven) {
   // Audio → 16kHz Float32
   async function vtBlobToFloat32(blob) {
     const buf = await blob.arrayBuffer();
-    const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const decoded = await ctx.decodeAudioData(buf);
-    const f32 = decoded.getChannelData(0);
+    const srcData = decoded.getChannelData(0);
+    const srcRate = decoded.sampleRate;
     ctx.close();
-    return f32;
+    // Resample to 16kHz for Whisper
+    if (srcRate === 16000) return srcData;
+    const ratio = srcRate / 16000;
+    const outLen = Math.floor(srcData.length / ratio);
+    const out = new Float32Array(outLen);
+    for (let i = 0; i < outLen; i++) {
+      const srcIdx = i * ratio;
+      const lo = Math.floor(srcIdx);
+      const hi = Math.min(lo + 1, srcData.length - 1);
+      const frac = srcIdx - lo;
+      out[i] = srcData[lo] * (1 - frac) + srcData[hi] * frac;
+    }
+    return out;
   }
 
   function vtUpdateTranscript() {
