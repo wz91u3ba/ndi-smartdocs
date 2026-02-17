@@ -2462,7 +2462,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     { id: 'raven', el: document.getElementById('raven') },
   ];
   const ravenIds = new Set(['raven', 'forge']);
-  const ravenEl = document.getElementById('raven');
+  const forgeEl = document.getElementById('forge');
 
   function updateActiveNav() {
     const scrollY = window.scrollY + 120;
@@ -2476,10 +2476,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     });
     navEl.classList.toggle('raven-mode', ravenIds.has(activeId));
 
-    // Topbar dark mode: activate when topbar overlaps RAVEN section
+    // Topbar dark mode: activate 1px before the Forge Hero section
     const topbarH = topbar.offsetHeight;
-    const ravenTop = ravenEl ? ravenEl.offsetTop : Infinity;
-    topbar.classList.toggle('dark-mode', window.scrollY + topbarH >= ravenTop);
+    const forgeTop = forgeEl ? forgeEl.offsetTop : Infinity;
+    topbar.classList.toggle('dark-mode', window.scrollY + topbarH >= forgeTop - 1);
   }
 
   window.addEventListener('scroll', updateActiveNav, { passive: true });
