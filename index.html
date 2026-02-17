@@ -2412,11 +2412,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       const isActive = link.getAttribute('href') === '#' + activeId;
       link.classList.toggle('active', isActive);
     });
-    navEl.classList.toggle('raven-mode', ravenIds.has(activeId));
-
-    // Topbar dark mode: activate when scrolled to RAVEN section
-    const ravenTop = ravenEl ? ravenEl.offsetTop : Infinity;
-    topbar.classList.toggle('dark-mode', window.scrollY >= ravenTop - topbar.offsetHeight - 2);
+    const inRavenZone = ravenIds.has(activeId);
+    navEl.classList.toggle('raven-mode', inRavenZone);
+    topbar.classList.toggle('dark-mode', inRavenZone);
   }
 
   window.addEventListener('scroll', updateActiveNav, { passive: true });
