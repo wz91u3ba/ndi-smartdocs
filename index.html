@@ -788,8 +788,8 @@
     min-width: 0;
   }
   .raven-cta-title {
-    font-size: 22px; font-weight: 900; color: #1a1a1a;
-    letter-spacing: -0.3px; margin-bottom: 6px; line-height: 1.2;
+    font-size: 30px; font-weight: 900; color: #1a1a1a;
+    letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.15;
   }
   .raven-cta-desc {
     font-size: 14px; color: #555; line-height: 1.7;
@@ -950,37 +950,38 @@
     max-width: 1050px; margin: 0 auto;
     height: 600px;
     display: flex; flex-direction: column;
-    background: #111;
+    background: #1e1e1e;
     border-radius: 14px;
     overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
     box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.08);
   }
   .forge-head {
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 18px; height: 44px; flex-shrink: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: #0e0e0e;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: #181818;
   }
   .forge-head-left { display: flex; align-items: center; gap: 10px; }
   .forge-head-icon { width: 20px; height: 20px; border-radius: 5px; }
   .forge-head-title {
     font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700;
-    color: #ccc; letter-spacing: 2px; text-transform: uppercase;
+    color: #d0d0d0; letter-spacing: 2px; text-transform: uppercase;
   }
   .forge-head-right { display: flex; align-items: center; gap: 10px; }
   .forge-pill {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 700;
     color: #F8B42C; letter-spacing: 1.5px; text-transform: uppercase;
     padding: 3px 8px; border-radius: 4px;
-    border: 1px solid rgba(248,180,44,0.3);
-    background: rgba(248,180,44,0.06);
+    border: 1px solid rgba(248,180,44,0.35);
+    background: rgba(248,180,44,0.08);
   }
   .forge-gear {
-    background: none; border: none; color: #555; cursor: pointer;
+    background: none; border: none; color: #666; cursor: pointer;
     padding: 4px; border-radius: 4px; transition: color 0.2s;
     display: flex; align-items: center;
   }
-  .forge-gear:hover { color: #aaa; }
+  .forge-gear:hover { color: #bbb; }
 
   /* Chat */
   .forge-chat {
@@ -989,15 +990,15 @@
     scroll-behavior: smooth;
   }
   .forge-chat::-webkit-scrollbar { width: 4px; }
-  .forge-chat::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+  .forge-chat::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
   .forge-welcome {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 12px;
   }
-  .forge-welcome img { width: 48px; height: 48px; opacity: 0.25; border-radius: 12px; }
+  .forge-welcome img { width: 48px; height: 48px; opacity: 0.3; border-radius: 12px; }
   .forge-welcome span {
     font-family: 'DM Mono', monospace; font-size: 12px;
-    color: #444; letter-spacing: 0.5px;
+    color: #666; letter-spacing: 0.5px;
   }
   .forge-msg { display: flex; gap: 10px; max-width: 85%; animation: fade-up 0.25s ease-out; }
   .forge-msg-ai { align-self: flex-start; }
@@ -1009,24 +1010,31 @@
   .forge-msg-user .forge-msg-avatar { display: none; }
   .forge-msg-bubble {
     padding: 10px 14px; border-radius: 12px;
-    font-size: 13.5px; line-height: 1.6; color: #ddd;
+    font-size: 13.5px; line-height: 1.6; color: #e0e0e0;
     word-break: break-word;
   }
-  .forge-msg-ai .forge-msg-bubble { background: #1a1a1a; }
+  .forge-msg-ai .forge-msg-bubble {
+    background: #2a2a2a;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
   .forge-msg-user .forge-msg-bubble {
-    background: #1a1a1a; border-left: 2px solid rgba(248,180,44,0.3);
+    background: #2f2a1e;
+    border-left: 2px solid rgba(248,180,44,0.4);
+    border: 1px solid rgba(248,180,44,0.1);
+    border-left: 2px solid rgba(248,180,44,0.4);
   }
   .forge-msg-bubble code {
-    background: rgba(255,255,255,0.06); padding: 1px 5px;
+    background: rgba(255,255,255,0.08); padding: 1px 5px;
     border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 12px;
+    color: #F8B42C;
   }
   .forge-msg-bubble pre {
-    background: #0a0a0a; padding: 12px; border-radius: 8px;
+    background: #161616; padding: 12px; border-radius: 8px;
     overflow-x: auto; margin: 8px 0; font-size: 12px;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
   }
-  .forge-msg-bubble pre code { background: none; padding: 0; }
-  .forge-msg-bubble strong { color: #eee; }
+  .forge-msg-bubble pre code { background: none; padding: 0; color: #ccc; }
+  .forge-msg-bubble strong { color: #f0f0f0; }
   .forge-msg-bubble ul, .forge-msg-bubble ol { padding-left: 18px; margin: 6px 0; }
   .forge-msg-bubble li { margin: 3px 0; }
   .forge-cursor {
@@ -1037,21 +1045,21 @@
   @keyframes forge-blink { 0%,100%{opacity:1} 50%{opacity:0} }
   .forge-sys {
     text-align: center; font-family: 'DM Mono', monospace;
-    font-size: 11px; color: #444; letter-spacing: 0.3px;
+    font-size: 11px; color: #666; letter-spacing: 0.3px;
     padding: 4px 0;
   }
 
   /* Input bar */
   .forge-input-wrap {
     flex-shrink: 0; position: relative;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    background: #0e0e0e;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: #181818;
   }
   .forge-doc-drawer {
     max-height: 0; overflow: hidden;
     transition: max-height 0.3s ease;
-    background: #0a0a0a;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: #161616;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .forge-doc-drawer.open { max-height: 220px; overflow-y: auto; }
   .forge-doc-drawer::-webkit-scrollbar { width: 3px; }
@@ -1059,9 +1067,9 @@
   .forge-doc-list { padding: 8px 14px; }
   .forge-doc-item {
     display: flex; align-items: center; gap: 8px;
-    padding: 6px 0; font-size: 12px; color: #888;
+    padding: 6px 0; font-size: 12px; color: #999;
   }
-  .forge-doc-item + .forge-doc-item { border-top: 1px solid rgba(255,255,255,0.03); }
+  .forge-doc-item + .forge-doc-item { border-top: 1px solid rgba(255,255,255,0.05); }
   .forge-doc-ext {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600;
     padding: 2px 6px; border-radius: 3px; text-transform: uppercase;
@@ -1070,20 +1078,20 @@
   .forge-doc-name {
     flex: 1; min-width: 0; overflow: hidden;
     text-overflow: ellipsis; white-space: nowrap;
-    font-family: 'Nunito Sans', sans-serif; color: #aaa;
+    font-family: 'Nunito Sans', sans-serif; color: #bbb;
   }
   .forge-doc-size {
-    font-family: 'DM Mono', monospace; font-size: 10px; color: #555;
+    font-family: 'DM Mono', monospace; font-size: 10px; color: #666;
     flex-shrink: 0;
   }
   .forge-doc-x {
-    background: none; border: none; color: #444; cursor: pointer;
+    background: none; border: none; color: #555; cursor: pointer;
     font-size: 12px; padding: 2px 4px; border-radius: 3px; transition: color 0.2s;
   }
   .forge-doc-x:hover { color: #ff6b6b; }
   .forge-doc-actions {
     display: flex; gap: 4px; padding: 8px 14px;
-    border-top: 1px solid rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(255,255,255,0.06);
   }
   .forge-doc-btn {
     display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -1092,24 +1100,24 @@
     letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.2s;
   }
   .forge-doc-clear {
-    flex: 1; background: rgba(255,255,255,0.04); color: #555;
+    flex: 1; background: rgba(255,255,255,0.06); color: #666;
   }
-  .forge-doc-clear:hover { background: rgba(255,107,107,0.1); color: #ff6b6b; }
+  .forge-doc-clear:hover { background: rgba(255,107,107,0.12); color: #ff6b6b; }
   .forge-doc-upload {
-    flex: 4; background: rgba(255,255,255,0.06); color: #888;
+    flex: 4; background: rgba(255,255,255,0.08); color: #999;
   }
-  .forge-doc-upload:hover { background: rgba(255,255,255,0.1); color: #bbb; }
+  .forge-doc-upload:hover { background: rgba(255,255,255,0.12); color: #ccc; }
 
   .forge-bar {
     display: flex; align-items: flex-end; gap: 8px;
     padding: 12px 14px;
   }
   .forge-attach {
-    background: none; border: none; color: #444; cursor: pointer;
+    background: none; border: none; color: #555; cursor: pointer;
     padding: 6px; border-radius: 6px; transition: color 0.2s;
     flex-shrink: 0; display: flex; align-items: center; position: relative;
   }
-  .forge-attach:hover { color: #888; }
+  .forge-attach:hover { color: #999; }
   .forge-attach-badge {
     position: absolute; top: 0; right: -2px;
     background: #F8B42C; color: #000; font-size: 8px; font-weight: 800;
@@ -1124,12 +1132,12 @@
     line-height: 1.5; padding: 6px 0;
     max-height: 120px; /* ~6 lines */
   }
-  .forge-textarea::placeholder { color: #3a3a3a; }
+  .forge-textarea::placeholder { color: #555; }
   .forge-send {
     background: none; border: none; cursor: pointer;
     padding: 6px; border-radius: 6px; transition: all 0.2s;
     flex-shrink: 0; display: flex; align-items: center;
-    color: #333;
+    color: #444;
   }
   .forge-send.active { color: #F8B42C; }
   .forge-send:disabled { opacity: 0.3; cursor: default; }
@@ -1142,43 +1150,43 @@
   }
   .forge-modal-bg.open { display: flex; }
   .forge-modal {
-    background: #151515; border: 1px solid rgba(255,255,255,0.08);
+    background: #222; border: 1px solid rgba(255,255,255,0.1);
     border-radius: 14px; padding: 28px; width: 380px; max-width: 90vw;
   }
   .forge-modal h3 {
     font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700;
-    color: #aaa; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #bbb; letter-spacing: 1.5px; text-transform: uppercase;
     margin: 0 0 20px;
   }
   .forge-modal label {
     display: block; font-family: 'DM Mono', monospace; font-size: 10px;
-    color: #555; letter-spacing: 0.8px; text-transform: uppercase;
+    color: #777; letter-spacing: 0.8px; text-transform: uppercase;
     margin: 14px 0 6px;
   }
   .forge-modal label:first-of-type { margin-top: 0; }
   .forge-modal input, .forge-modal select {
     width: 100%; box-sizing: border-box;
     padding: 8px 12px; border-radius: 6px;
-    background: #0e0e0e; border: 1px solid rgba(255,255,255,0.08);
-    color: #ccc; font-family: 'DM Mono', monospace; font-size: 12px;
+    background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1);
+    color: #ddd; font-family: 'DM Mono', monospace; font-size: 12px;
     outline: none; transition: border-color 0.2s;
   }
   .forge-modal input:focus { border-color: rgba(248,180,44,0.3); }
   .forge-modal-close {
     margin-top: 20px; width: 100%; height: 36px;
-    background: rgba(255,255,255,0.06); border: none; border-radius: 8px;
-    color: #888; font-family: 'DM Mono', monospace; font-size: 11px;
+    background: rgba(255,255,255,0.08); border: none; border-radius: 8px;
+    color: #999; font-family: 'DM Mono', monospace; font-size: 11px;
     font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
     cursor: pointer; transition: all 0.2s;
   }
-  .forge-modal-close:hover { background: rgba(255,255,255,0.1); color: #bbb; }
+  .forge-modal-close:hover { background: rgba(255,255,255,0.14); color: #ccc; }
 
   /* Forge Gate Overlay */
   .forge-gate {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 20px;
-    background: rgba(14,14,14,0.85);
+    background: rgba(20,20,20,0.88);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-radius: 14px;
     transition: opacity 0.4s ease, visibility 0.4s ease;
@@ -1203,10 +1211,10 @@
   }
   .forge-gate-desc {
     font-family: 'DM Mono', monospace; font-size: 11px;
-    color: #555; letter-spacing: 0.3px; text-align: center;
+    color: #777; letter-spacing: 0.3px; text-align: center;
     max-width: 320px; line-height: 1.6;
   }
-  .forge-gate-desc strong { color: #888; }
+  .forge-gate-desc strong { color: #aaa; }
 
   @media (max-width: 768px) {
     .forge { height: 500px; }
@@ -2593,7 +2601,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
       if (!res.ok) {
         const err = await res.text();
-        bubble.innerHTML = `<span style="color:#ff6b6b">Error: ${res.status} — ${err.slice(0,200)}</span>`;
+        bubble.innerHTML = `<div style="color:#ff8a80;font-size:13px;line-height:1.6">
+          <strong style="color:#ff6b6b">⚡ Error ${res.status}</strong><br>
+          <span style="color:#999;font-size:12px">${err.slice(0,200) || 'No details provided'}</span>
+        </div>`;
+        forgeMessages.push({ role: 'assistant', content: `(Error ${res.status})` });
         forgeStreaming = false;
         return;
       }
@@ -2624,11 +2636,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         }
       }
     } catch (e) {
-      if (!full) bubble.innerHTML = `<span style="color:#ff6b6b">Connection failed — is Ollama running?<br><span style="color:#555;font-size:11px">${FC.url}</span></span>`;
+      if (!full) {
+        bubble.innerHTML = `<div style="color:#ff8a80;font-size:13px;line-height:1.6">
+          <strong style="color:#ff6b6b">⚡ Connection Failed</strong><br>
+          <span style="color:#bbb">Couldn't reach your local AI. Make sure:</span>
+          <ul style="margin:8px 0 4px 16px;color:#999;font-size:12px">
+            <li>Ollama is running — <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:'DM Mono',monospace;font-size:11px">ollama serve</code></li>
+            <li>Model is pulled — <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:'DM Mono',monospace;font-size:11px">ollama pull ${FC.model}</code></li>
+            <li>You allowed loopback access in the browser dialog</li>
+          </ul>
+          <span style="color:#555;font-size:10px;font-family:'DM Mono',monospace">${FC.url}</span>
+        </div>`;
+        forgeMessages.push({ role: 'assistant', content: '(Connection failed)' });
+        forgeStreaming = false;
+        return;
+      }
     }
 
     // Finalize
-    bubble.innerHTML = forgeMd(full || 'No response received.');
+    bubble.innerHTML = forgeMd(full || '(Empty response from model)');
     forgeMessages.push({ role: 'assistant', content: full });
     forgeStreaming = false;
   };
