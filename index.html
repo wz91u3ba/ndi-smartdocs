@@ -2934,7 +2934,11 @@ function showToast(msg, raven) {
     }
   }
 
-  // Draw live waveform — smooth mirrored wave using canvas
+  // Smoothed waveform state — lerp between frames for buttery animation
+  const VT_NUM_POINTS = 48;
+  const VT_SMOOTH = 0.18; // lower = smoother (0-1)
+  let vtSmoothed = new Float32Array(VT_NUM_POINTS);
+
   function vtDrawWaveform() {
     if (!vtAnalyser) return;
     const w = vtCanvas.width / 2;
@@ -2945,74 +2949,59 @@ function showToast(msg, raven) {
 
     vtCtx.clearRect(0, 0, w, h);
 
-    // Build smooth points from frequency data
-    const numPoints = 64;
-    const step = Math.floor(data.length / numPoints);
-    const points = [];
-    for (let i = 0; i < numPoints; i++) {
-      const val = data[i * step] / 255;
-      // Center boost: bars near center are taller
-      const distFromCenter = Math.abs(i - numPoints / 2) / (numPoints / 2);
-      const boost = 1 - distFromCenter * 0.5;
-      points.push(val * boost);
+    // Sample frequency bins → target values with center boost
+    const step = Math.floor(data.length / VT_NUM_POINTS);
+    for (let i = 0; i < VT_NUM_POINTS; i++) {
+      const raw = data[i * step] / 255;
+      const distFromCenter = Math.abs(i - VT_NUM_POINTS / 2) / (VT_NUM_POINTS / 2);
+      const target = raw * (1 - distFromCenter * 0.5);
+      // Lerp toward target — rise fast, fall slow for natural decay
+      const speed = target > vtSmoothed[i] ? 0.35 : VT_SMOOTH;
+      vtSmoothed[i] += (target - vtSmoothed[i]) * speed;
     }
 
-    // Recording = red gradient, else blue gradient
+    // Gradient
     const grad = vtCtx.createLinearGradient(0, mid - 20, 0, mid + 20);
     if (vtRecording) {
-      grad.addColorStop(0, 'rgba(239,68,68,0.9)');
-      grad.addColorStop(0.5, 'rgba(248,113,113,0.6)');
-      grad.addColorStop(1, 'rgba(239,68,68,0.9)');
+      grad.addColorStop(0, 'rgba(239,68,68,0.85)');
+      grad.addColorStop(0.5, 'rgba(248,113,113,0.5)');
+      grad.addColorStop(1, 'rgba(239,68,68,0.85)');
     } else {
       grad.addColorStop(0, 'rgba(7,176,232,0.8)');
       grad.addColorStop(0.5, 'rgba(99,102,241,0.5)');
       grad.addColorStop(1, 'rgba(7,176,232,0.8)');
     }
 
-    // Draw mirrored smooth wave
+    // Draw mirrored smooth wave using quadratic bezier
     vtCtx.beginPath();
-    vtCtx.moveTo(0, mid);
-    for (let i = 0; i < numPoints; i++) {
-      const x = (i / (numPoints - 1)) * w;
-      const amp = points[i] * (mid - 4);
-      const y = mid - amp;
-      if (i === 0) vtCtx.moveTo(x, y);
-      else {
-        const prevX = ((i - 1) / (numPoints - 1)) * w;
-        const cpX = (prevX + x) / 2;
-        vtCtx.quadraticCurveTo(cpX, mid - points[i - 1] * (mid - 4), x, y);
-      }
+    for (let i = 0; i < VT_NUM_POINTS; i++) {
+      const x = (i / (VT_NUM_POINTS - 1)) * w;
+      const amp = vtSmoothed[i] * (mid - 4);
+      if (i === 0) { vtCtx.moveTo(x, mid - amp); continue; }
+      const px = ((i - 1) / (VT_NUM_POINTS - 1)) * w;
+      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4), x, mid - amp);
     }
-    // Mirror bottom
-    for (let i = numPoints - 1; i >= 0; i--) {
-      const x = (i / (numPoints - 1)) * w;
-      const amp = points[i] * (mid - 4);
-      const y = mid + amp;
-      if (i === numPoints - 1) vtCtx.lineTo(x, y);
-      else {
-        const nextX = ((i + 1) / (numPoints - 1)) * w;
-        const cpX = (nextX + x) / 2;
-        vtCtx.quadraticCurveTo(cpX, mid + points[i + 1] * (mid - 4), x, y);
-      }
+    for (let i = VT_NUM_POINTS - 1; i >= 0; i--) {
+      const x = (i / (VT_NUM_POINTS - 1)) * w;
+      const amp = vtSmoothed[i] * (mid - 4);
+      if (i === VT_NUM_POINTS - 1) { vtCtx.lineTo(x, mid + amp); continue; }
+      const nx = ((i + 1) / (VT_NUM_POINTS - 1)) * w;
+      vtCtx.quadraticCurveTo((nx + x) / 2, mid + vtSmoothed[i + 1] * (mid - 4), x, mid + amp);
     }
     vtCtx.closePath();
     vtCtx.fillStyle = grad;
     vtCtx.fill();
 
-    // Center line glow
+    // Center glow line
     vtCtx.beginPath();
-    vtCtx.moveTo(0, mid);
-    for (let i = 0; i < numPoints; i++) {
-      const x = (i / (numPoints - 1)) * w;
-      const amp = points[i] * (mid - 4) * 0.15;
-      const y = mid - amp;
-      if (i === 0) vtCtx.moveTo(x, y);
-      else {
-        const prevX = ((i - 1) / (numPoints - 1)) * w;
-        vtCtx.quadraticCurveTo((prevX + x) / 2, mid - points[i - 1] * (mid - 4) * 0.15, x, y);
-      }
+    for (let i = 0; i < VT_NUM_POINTS; i++) {
+      const x = (i / (VT_NUM_POINTS - 1)) * w;
+      const y = mid - vtSmoothed[i] * (mid - 4) * 0.12;
+      if (i === 0) { vtCtx.moveTo(x, y); continue; }
+      const px = ((i - 1) / (VT_NUM_POINTS - 1)) * w;
+      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4) * 0.12, x, y);
     }
-    vtCtx.strokeStyle = vtRecording ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.4)';
+    vtCtx.strokeStyle = vtRecording ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.3)';
     vtCtx.lineWidth = 1.5;
     vtCtx.stroke();
 
@@ -3146,7 +3135,7 @@ function showToast(msg, raven) {
     const source = vtAudioCtx.createMediaStreamSource(vtStream);
     vtAnalyser = vtAudioCtx.createAnalyser();
     vtAnalyser.fftSize = 256;
-    vtAnalyser.smoothingTimeConstant = 0.75;
+    vtAnalyser.smoothingTimeConstant = 0.85;
     source.connect(vtAnalyser);
     vtDrawWaveform();
 
@@ -3164,14 +3153,20 @@ function showToast(msg, raven) {
     vtPill.classList.remove('recording');
     vtRecBtn.classList.remove('recording');
     vtStopTimer();
+    vtSmoothed.fill(0);
 
     if (vtStream) { vtStream.getTracks().forEach(t => t.stop()); vtStream = null; }
     if (vtAudioCtx) { vtAudioCtx.close(); vtAudioCtx = null; vtAnalyser = null; }
     cancelAnimationFrame(vtAnimFrame);
     vtDrawIdle();
 
-    if (vtMediaRecorder && vtMediaRecorder.state !== 'inactive') vtMediaRecorder.stop();
-    await new Promise(r => setTimeout(r, 200));
+    // Wait for MediaRecorder to flush final chunks
+    if (vtMediaRecorder && vtMediaRecorder.state !== 'inactive') {
+      await new Promise(resolve => {
+        vtMediaRecorder.onstop = resolve;
+        vtMediaRecorder.stop();
+      });
+    }
 
     if (vtChunks.length === 0) return;
 
@@ -3191,13 +3186,13 @@ function showToast(msg, raven) {
       vtUpdateTranscript();
     } catch(e) {
       console.error('EVA transcription error:', e);
-      vtPillStatus.textContent = 'Error';
-      setTimeout(() => { vtPillStatus.textContent = ''; }, 2000);
+      vtPillStatus.textContent = 'Error: ' + (e.message || e).toString().slice(0, 50);
+      setTimeout(() => { vtPillStatus.textContent = ''; }, 6000);
     }
 
     vtProcessing = false;
     vtRecBtn.classList.remove('processing');
-    vtPillStatus.textContent = '';
+    if (!vtPillStatus.textContent.startsWith('Error')) vtPillStatus.textContent = '';
   }
 
   // Toggle
