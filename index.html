@@ -2975,9 +2975,9 @@ function showToast(msg, raven) {
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
     // Point everything at our own CDN — zero external requests
-    env.allowRemoteModels = false;
+    // WASM files live in /lib/ next to the JS (webpack resolves relative to itself)
     env.localModelPath = EVA_CDN + '/models/';
-    env.backends.onnx.wasm.wasmPaths = EVA_CDN + '/wasm/';
+    env.allowRemoteModels = false;
 
     vtWhisperPipeline = await pipeline(
       'automatic-speech-recognition',
@@ -2995,8 +2995,8 @@ function showToast(msg, raven) {
     if (vtModelLoaded) return;
     const files = [
       EVA_CDN + '/lib/transformers.min.js',
-      EVA_CDN + '/wasm/ort-wasm-simd-threaded.jsep.wasm',
-      EVA_CDN + '/wasm/ort-wasm-simd-threaded.jsep.mjs',
+      EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.wasm',
+      EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.mjs',
       EVA_CDN + '/models/onnx-community/whisper-tiny.en/config.json',
       EVA_CDN + '/models/onnx-community/whisper-tiny.en/generation_config.json',
       EVA_CDN + '/models/onnx-community/whisper-tiny.en/preprocessor_config.json',
