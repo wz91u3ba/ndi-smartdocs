@@ -3174,7 +3174,6 @@ function showToast(msg, raven) {
       const blob = new Blob(vtChunks, { type: 'audio/webm' });
       const audioData = await vtBlobToFloat32(blob);
       const result = await vtWhisperPipeline(audioData, {
-        language: 'en', task: 'transcribe',
         chunk_length_s: 30, stride_length_s: 5,
       });
       vtTranscriptText += (vtTranscriptText ? ' ' : '') + result.text.trim();
