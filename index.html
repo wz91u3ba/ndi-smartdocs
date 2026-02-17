@@ -958,8 +958,7 @@
     position: relative; overflow: hidden;
     background: #fff;
     border-top: 3px solid #F8B42C;
-    border-bottom: 3px solid #F8B42C;
-    padding: 64px 32px;
+    padding: 48px 32px 40px;
     text-align: center;
   }
   .forge-hero-glow {
@@ -991,24 +990,6 @@
     margin: 0 auto; line-height: 1.7;
   }
   .forge-hero-sub strong { color: #111; }
-  .forge-hero-stats {
-    display: inline-flex; align-items: center; gap: 24px;
-    margin-top: 28px; padding: 16px 32px;
-    background: #111; border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  }
-  .forge-hero-stat { text-align: center; }
-  .forge-hero-stat-value {
-    display: block; font-family: 'DM Mono', monospace;
-    font-size: 20px; font-weight: 700; color: #F8B42C; letter-spacing: 0.5px;
-  }
-  .forge-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
-    text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
-  }
-  .forge-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
-  }
 
   /* ===== RAVEN FORGE ===== */
   .forge-wrap {
@@ -1265,91 +1246,116 @@
   }
   .forge-modal-close:hover { background: rgba(255,255,255,0.14); color: #ccc; }
 
-  /* Forge Gate Overlay */
+  /* Forge Setup Wizard Overlay */
   .forge-gate {
     position: absolute; inset: 0; z-index: 10;
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 20px;
-    background: rgba(20,20,20,0.88);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+    background: rgba(20,20,20,0.92);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-radius: 14px;
     transition: opacity 0.4s ease, visibility 0.4s ease;
+    padding: 32px 24px;
   }
   .forge-gate.dismissed { opacity: 0; visibility: hidden; pointer-events: none; }
-  .forge-gate-icon { width: 44px; height: 44px; border-radius: 12px; opacity: 0.6; }
-  .forge-gate-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 32px; border-radius: 10px;
-    background: #F8B42C; color: #000;
-    border: none; cursor: pointer;
-    font-family: 'Nunito Sans', sans-serif;
-    font-size: 13px; font-weight: 800; letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: all 0.25s;
-    box-shadow: 0 4px 20px rgba(248,180,44,0.25);
+  .forge-setup {
+    max-width: 380px; width: 100%; text-align: center;
   }
-  .forge-gate-btn:hover {
-    background: #f9c35a;
-    box-shadow: 0 6px 28px rgba(248,180,44,0.35);
-    transform: translateY(-1px);
+  .forge-setup-icon { width: 36px; height: 36px; border-radius: 10px; opacity: 0.5; margin-bottom: 14px; }
+  .forge-setup-title {
+    font-family: 'Nunito Sans', sans-serif; font-size: 18px; font-weight: 800;
+    color: #eee; margin-bottom: 6px;
   }
-  .forge-gate-desc {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: #777; letter-spacing: 0.3px; text-align: center;
-    max-width: 320px; line-height: 1.6;
+  .forge-setup-sub {
+    font-size: 13px; color: #777; line-height: 1.6; margin-bottom: 24px;
   }
-  .forge-gate-desc strong { color: #aaa; }
-  .forge-gate-status {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: #F8B42C; letter-spacing: 0.3px;
-    min-height: 16px; transition: opacity 0.3s;
+  /* Steps */
+  .forge-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    text-align: left; padding: 14px 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
   }
-  .forge-gate-status.error { color: #ff6b6b; }
-  .forge-gate-btn:disabled { opacity: 0.5; cursor: wait; }
-  .forge-gate-btn .forge-gate-spinner {
-    width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
+  .forge-step-num {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700;
+    background: rgba(255,255,255,0.06); color: #555;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s;
+  }
+  .forge-step.active .forge-step-num {
+    background: rgba(248,180,44,0.15); color: #F8B42C;
+    border-color: rgba(248,180,44,0.3);
+  }
+  .forge-step.done .forge-step-num {
+    background: rgba(0,201,167,0.15); color: #00C9A7;
+    border-color: rgba(0,201,167,0.3);
+  }
+  .forge-step-body { flex: 1; min-width: 0; }
+  .forge-step-label {
+    font-size: 13px; font-weight: 700; color: #555; margin-bottom: 4px;
+    transition: color 0.3s;
+  }
+  .forge-step.active .forge-step-label { color: #ddd; }
+  .forge-step.done .forge-step-label { color: #888; }
+  .forge-step-desc {
+    font-size: 12px; color: #555; line-height: 1.6;
+    display: none;
+  }
+  .forge-step.active .forge-step-desc { display: block; color: #999; }
+  .forge-step-desc a {
+    color: #F8B42C; text-decoration: none; font-weight: 700;
+  }
+  .forge-step-desc a:hover { text-decoration: underline; }
+  .forge-step-desc code {
+    background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: #F8B42C;
+  }
+  /* Action button inside steps */
+  .forge-step-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 10px; padding: 9px 20px; border-radius: 8px;
+    background: #F8B42C; color: #000; border: none; cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif; font-size: 12px;
+    font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+    transition: all 0.2s; text-decoration: none;
+    box-shadow: 0 2px 12px rgba(248,180,44,0.2);
+  }
+  .forge-step-btn:hover { background: #f9c35a; transform: translateY(-1px); }
+  .forge-step-btn:disabled { opacity: 0.5; cursor: wait; }
+  .forge-step-btn.outline {
+    background: transparent; color: #F8B42C;
+    border: 1px solid rgba(248,180,44,0.3);
+    box-shadow: none;
+  }
+  .forge-step-btn.outline:hover { background: rgba(248,180,44,0.08); }
+  /* Spinner */
+  .forge-spin {
+    width: 12px; height: 12px; border: 2px solid rgba(0,0,0,0.15);
     border-top-color: #000; border-radius: 50%;
-    animation: forge-spin 0.6s linear infinite; display: none;
+    animation: forge-spin 0.6s linear infinite;
   }
-  .forge-gate-btn.loading .forge-gate-spinner { display: block; }
-  .forge-gate-btn.loading svg { display: none; }
   @keyframes forge-spin { to { transform: rotate(360deg); } }
+  /* Progress bar for model download */
+  .forge-pull-bar {
+    margin-top: 10px; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.06); overflow: hidden; display: none;
+  }
+  .forge-pull-fill {
+    height: 100%; width: 0%; border-radius: 2px;
+    background: #F8B42C; transition: width 0.3s;
+  }
+  .forge-pull-status {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: #666; margin-top: 6px; display: none;
+  }
 
   @media (max-width: 768px) {
     .forge { height: 500px; }
     .forge-msg { max-width: 92%; }
-    .forge-help-inner { flex-direction: column; text-align: center; }
-    .forge-help-img { max-width: 260px; }
+    .forge-setup { padding: 0 8px; }
+    .forge-step-btn { font-size: 11px; padding: 8px 14px; }
   }
-
-  /* Forge Help */
-  .forge-help {
-    background: #fff;
-    padding: 28px 24px 20px;
-  }
-  .forge-help-inner {
-    max-width: 1050px; margin: 0 auto;
-    display: flex; align-items: center; gap: 28px;
-  }
-  .forge-help-img {
-    flex-shrink: 0; max-width: 280px; width: 100%;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  }
-  .forge-help-text {
-    flex: 1; min-width: 0;
-  }
-  .forge-help-title {
-    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700;
-    color: #F8B42C; letter-spacing: 1.5px; text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .forge-help-desc {
-    font-size: 13px; color: #666; line-height: 1.7;
-    font-family: 'Nunito Sans', sans-serif;
-  }
-  .forge-help-desc strong { color: #333; }
 
   /* Forge tagline */
   .forge-tagline {
@@ -1621,8 +1627,8 @@
   <nav class="floating-nav">
     <a href="#smartdoc"><span class="nav-dot"></span>SmartDoc</a>
     <a href="#superprompt"><span class="nav-dot"></span>SuperPrompt</a>
-    <a href="#raven"><span class="nav-dot"></span>RAVEN</a>
     <a href="#forge"><span class="nav-dot"></span>Forge</a>
+    <a href="#raven"><span class="nav-dot"></span>RAVEN</a>
   </nav>
 
   <!-- ===== HERO ===== -->
@@ -1869,6 +1875,16 @@
     </div>
   </div>
 
+  <!-- ===== FORGE HERO ===== -->
+  <div class="forge-hero" id="forge">
+    <div class="forge-hero-glow"></div>
+    <div class="forge-hero-content">
+      <div class="forge-hero-badge">AI Acceleration</div>
+      <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
+    </div>
+  </div>
+
   <!-- ===== RAVEN CTA ===== -->
   <div class="raven-cta-wrap" id="raven">
     <div class="raven-cta">
@@ -1889,45 +1905,70 @@
     </div>
   </div>
 
-  <!-- ===== FORGE HERO ===== -->
-  <div class="forge-hero" id="forge">
-    <div class="forge-hero-glow"></div>
-    <div class="forge-hero-content">
-      <div class="forge-hero-badge">AI Acceleration</div>
-      <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage. Powered by Ollama + Qwen — your documents, your machine, your control.</p>
-      <div class="forge-hero-stats">
-        <div class="forge-hero-stat">
-          <span class="forge-hero-stat-value">100%</span>
-          <span class="forge-hero-stat-label">Local</span>
-        </div>
-        <div class="forge-hero-stat-divider"></div>
-        <div class="forge-hero-stat">
-          <span class="forge-hero-stat-value">0 B</span>
-          <span class="forge-hero-stat-label">Data Sent</span>
-        </div>
-        <div class="forge-hero-stat-divider"></div>
-        <div class="forge-hero-stat">
-          <span class="forge-hero-stat-value">∞</span>
-          <span class="forge-hero-stat-label">Privacy</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== RAVEN FORGE ===== -->
   <div class="forge-wrap">
     <div class="forge" style="position:relative;">
-      <!-- Gate Overlay -->
+      <!-- Setup Wizard Overlay -->
       <div class="forge-gate" id="forgeGate">
-        <img src="raven-icon.png" alt="RAVEN" class="forge-gate-icon">
-        <button class="forge-gate-btn" id="forgeGateBtn" onclick="forgeRequestAccess()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="forge-gate-spinner"></div>
-          <span id="forgeGateBtnText">Connect to Local AI</span>
-        </button>
-        <p class="forge-gate-desc">Talk to a browser-run LLM.<br><strong>No data leakage. Totally secure.</strong></p>
-        <div class="forge-gate-status" id="forgeGateStatus"></div>
+        <div class="forge-setup" id="forgeSetup">
+          <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
+          <div class="forge-setup-title">Set Up RAVEN Forge</div>
+          <p class="forge-setup-sub">3 quick steps — takes about 2 minutes.<br>Everything runs on your machine. Zero data leaves.</p>
+
+          <!-- Step 1: Download Ollama -->
+          <div class="forge-step active" id="forgeStep1">
+            <div class="forge-step-num">1</div>
+            <div class="forge-step-body">
+              <div class="forge-step-label">Download Ollama</div>
+              <div class="forge-step-desc">
+                Ollama is a free, tiny app that runs AI models on your computer.<br>
+                <a href="https://ollama.com/download" target="_blank" rel="noopener" class="forge-step-btn" style="margin-top:10px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Ollama (free)
+                </a>
+                <button class="forge-step-btn outline" onclick="forgeWizardCheckStep1()" style="margin-left:6px;">I've installed it →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Open Ollama -->
+          <div class="forge-step" id="forgeStep2">
+            <div class="forge-step-num">2</div>
+            <div class="forge-step-body">
+              <div class="forge-step-label">Open Ollama</div>
+              <div class="forge-step-desc">
+                Open the Ollama app you just installed — look for the llama icon in your menu bar (Mac) or system tray (Windows).<br>
+                <span id="forgeStep2Status" style="display:inline-block;margin-top:8px;font-family:'DM Mono',monospace;font-size:11px;color:#666;">Waiting for Ollama...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Download AI Model -->
+          <div class="forge-step" id="forgeStep3">
+            <div class="forge-step-num">3</div>
+            <div class="forge-step-body">
+              <div class="forge-step-label">Download AI Model</div>
+              <div class="forge-step-desc">
+                We'll download a small, fast AI model (~400 MB) that runs entirely on your machine.<br>
+                <button class="forge-step-btn" id="forgeStep3Btn" onclick="forgeWizardPullModel()" style="margin-top:10px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+                  Download Model
+                </button>
+                <div class="forge-pull-bar" id="forgePullBar"><div class="forge-pull-fill" id="forgePullFill"></div></div>
+                <div class="forge-pull-status" id="forgePullStatus"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Done state -->
+          <div class="forge-step" id="forgeStepDone" style="display:none;border-top:none;padding:20px 0 0;justify-content:center;">
+            <div style="text-align:center;width:100%;">
+              <div style="font-size:28px;margin-bottom:8px;">✓</div>
+              <div style="font-size:14px;font-weight:800;color:#00C9A7;">You're all set!</div>
+              <div style="font-size:12px;color:#777;margin-top:4px;">RAVEN Forge is ready. Start chatting below.</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Header -->
@@ -1986,7 +2027,7 @@
       <label>API Endpoint</label>
       <input id="forgeSettingUrl" value="http://localhost:11434/v1/chat/completions">
       <label>Model</label>
-      <input id="forgeSettingModel" value="qwen3-4b">
+      <input id="forgeSettingModel" value="qwen3:0.6b">
       <label>Temperature</label>
       <input id="forgeSettingTemp" type="number" step="0.1" min="0" max="2" value="0.7">
       <label>Max Tokens</label>
@@ -1995,16 +2036,6 @@
     </div>
   </div>
 
-  <!-- FORGE HELP -->
-  <div class="forge-help">
-    <div class="forge-help-inner">
-      <img src="allowndiauto.png" alt="Allow NDi Auto local network access" class="forge-help-img">
-      <div class="forge-help-text">
-        <div class="forge-help-title">First-Time Setup</div>
-        <p class="forge-help-desc">Your browser will ask to allow <strong>NDi Auto</strong> to connect to your local network. <strong>Click Allow.</strong> This lets Forge talk to the AI running on your machine. No data leaves your computer — everything stays local.</p>
-      </div>
-    </div>
-  </div>
 
   <!-- FORGE TAGLINE -->
   <div class="forge-tagline">
@@ -2480,8 +2511,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   const sections = [
     { id: 'smartdoc', el: document.getElementById('smartdoc') },
     { id: 'superprompt', el: document.getElementById('superprompt') },
-    { id: 'raven', el: document.getElementById('raven') },
     { id: 'forge', el: document.getElementById('forge') },
+    { id: 'raven', el: document.getElementById('raven') },
   ];
   const ravenIds = new Set(['raven', 'forge']);
 
@@ -2521,7 +2552,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   // Config with localStorage persistence
   const FC = {
     get url() { return localStorage.getItem('forge_api_url') || 'http://localhost:11434/v1/chat/completions'; },
-    get model() { return localStorage.getItem('forge_model') || 'qwen3-4b'; },
+    get model() { return localStorage.getItem('forge_model') || 'qwen3:0.6b'; },
     get temp() { return parseFloat(localStorage.getItem('forge_temp') || '0.7'); },
     get tokens() { return parseInt(localStorage.getItem('forge_max_tokens') || '4096'); },
   };
@@ -2750,77 +2781,192 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     sendBtn.classList.toggle('active', hasText);
   };
 
-  // ---- GATE (smart one-click connection) ----
+  // ---- SETUP WIZARD ----
   const gateEl = document.getElementById('forgeGate');
-  const gateBtn = document.getElementById('forgeGateBtn');
-  const gateBtnText = document.getElementById('forgeGateBtnText');
-  const gateStatus = document.getElementById('forgeGateStatus');
+  const wizStep1 = document.getElementById('forgeStep1');
+  const wizStep2 = document.getElementById('forgeStep2');
+  const wizStep3 = document.getElementById('forgeStep3');
+  const wizStepDone = document.getElementById('forgeStepDone');
+  const wizStep2Status = document.getElementById('forgeStep2Status');
+  const wizStep3Btn = document.getElementById('forgeStep3Btn');
+  const wizPullBar = document.getElementById('forgePullBar');
+  const wizPullFill = document.getElementById('forgePullFill');
+  const wizPullStatus = document.getElementById('forgePullStatus');
+  let wizPollTimer = null;
 
-  // Skip gate only if we previously confirmed Ollama was actually reachable
-  if (localStorage.getItem('forge_connected')) {
-    gateEl.classList.add('dismissed');
+  // Ollama base URL (strip /v1/chat/completions)
+  function wizBaseUrl() {
+    return FC.url.replace(/\/v1\/chat\/completions\/?$/, '');
   }
 
-  function gateSetStatus(msg, isError) {
-    gateStatus.textContent = msg;
-    gateStatus.classList.toggle('error', !!isError);
-  }
-
-  window.forgeRequestAccess = async function() {
-    gateBtn.disabled = true;
-    gateBtn.classList.add('loading');
-    gateBtnText.textContent = 'Connecting...';
-    gateSetStatus('');
-
-    // Base URL: strip /v1/chat/completions to get Ollama root
-    const base = FC.url.replace(/\/v1\/chat\/completions\/?$/, '');
-
-    // Step 1: Check if Ollama is reachable at all
+  // Check if Ollama is reachable — returns {ok, models[]}
+  async function wizCheckOllama() {
     try {
-      gateSetStatus('Checking Ollama...');
-      const tagRes = await fetch(base + '/api/tags');
-      if (!tagRes.ok) throw new Error('tags endpoint returned ' + tagRes.status);
-      const tagData = await tagRes.json();
-      const models = (tagData.models || []).map(m => m.name || m.model);
+      const res = await fetch(wizBaseUrl() + '/api/tags');
+      if (!res.ok) return { ok: false, models: [] };
+      const data = await res.json();
+      return { ok: true, models: (data.models || []).map(m => m.name || m.model) };
+    } catch { return { ok: false, models: [] }; }
+  }
 
-      // Step 2: Check if desired model is available
-      const wanted = FC.model;
-      const hasModel = models.some(m => m === wanted || m.startsWith(wanted + ':'));
+  // Check if wanted model (or any model) is available
+  function wizHasModel(models) {
+    const wanted = FC.model;
+    if (models.some(m => m === wanted || m.startsWith(wanted + ':'))) return wanted;
+    if (models.length > 0) return models[0].split(':')[0];
+    return null;
+  }
 
-      if (hasModel) {
-        gateSetStatus('Connected — ' + wanted + ' ready');
+  // Activate a step, mark previous as done
+  function wizActivate(stepNum) {
+    [wizStep1, wizStep2, wizStep3].forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (i + 1 < stepNum) el.classList.add('done');
+      if (i + 1 === stepNum) el.classList.add('active');
+    });
+  }
+
+  // On load: check connection state
+  (async function wizInit() {
+    const wasConnected = localStorage.getItem('forge_connected');
+    const r = await wizCheckOllama();
+
+    if (r.ok) {
+      const model = wizHasModel(r.models);
+      if (model) {
+        // Ollama running + model ready — skip wizard entirely
+        gateEl.classList.add('dismissed');
         localStorage.setItem('forge_connected', '1');
-        setTimeout(() => gateEl.classList.add('dismissed'), 400);
+        if (model !== FC.model) {
+          localStorage.setItem('forge_model', model);
+          const mi = document.getElementById('forgeSettingModel');
+          if (mi) mi.value = model;
+        }
         return;
       }
+      // Ollama running but no model — jump to step 3
+      wizActivate(3);
+    } else if (wasConnected) {
+      // Was connected but lost — restart wizard
+      localStorage.removeItem('forge_connected');
+      wizActivate(1);
+    }
+    // else: fresh visit, step 1 active by default
+  })();
 
-      // Model not found — try to use whatever is available
-      if (models.length > 0) {
-        const fallback = models[0].split(':')[0];
-        gateSetStatus('Using ' + fallback + ' (preferred ' + wanted + ' not found)');
-        localStorage.setItem('forge_model', fallback);
-        localStorage.setItem('forge_connected', '1');
-        // Update settings inputs
-        document.getElementById('forgeSettingModel').value = fallback;
-        setTimeout(() => gateEl.classList.add('dismissed'), 600);
-        return;
+  // Step 1: User says they installed Ollama → move to step 2 and start polling
+  window.forgeWizardCheckStep1 = function() {
+    wizActivate(2);
+    wizStartPolling();
+  };
+
+  // Poll for Ollama every 2s until found
+  function wizStartPolling() {
+    wizStep2Status.textContent = 'Looking for Ollama...';
+    wizStep2Status.style.color = '#F8B42C';
+    let dots = 0;
+    wizPollTimer = setInterval(async () => {
+      dots = (dots + 1) % 4;
+      wizStep2Status.textContent = 'Looking for Ollama' + '.'.repeat(dots);
+      const r = await wizCheckOllama();
+      if (r.ok) {
+        clearInterval(wizPollTimer);
+        wizPollTimer = null;
+        wizStep2Status.textContent = '✓ Ollama detected!';
+        wizStep2Status.style.color = '#00C9A7';
+        // Check if model already exists
+        const model = wizHasModel(r.models);
+        if (model) {
+          // Already have a model — skip step 3, go straight to done
+          wizFinish(model);
+        } else {
+          // Need to download model → step 3
+          setTimeout(() => wizActivate(3), 600);
+        }
+      }
+    }, 2000);
+  }
+
+  // Step 3: Pull model via Ollama /api/pull (streaming progress)
+  window.forgeWizardPullModel = async function() {
+    wizStep3Btn.disabled = true;
+    wizStep3Btn.innerHTML = '<div class="forge-spin"></div> Downloading...';
+    wizPullBar.style.display = 'block';
+    wizPullStatus.style.display = 'block';
+    wizPullFill.style.width = '0%';
+    wizPullStatus.textContent = 'Starting download...';
+
+    const modelName = 'qwen3:0.6b';
+
+    try {
+      const res = await fetch(wizBaseUrl() + '/api/pull', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: modelName, stream: true })
+      });
+
+      if (!res.ok) throw new Error('Pull failed: ' + res.status);
+
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const j = JSON.parse(line);
+            // Progress: {status, total, completed}
+            if (j.total && j.completed) {
+              const pct = Math.round((j.completed / j.total) * 100);
+              wizPullFill.style.width = pct + '%';
+              wizPullStatus.textContent = j.status + ' — ' + pct + '%';
+            } else if (j.status) {
+              wizPullStatus.textContent = j.status;
+            }
+          } catch {}
+        }
       }
 
-      // Ollama running but no models
-      gateSetStatus('Ollama running but no models installed. Run: ollama pull ' + wanted, true);
-      gateBtn.disabled = false;
-      gateBtn.classList.remove('loading');
-      gateBtnText.textContent = 'Retry';
+      // Download complete
+      wizPullFill.style.width = '100%';
+      wizPullStatus.textContent = 'Download complete!';
+      wizStep3Btn.innerHTML = '✓ Done';
+
+      // Update model in settings
+      localStorage.setItem('forge_model', modelName);
+      const modelInput = document.getElementById('forgeSettingModel');
+      if (modelInput) modelInput.value = modelName;
+
+      setTimeout(() => wizFinish(modelName), 800);
 
     } catch (e) {
-      // Fetch failed — either loopback blocked or Ollama not running
-      // The browser loopback dialog fires on the first fetch attempt
-      gateSetStatus('Ollama not reachable. Start it: ollama serve', true);
-      gateBtn.disabled = false;
-      gateBtn.classList.remove('loading');
-      gateBtnText.textContent = 'Retry';
+      wizStep3Btn.disabled = false;
+      wizStep3Btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg> Retry Download';
+      wizPullStatus.textContent = 'Error: ' + e.message;
+      wizPullStatus.style.color = '#FF6B6B';
     }
   };
+
+  // Finish: mark all done, dismiss gate
+  function wizFinish(modelName) {
+    if (wizPollTimer) { clearInterval(wizPollTimer); wizPollTimer = null; }
+    wizActivate(4); // marks 1-3 as done
+    wizStepDone.style.display = 'flex';
+    localStorage.setItem('forge_connected', '1');
+    if (modelName && modelName !== FC.model) {
+      localStorage.setItem('forge_model', modelName);
+      const modelInput = document.getElementById('forgeSettingModel');
+      if (modelInput) modelInput.value = modelName;
+    }
+    setTimeout(() => gateEl.classList.add('dismissed'), 1200);
+  }
 
   // ---- SETTINGS ----
   window.forgeToggleSettings = function() {
