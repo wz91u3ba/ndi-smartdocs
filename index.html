@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartDoc — NDi Intelligence Engine</title>
-<meta name="description" content="SmartDoc by Network Designs, Inc. — Client-side document serialization for AI-ready corpus generation.">
+<title>Home | NDi Auto</title>
+<meta name="description" content="NDi Auto by Network Designs, Inc. — AI & Automation Research Division. Client-side document serialization for AI-ready corpus generation.">
 <link rel="icon" href="robooo.png" type="image/png">
 
 <!-- Fonts: Nunito Sans (closest free match to Avenir) + DM Mono for data -->
@@ -46,6 +46,7 @@
 
   /* ===== RESET & BASE ===== */
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
 
   body {
     background: var(--n-blue-deep);
@@ -102,7 +103,7 @@
   .topbar-right { display: flex; align-items: center; gap: 16px; }
   .btn-partner {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 18px; border-radius: 8px;
+    padding: 0 18px; height: 42px; border-radius: 8px;
     background: var(--grey-1); color: var(--n-blue);
     font-family: 'Nunito Sans', sans-serif;
     font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
@@ -129,12 +130,14 @@
     50% { opacity: 0.5; box-shadow: 0 0 4px var(--success); }
   }
   .version-tag {
-    font-family: 'DM Mono', monospace; font-size: 12px;
-    color: #c0d0dc; letter-spacing: 0.8px; font-weight: 500;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: #c0d0dc; letter-spacing: 1.2px; font-weight: 600;
+    transition: color 0.2s;
   }
+  a.version-tag:hover { color: var(--d-blue); }
   .btn-linkedin {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 10px 20px; border-radius: 8px;
+    padding: 0 20px; height: 42px; border-radius: 8px;
     background: #0A66C2; color: #fff;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
@@ -664,6 +667,150 @@
   }
   .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+  /* ===== FLOATING NAV ===== */
+  .floating-nav {
+    position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+    z-index: 99; display: flex; flex-direction: column; gap: 8px;
+  }
+  .floating-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; border-radius: 10px;
+    background: rgba(1,26,46,0.92); backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    color: #c0d0dc; text-decoration: none;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+    transition: all 0.25s; white-space: nowrap;
+  }
+  .floating-nav a:hover {
+    border-color: var(--d-blue); color: #fff;
+    background: rgba(7,176,232,0.12);
+    box-shadow: 0 4px 20px rgba(7,176,232,0.15);
+    transform: translateX(-4px);
+  }
+  .floating-nav a .nav-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--d-blue); flex-shrink: 0;
+  }
+
+  /* ===== SMARTDOC HERO ===== */
+  .sd-hero {
+    position: relative; overflow: hidden;
+    background: #fff;
+    border-top: 3px solid var(--d-blue);
+    border-bottom: 3px solid var(--d-blue);
+    padding: 64px 32px;
+    text-align: center;
+    animation: fade-up 0.8s ease-out 0.2s both;
+  }
+  .sd-hero-glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--d-blue), var(--success), var(--d-blue), transparent);
+    background-size: 200% 100%;
+    animation: glow-sweep 4s ease-in-out infinite;
+  }
+  .sd-hero-content { position: relative; z-index: 1; }
+  .sd-hero-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 20px;
+    padding: 6px 16px; border-radius: 50px;
+    border: 1.5px solid var(--d-blue);
+    background: rgba(7,176,232,0.06);
+  }
+  .sd-hero-title {
+    font-size: clamp(32px, 5vw, 52px); font-weight: 900;
+    color: var(--n-blue); letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .sd-hero-title span {
+    background: linear-gradient(135deg, var(--d-blue), #00C9A7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sd-hero-sub {
+    font-size: 18px; color: #3a5568; max-width: 580px;
+    margin: 0 auto; line-height: 1.7;
+  }
+  .sd-hero-stats {
+    display: inline-flex; align-items: center; gap: 24px;
+    margin-top: 28px; padding: 16px 32px;
+    background: var(--n-blue); border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(2,38,64,0.3);
+  }
+  .sd-hero-stat { text-align: center; }
+  .sd-hero-stat-value {
+    display: block; font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
+  }
+  .sd-hero-stat-label {
+    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+  }
+  .sd-hero-stat-divider {
+    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+  }
+
+  /* ===== RESEARCH DIVISION SECTION ===== */
+  .research-section {
+    padding: 80px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .research-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(7,176,232,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .research-content { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+  .research-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 28px;
+    padding: 8px 20px; border-radius: 50px;
+    border: 1px solid rgba(7,176,232,0.3);
+    background: rgba(7,176,232,0.06);
+  }
+  .research-title {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 900;
+    color: #fff; letter-spacing: -0.5px; line-height: 1.2;
+    margin-bottom: 24px;
+  }
+  .research-title span { color: var(--d-blue); }
+  .research-desc {
+    font-size: 17px; color: #c0d0dc; line-height: 1.8;
+    max-width: 640px; margin: 0 auto 36px;
+  }
+  .research-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    max-width: 720px; margin: 0 auto;
+  }
+  .research-card {
+    padding: 28px 20px; border-radius: 12px;
+    background: rgba(7,176,232,0.04);
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .research-card:hover {
+    border-color: var(--border-hover);
+    background: rgba(7,176,232,0.07);
+    transform: translateY(-2px);
+  }
+  .research-card-icon {
+    font-size: 28px; margin-bottom: 12px;
+  }
+  .research-card-title {
+    font-size: 14px; font-weight: 800; color: #fff;
+    letter-spacing: 0.3px; margin-bottom: 8px;
+  }
+  .research-card-desc {
+    font-size: 13px; color: #8fa4b3; line-height: 1.6;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 600px) {
     .topbar { padding: 12px 16px; gap: 12px; }
@@ -676,6 +823,8 @@
     .result-actions { flex-direction: column; }
     .btn-action { width: 100%; justify-content: center; }
     .section-header { flex-direction: column; align-items: flex-start; }
+    .floating-nav { display: none; }
+    .research-cards { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -685,22 +834,28 @@
   <!-- ===== TOPBAR ===== -->
   <div class="topbar">
     <div class="topbar-left">
-      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="NDi — Network Designs, Inc." class="ndi-logo"></a>
+      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="ndiautolight.png" alt="NDi Auto" class="ndi-logo"></a>
       <div class="topbar-divider"></div>
-      <div class="version-tag">v3.0 · LOCAL PROCESSING</div>
+      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="version-tag" style="text-decoration:none;">BY NETWORK DESIGNS, INC.</a>
     </div>
     <div class="topbar-right">
       <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-partner">PARTNER WITH US<span class="btn-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB Certified" class="sdvosb-logo"></a>
-      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-linkedin"><img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="NDi" class="btn-linkedin-logo"><span class="btn-linkedin-divider"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-linkedin"><img src="ndiautolight.png" alt="NDi Auto" class="btn-linkedin-logo"><span class="btn-linkedin-divider"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
     </div>
   </div>
 
+  <!-- ===== FLOATING NAV ===== -->
+  <nav class="floating-nav">
+    <a href="#smartdoc"><span class="nav-dot"></span>SmartDoc</a>
+    <a href="#superprompt"><span class="nav-dot"></span>SuperPrompt</a>
+  </nav>
+
   <!-- ===== HERO ===== -->
   <div class="hero">
-    <div class="hero-eyebrow">Document Intelligence</div>
-    <h1>Serialize. Compress. <span>Deploy.</span></h1>
+    <div class="hero-eyebrow">SERIALIZATION ENGINE</div>
+    <h1>NDi <span>Auto</span></h1>
     <p class="hero-sub">
-      Transform unstructured documents into a single AI-ready corpus.
+      AI-powered tools built for operators.
       Everything runs in your browser — <strong>nothing leaves your machine.</strong>
     </p>
     <div class="hero-status-pill">
@@ -725,6 +880,53 @@
     <div class="metric">
       <div class="metric-value">0ms</div>
       <div class="metric-label">Server Latency</div>
+    </div>
+  </div>
+
+  <!-- ===== NDi AI & AUTOMATION RESEARCH DIVISION ===== -->
+  <div class="research-section">
+    <div class="research-content">
+      <div class="research-badge">NDi AI &amp; Automation Research Division</div>
+      <h2 class="research-title">Building the Future of <span>Intelligent Automation</span></h2>
+      <p class="research-desc">
+        The NDi AI &amp; Automation Research Division develops production-grade tools that transform how organizations process, analyze, and deploy information. Every tool is built for real-world operators — zero backend, zero data collection, maximum impact.
+      </p>
+      <div class="research-cards">
+        <div class="research-card">
+          <div class="research-card-icon">⚡</div>
+          <div class="research-card-title">Zero Latency</div>
+          <div class="research-card-desc">Client-side processing. No servers. No round trips. Your data never leaves your machine.</div>
+        </div>
+        <div class="research-card">
+          <div class="research-card-icon">🔬</div>
+          <div class="research-card-title">Research-Backed</div>
+          <div class="research-card-desc">Every tool is grounded in cognitive science and information architecture principles.</div>
+        </div>
+        <div class="research-card">
+          <div class="research-card-icon">🛡️</div>
+          <div class="research-card-title">SDVOSB Certified</div>
+          <div class="research-card-desc">Service-Disabled Veteran-Owned Small Business. Built by those who served.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SMARTDOC HERO (full width, like SuperPrompt) ===== -->
+  <div class="sd-hero" id="smartdoc">
+    <div class="sd-hero-glow"></div>
+    <div class="sd-hero-content">
+      <div class="sd-hero-badge">Document Serialization</div>
+      <h2 class="sd-hero-title">NDi <span>SmartDoc</span></h2>
+      <p class="sd-hero-sub"><strong style="color:var(--n-blue);font-size:20px;">Serialize. Compress. Deploy.</strong><br>Transform unstructured documents into a single AI-ready corpus.</p>
+      <div class="sd-hero-stats">
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px;color:var(--success)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>100%</span><span class="sd-hero-stat-label">Local &amp; Secure</span></div>
+        <div class="sd-hero-stat-divider"></div>
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value">6</span><span class="sd-hero-stat-label">File Formats</span></div>
+        <div class="sd-hero-stat-divider"></div>
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value">XML</span><span class="sd-hero-stat-label">Output Format</span></div>
+        <div class="sd-hero-stat-divider"></div>
+        <div class="sd-hero-stat"><span class="sd-hero-stat-value">Free</span><span class="sd-hero-stat-label">Forever</span></div>
+      </div>
     </div>
   </div>
 
@@ -820,7 +1022,7 @@
   </div>
 
   <!-- NDi SUPERPROMPT HERO (full width, outside .main) -->
-  <div class="sp-hero">
+  <div class="sp-hero" id="superprompt">
     <div class="sp-hero-glow"></div>
     <div class="sp-hero-content">
       <div class="sp-hero-badge">AI ACCELERATION</div>
@@ -893,7 +1095,7 @@
 
   <!-- FOOTER -->
   <div class="footer">
-    © 2026 <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank">Network Designs, Inc.</a> — SmartDoc Intelligence Engine
+    © 2026 <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank">Network Designs, Inc.</a> — NDi Auto
     <br>
     <a href="https://netdes.com/privacy-policy/" target="_blank">Privacy Policy</a> · <a href="https://netdes.com/terms-and-conditions/" target="_blank">Terms of Service</a>
   </div>
