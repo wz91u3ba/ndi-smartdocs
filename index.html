@@ -462,18 +462,20 @@
   }
 
   /* ===== BUTTON ===== */
+  .btn-process-wrap { position: relative; margin-top: 24px; }
   .btn-process {
-    width: 100%; height: 64px; margin-top: 24px;
+    width: 100%; height: 64px;
     border: none; border-radius: 10px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 16px; font-weight: 900; letter-spacing: 2.5px;
     text-transform: uppercase; cursor: pointer;
     color: #fff;
-    background: linear-gradient(135deg, var(--d-blue), var(--x-blue));
+    background: linear-gradient(135deg, var(--x-blue), var(--n-blue));
     position: relative; overflow: hidden;
     transition: all 0.3s;
     box-shadow: 0 4px 16px rgba(7,176,232,0.2);
   }
+  .btn-process .btn-label { position: relative; z-index: 2; transition: opacity 0.3s; }
   .btn-process::before {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(135deg, var(--d-blue-hover), var(--d-blue));
@@ -489,79 +491,88 @@
     box-shadow: none;
   }
   .btn-process:disabled::before { display: none; }
-  .btn-process span { position: relative; z-index: 1; }
+  .btn-process.processing {
+    cursor: default; pointer-events: none;
+    background: var(--surface-1); border: 1px solid var(--border);
+    box-shadow: none;
+  }
+  .btn-process.processing::before { display: none; }
+  .btn-process.processing .btn-label { opacity: 0; }
 
-  /* ===== PROGRESS ===== */
-  .progress-section { display: none; margin-top: 24px; }
-  .progress-section.visible { display: block; animation: fade-up 0.3s ease-out; }
-  .progress-label {
-    font-family: 'DM Mono', monospace; font-size: 14px;
-    color: #c0d0dc; margin-bottom: 10px; letter-spacing: 0.5px; font-weight: 500;
+  /* Laser fill overlay */
+  .btn-laser {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 0%;
+    background: linear-gradient(90deg, var(--d-blue), #0ad4ff);
+    border-radius: 10px 0 0 10px;
+    z-index: 1;
+    transition: width 0.15s linear;
+    box-shadow: 4px 0 24px rgba(7,176,232,0.5), 0 0 40px rgba(7,176,232,0.15);
   }
-  .progress-track {
-    height: 3px; background: var(--surface-2); border-radius: 2px; overflow: hidden;
+  .btn-laser::after {
+    content: ''; position: absolute; top: 0; right: -2px; bottom: 0; width: 6px;
+    background: #fff; border-radius: 0 1px 1px 0;
+    box-shadow: 0 0 16px rgba(255,255,255,0.9), 0 0 40px rgba(7,176,232,0.8);
+    opacity: 0.9;
   }
-  .progress-fill {
-    height: 100%; width: 0%; border-radius: 2px;
-    background: linear-gradient(90deg, var(--d-blue), var(--success));
-    transition: width 0.3s ease;
+
+  /* Rolling status text */
+  .process-status {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,0.95); letter-spacing: 0.8px;
+    pointer-events: none;
   }
+  .process-status span {
+    animation: status-roll 0.4s ease-out;
+  }
+  @keyframes status-roll {
+    from { opacity: 0; transform: translateY(12px); filter: blur(2px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  /* Done state */
+  .btn-process.done {
+    background: var(--success); cursor: default; pointer-events: none;
+    box-shadow: 0 4px 20px rgba(46,204,113,0.3);
+  }
+  .btn-process.done::before { display: none; }
+  .btn-process.done .btn-label { opacity: 1; }
 
   /* ===== RESULT ===== */
-  .result-section { display: none; margin-top: 28px; }
+  .result-section { display: none; margin-top: 16px; }
   .result-section.visible { display: block; animation: fade-up 0.5s ease-out; }
-  .result-banner {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px 20px;
-    background: var(--success-bg);
-    border: 1px solid var(--success-border);
-    border-radius: var(--radius);
-    margin-bottom: 16px;
+  .result-meta {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--text-tertiary); letter-spacing: 0.3px;
+    margin-bottom: 12px; padding-left: 2px;
   }
-  .result-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 10px var(--success);
-    flex-shrink: 0;
-  }
-  .result-text {
-    font-size: 16px; font-weight: 800; color: var(--success);
-    letter-spacing: 0.5px;
-  }
-  .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
+  .result-actions { display: flex; gap: 0; width: 100%; }
   .btn-action {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 0 24px; height: 50px;
-    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    height: 56px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 14px; font-weight: 800; letter-spacing: 1px;
     text-transform: uppercase; cursor: pointer;
-    transition: all 0.25s;
-  }
-  .btn-action-primary {
-    background: var(--d-blue); color: var(--white); border: none;
-  }
-  .btn-action-primary:hover {
-    background: var(--d-blue-hover);
-    box-shadow: 0 2px 16px rgba(7,176,232,0.25);
+    transition: all 0.25s; border: none;
   }
   .btn-action-download {
-    background: var(--grey-1); color: var(--n-blue); border: none;
-    font-weight: 900; font-size: 15px; height: 54px; padding: 0 32px;
-    box-shadow: 0 2px 8px rgba(241,242,242,0.15);
+    flex: 4; border-radius: 10px 0 0 10px;
+    background: var(--n-blue); color: #fff;
+    font-size: 14px;
   }
   .btn-action-download:hover {
-    background: #fff; color: var(--n-blue-deep);
-    box-shadow: 0 6px 24px rgba(241,242,242,0.35);
-    transform: translateY(-2px);
+    background: var(--n-blue-deep);
+    box-shadow: 0 4px 20px rgba(2,38,64,0.3);
   }
-  .btn-action-ghost {
-    background: transparent; color: var(--d-blue);
-    border: 1px solid var(--border-hover);
+  .btn-action-copy {
+    flex: 1; border-radius: 0 10px 10px 0;
+    background: var(--surface-1); color: var(--text-secondary);
+    border-left: 1px solid var(--border);
+    font-size: 11px; letter-spacing: 0.8px;
   }
-  .btn-action-ghost:hover {
-    background: var(--surface-2); border-color: var(--d-blue);
+  .btn-action-copy:hover {
+    background: var(--surface-2); color: var(--d-blue);
   }
 
   /* ===== PROMPT SECTION ===== */
@@ -1298,9 +1309,13 @@
     </div>
 
     <!-- PROCESS BUTTON -->
-    <button class="btn-process" id="processBtn" disabled onclick="beginProcess()">
-      <span>Begin Serialization</span>
-    </button>
+    <div class="btn-process-wrap">
+      <button class="btn-process" id="processBtn" disabled onclick="beginProcess()">
+        <div class="btn-laser" id="btnLaser"></div>
+        <div class="process-status" id="processStatus"></div>
+        <span class="btn-label">Begin Serialization</span>
+      </button>
+    </div>
 
     <!-- WORKS WITH (under serialize button) -->
     <div class="works-with" style="margin-top:20px; padding-top:16px; border-top:none;">
@@ -1330,26 +1345,17 @@
       </div>
     </div>
 
-    <!-- PROGRESS -->
-    <div class="progress-section" id="progressSection">
-      <div class="progress-label" id="progressLabel">Initializing...</div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-
     <!-- RESULT -->
     <div class="result-section" id="resultSection">
-      <div class="result-banner">
-        <div class="result-dot"></div>
-        <div class="result-text" id="resultText">Complete</div>
-      </div>
+      <div class="result-meta" id="resultMeta"></div>
       <div class="result-actions">
         <button class="btn-action btn-action-download" onclick="downloadCorpus()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download SmartDoc (.txt)
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12m0 0l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download SmartDoc
         </button>
-        <button class="btn-action btn-action-ghost" onclick="copyCorpus()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
-          Copy to Clipboard
+        <button class="btn-action btn-action-copy" onclick="copyCorpus()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
+          Copy
         </button>
       </div>
     </div>
@@ -1699,6 +1705,12 @@ function renderFiles() {
     sortBtn.classList.toggle('active', sortMode !== 'uploaded');
   }
 
+  // Reset button to ready state
+  processBtn.classList.remove('processing', 'done');
+  processBtn.querySelector('.btn-label').textContent = 'Begin Serialization';
+  document.getElementById('btnLaser').style.width = '0%';
+  document.getElementById('processStatus').innerHTML = '';
+
   if (stagedFiles.length) {
     const totalBytes = stagedFiles.reduce((s,f) => s + f.size, 0);
     document.getElementById('stagedCount').textContent = stagedFiles.length;
@@ -1769,35 +1781,90 @@ async function processFile(file) {
 }
 
 // ========== MAIN PROCESS ==========
+const PROCESS_MESSAGES = [
+  'Initializing serialization engine…',
+  'Parsing document structure…',
+  'Extracting text layers…',
+  'Resolving embedded objects…',
+  'Normalizing character encoding…',
+  'Building semantic index…',
+  'Structuring XML corpus…',
+  'Assembling SmartDoc payload…',
+  'Optimizing for LLM context windows…',
+  'Running final validation…',
+  'Compressing output…',
+  'Finalizing…',
+];
+const MIN_PROCESS_MS = 5000;
+
 async function beginProcess() {
-  const progressSection = document.getElementById('progressSection');
-  const progressFill = document.getElementById('progressFill');
-  const progressLabel = document.getElementById('progressLabel');
+  const btnLaser = document.getElementById('btnLaser');
+  const processStatus = document.getElementById('processStatus');
   const resultSection = document.getElementById('resultSection');
-  const resultText = document.getElementById('resultText');
+  const resultMeta = document.getElementById('resultMeta');
 
-  processBtn.disabled = true;
-  progressSection.classList.add('visible');
+  // Reset states
+  processBtn.classList.remove('done');
+  processBtn.classList.add('processing');
+  btnLaser.style.width = '0%';
+  processStatus.innerHTML = '';
   resultSection.classList.remove('visible');
-  progressFill.style.width = '0%';
 
-  // System prompt is PREPENDED to every output
+  const startTime = Date.now();
+
+  // Rolling status messages
+  let msgIdx = 0;
+  function showNextMessage() {
+    if (msgIdx < PROCESS_MESSAGES.length) {
+      processStatus.innerHTML = `<span>${PROCESS_MESSAGES[msgIdx]}</span>`;
+      msgIdx++;
+    }
+  }
+  showNextMessage();
+  const msgInterval = setInterval(() => showNextMessage(), MIN_PROCESS_MS / (PROCESS_MESSAGES.length + 1));
+
+  // Animate laser to ~85% during actual processing
+  const fakeFillInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(85, (elapsed / MIN_PROCESS_MS) * 88);
+    btnLaser.style.width = progress + '%';
+  }, 50);
+
+  // Actual processing
   masterCorpus = SYSTEM_PROMPT + '\n\n<SmartDocs_Library>\n';
-
   for (let i = 0; i < stagedFiles.length; i++) {
     const f = stagedFiles[i];
-    progressLabel.textContent = `Processing: ${f.name}`;
     const text = await processFile(f);
     masterCorpus += `\n<Doc>\n  <Meta>${esc(f.name)}</Meta>\n  <Body>\n${esc(text)}\n  </Body>\n</Doc>\n`;
-    progressFill.style.width = `${((i+1)/stagedFiles.length*100).toFixed(0)}%`;
   }
-
   masterCorpus += '\n</SmartDocs_Library>';
 
-  progressSection.classList.remove('visible');
-  resultText.textContent = `${stagedFiles.length} document${stagedFiles.length > 1 ? 's' : ''} serialized — ${(new Blob([masterCorpus]).size/1024).toFixed(1)} KB corpus`;
+  // Ensure minimum 5s elapsed
+  const elapsed = Date.now() - startTime;
+  if (elapsed < MIN_PROCESS_MS) {
+    await new Promise(r => setTimeout(r, MIN_PROCESS_MS - elapsed));
+  }
+
+  clearInterval(msgInterval);
+  clearInterval(fakeFillInterval);
+
+  // Fill to 100%
+  btnLaser.style.width = '100%';
+  processStatus.innerHTML = '<span>Complete</span>';
+
+  // Brief pause at 100%, then transition to done
+  await new Promise(r => setTimeout(r, 400));
+
+  // Done state
+  processBtn.classList.remove('processing');
+  processBtn.classList.add('done');
+  btnLaser.style.width = '0%';
+  processStatus.innerHTML = '';
+  processBtn.querySelector('.btn-label').textContent = 'SERIALIZATION COMPLETE';
+
+  const corpusSize = (new Blob([masterCorpus]).size / 1024).toFixed(1);
+  resultMeta.textContent = `${stagedFiles.length} document${stagedFiles.length > 1 ? 's' : ''} serialized · ${corpusSize} KB corpus`;
   resultSection.classList.add('visible');
-  processBtn.disabled = false;
 }
 
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
