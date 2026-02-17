@@ -700,7 +700,7 @@
     background-clip: text;
   }
   .sp-hero-sub {
-    font-size: 18px; color: #3a5568; max-width: 580px;
+    font-size: 18px; color: #4a5f6e; max-width: 580px;
     margin: 0 auto; line-height: 1.7;
   }
   .sp-hero-stats {
@@ -715,7 +715,7 @@
     font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
   }
   .sp-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    display: block; font-size: 11px; color: rgba(255,255,255,0.5);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
   .sp-hero-stat-note {
@@ -724,7 +724,7 @@
     letter-spacing: 0.5px; margin-top: 2px; font-style: italic;
   }
   .sp-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+    width: 1px; height: 32px; background: rgba(255,255,255,0.12);
   }
 
   /* ===== NDi SUPER PROMPT™ ===== */
@@ -833,7 +833,7 @@
     letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.15;
   }
   .raven-cta-desc {
-    font-size: 14px; color: #555; line-height: 1.7;
+    font-size: 14px; color: #4a5f6e; line-height: 1.7;
   }
   .raven-cta-icon {
     flex-shrink: 0;
@@ -988,7 +988,7 @@
   .forge-hero {
     position: relative; overflow: hidden;
     background: #fff;
-    padding: 48px 32px 40px;
+    padding: 64px 32px 56px;
     text-align: center;
   }
   .forge-hero-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
@@ -1003,17 +1003,17 @@
   }
   .forge-hero-title {
     font-size: clamp(32px, 5vw, 52px); font-weight: 900;
-    color: #111; letter-spacing: -1px; line-height: 1.1;
+    color: var(--n-blue); letter-spacing: -1px; line-height: 1.1;
     margin-bottom: 18px;
   }
   .forge-hero-title span {
     color: #F8B42C;
   }
   .forge-hero-sub {
-    font-size: 18px; color: #444; max-width: 580px;
+    font-size: 18px; color: #4a5f6e; max-width: 580px;
     margin: 0 auto; line-height: 1.7;
   }
-  .forge-hero-sub strong { color: #111; }
+  .forge-hero-sub strong { color: #1a1a1a; }
   .forge-hero-stats {
     display: inline-flex; align-items: center; gap: 24px;
     margin-top: 28px; padding: 16px 32px;
@@ -1026,17 +1026,17 @@
     font-size: 20px; font-weight: 700; color: #F8B42C; letter-spacing: 0.5px;
   }
   .forge-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.55);
+    display: block; font-size: 11px; color: rgba(255,255,255,0.5);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
   .forge-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.1);
+    width: 1px; height: 32px; background: rgba(255,255,255,0.12);
   }
 
   /* ===== RAVEN FORGE ===== */
   .forge-wrap {
     background: #fff;
-    padding: 48px 24px 40px;
+    padding: 0 24px 48px;
   }
   .forge {
     max-width: 975px; margin: 0 auto;
@@ -1326,7 +1326,7 @@
 
   /* Forge tagline */
   .forge-tagline {
-    padding: 20px 24px 40px; text-align: center;
+    padding: 24px 24px 48px; text-align: center;
   }
   .forge-tagline-text {
     max-width: 975px; margin: 0 auto;
@@ -1370,17 +1370,17 @@
   /* EVA Hero (top area with title) */
   .vt-hero {
     position: relative; z-index: 1;
-    padding: 56px 32px 32px;
+    padding: 64px 32px 56px;
     text-align: center;
   }
   .vt-hero-content { max-width: 975px; margin: 0 auto; }
   .vt-hero-badge {
     display: inline-block;
-    font-family: 'DM Mono', monospace; font-size: 11px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
     color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
     font-weight: 700; margin-bottom: 20px;
     padding: 6px 16px; border-radius: 50px;
-    border: 1.5px solid rgba(7,176,232,0.3);
+    border: 1.5px solid rgba(7,176,232,0.4);
     background: rgba(7,176,232,0.06);
   }
   .vt-hero-title {
@@ -1410,11 +1410,11 @@
     font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
   }
   .vt-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.45);
+    display: block; font-size: 11px; color: rgba(255,255,255,0.5);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
   .vt-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.08);
+    width: 1px; height: 32px; background: rgba(255,255,255,0.12);
   }
 
   /* EVA Tool area */
@@ -1575,7 +1575,7 @@
     outline: none; cursor: text;
   }
   .vt-transcript-body::-webkit-scrollbar { width: 4px; }
-  .vt-transcript-body::-webkit-scrollbar-thumb { background: rgba(7,176,232,0.15); border-radius: 2px; }
+  .vt-transcript-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
   .vt-actions {
     display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid rgba(7,176,232,0.06);
   }
@@ -1601,7 +1601,7 @@
   .eva-works-with {
     position: relative; z-index: 1;
     max-width: 975px; margin: 0 auto;
-    padding: 16px 24px 0;
+    padding: 24px 24px 0;
   }
   .eva-works-with .works-with-label { color: rgba(255,255,255,0.25); }
   .eva-works-with .ai-logo-chip {
@@ -1756,7 +1756,7 @@
     background-clip: text;
   }
   .sd-hero-sub {
-    font-size: 18px; color: #3a5568; max-width: 580px;
+    font-size: 18px; color: #4a5f6e; max-width: 580px;
     margin: 0 auto; line-height: 1.7;
   }
   .sd-hero-stats {
@@ -1771,11 +1771,11 @@
     font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
   }
   .sd-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    display: block; font-size: 11px; color: rgba(255,255,255,0.5);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
   .sd-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+    width: 1px; height: 32px; background: rgba(255,255,255,0.12);
   }
 
   /* ===== RESEARCH DIVISION SECTION ===== */
@@ -1857,6 +1857,8 @@
     .btn-action { width: 100%; justify-content: center; }
     .section-header { flex-direction: column; align-items: flex-start; }
     .floating-nav { display: none; }
+    .sd-hero-stats, .sp-hero-stats { flex-wrap: wrap; gap: 16px; padding: 14px 20px; justify-content: center; }
+    .sd-hero-stat-divider, .sp-hero-stat-divider { display: none; }
     .research-cards { grid-template-columns: 1fr; }
     .hero-ctas { flex-direction: column; }
     .hero-cta-primary, .hero-cta-partner { width: 100%; justify-content: center; }
