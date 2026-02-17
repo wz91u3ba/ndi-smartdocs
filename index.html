@@ -3482,10 +3482,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       return;
     }
 
-    loadProgress.style.width = loadBtn.offsetWidth + 'px';
     loadBtn.disabled = true;
     loadBtnText.textContent = 'Downloading...';
     loadBtn.querySelector('svg').style.display = 'none';
+    loadProgress.style.width = loadBtn.offsetWidth + 'px';
     loadProgress.style.display = 'block';
     loadError.style.display = 'none';
 
