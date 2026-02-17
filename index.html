@@ -2963,13 +2963,22 @@ function showToast(msg, raven) {
   }
   function vtStopTimer() { clearInterval(vtTimerInterval); vtTimerInterval = null; }
 
-  // Load Whisper model
+  const EVA_CDN = 'https://files.ndiauto.com';
+
+  // Load Whisper model — self-hosted from files.ndiauto.com
   async function vtLoadModel() {
     if (vtWhisperPipeline) return;
     vtPill.classList.add('loading');
     vtPillStatus.textContent = 'Loading model...';
     vtUpdateSquiggle();
-    const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.1');
+
+    const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
+
+    // Point everything at our own CDN — zero external requests
+    env.allowRemoteModels = false;
+    env.localModelPath = EVA_CDN + '/models/';
+    env.backends.onnx.wasm.wasmPaths = EVA_CDN + '/wasm/';
+
     vtWhisperPipeline = await pipeline(
       'automatic-speech-recognition',
       'onnx-community/whisper-tiny.en',
@@ -2980,6 +2989,39 @@ function showToast(msg, raven) {
     vtPillStatus.textContent = '';
     vtDrawIdle();
   }
+
+  // Background preload — silently cache model files after page settles
+  function vtPreload() {
+    if (vtModelLoaded) return;
+    const files = [
+      EVA_CDN + '/lib/transformers.min.js',
+      EVA_CDN + '/wasm/ort-wasm-simd-threaded.jsep.wasm',
+      EVA_CDN + '/wasm/ort-wasm-simd-threaded.jsep.mjs',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/config.json',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/generation_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/preprocessor_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/tokenizer.json',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/tokenizer_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/onnx/encoder_model_quantized.onnx',
+      EVA_CDN + '/models/onnx-community/whisper-tiny.en/onnx/decoder_model_merged_quantized.onnx',
+    ];
+    // Use low-priority fetch to avoid blocking UI
+    files.forEach(url => {
+      fetch(url, { priority: 'low' }).catch(() => {});
+    });
+  }
+
+  // Trigger preload after 5s idle or when user scrolls past halfway
+  let vtPreloaded = false;
+  setTimeout(() => { if (!vtPreloaded) { vtPreloaded = true; vtPreload(); } }, 5000);
+  window.addEventListener('scroll', function vtScrollPreload() {
+    if (vtPreloaded) { window.removeEventListener('scroll', vtScrollPreload); return; }
+    if (window.scrollY > document.body.scrollHeight * 0.4) {
+      vtPreloaded = true;
+      vtPreload();
+      window.removeEventListener('scroll', vtScrollPreload);
+    }
+  }, { passive: true });
 
   // Audio → 16kHz Float32
   async function vtBlobToFloat32(blob) {
