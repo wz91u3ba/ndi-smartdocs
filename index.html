@@ -943,27 +943,17 @@
 
   /* ===== RAVEN FORGE ===== */
   .forge-wrap {
-    background: #0c0c0c;
-    background-image: url('camo-pattern.png');
-    background-size: 300px;
-    background-blend-mode: overlay;
-    padding: 48px 24px;
-    position: relative;
-  }
-  .forge-wrap::before {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(12,12,12,0.97);
-    pointer-events: none;
+    background: #fff;
+    padding: 48px 24px 40px;
   }
   .forge {
-    position: relative; z-index: 1;
     max-width: 1050px; margin: 0 auto;
     height: 600px;
     display: flex; flex-direction: column;
     background: #111;
-    border: 1px solid rgba(255,255,255,0.06);
     border-radius: 14px;
     overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.08);
   }
   .forge-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -980,10 +970,10 @@
   .forge-head-right { display: flex; align-items: center; gap: 10px; }
   .forge-pill {
     font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 700;
-    color: #4ade80; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #F8B42C; letter-spacing: 1.5px; text-transform: uppercase;
     padding: 3px 8px; border-radius: 4px;
-    border: 1px solid rgba(74,222,128,0.3);
-    background: rgba(74,222,128,0.06);
+    border: 1px solid rgba(248,180,44,0.3);
+    background: rgba(248,180,44,0.06);
   }
   .forge-gear {
     background: none; border: none; color: #555; cursor: pointer;
@@ -1024,7 +1014,7 @@
   }
   .forge-msg-ai .forge-msg-bubble { background: #1a1a1a; }
   .forge-msg-user .forge-msg-bubble {
-    background: #1a1a1a; border-left: 2px solid rgba(74,222,128,0.3);
+    background: #1a1a1a; border-left: 2px solid rgba(248,180,44,0.3);
   }
   .forge-msg-bubble code {
     background: rgba(255,255,255,0.06); padding: 1px 5px;
@@ -1041,7 +1031,7 @@
   .forge-msg-bubble li { margin: 3px 0; }
   .forge-cursor {
     display: inline-block; width: 2px; height: 14px;
-    background: #4ade80; margin-left: 2px; vertical-align: text-bottom;
+    background: #F8B42C; margin-left: 2px; vertical-align: text-bottom;
     animation: forge-blink 0.8s step-end infinite;
   }
   @keyframes forge-blink { 0%,100%{opacity:1} 50%{opacity:0} }
@@ -1122,7 +1112,7 @@
   .forge-attach:hover { color: #888; }
   .forge-attach-badge {
     position: absolute; top: 0; right: -2px;
-    background: #4ade80; color: #000; font-size: 8px; font-weight: 800;
+    background: #F8B42C; color: #000; font-size: 8px; font-weight: 800;
     width: 14px; height: 14px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-family: 'DM Mono', monospace;
@@ -1141,7 +1131,7 @@
     flex-shrink: 0; display: flex; align-items: center;
     color: #333;
   }
-  .forge-send.active { color: #4ade80; }
+  .forge-send.active { color: #F8B42C; }
   .forge-send:disabled { opacity: 0.3; cursor: default; }
 
   /* Settings modal */
@@ -1173,7 +1163,7 @@
     color: #ccc; font-family: 'DM Mono', monospace; font-size: 12px;
     outline: none; transition: border-color 0.2s;
   }
-  .forge-modal input:focus { border-color: rgba(74,222,128,0.3); }
+  .forge-modal input:focus { border-color: rgba(248,180,44,0.3); }
   .forge-modal-close {
     margin-top: 20px; width: 100%; height: 36px;
     background: rgba(255,255,255,0.06); border: none; border-radius: 8px;
@@ -1192,42 +1182,45 @@
 
   /* Forge Help */
   .forge-help {
-    background: #0c0c0c;
-    background-image: url('camo-pattern.png');
-    background-size: 300px;
-    background-blend-mode: overlay;
-    padding: 32px 24px 48px;
-    position: relative;
-  }
-  .forge-help::before {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(12,12,12,0.97);
-    pointer-events: none;
+    background: #fff;
+    padding: 28px 24px 20px;
   }
   .forge-help-inner {
-    position: relative; z-index: 1;
     max-width: 1050px; margin: 0 auto;
-    display: flex; align-items: center; gap: 32px;
+    display: flex; align-items: center; gap: 28px;
   }
   .forge-help-img {
-    flex-shrink: 0; max-width: 340px; width: 100%;
+    flex-shrink: 0; max-width: 280px; width: 100%;
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   }
   .forge-help-text {
     flex: 1; min-width: 0;
   }
   .forge-help-title {
-    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700;
-    color: #4ade80; letter-spacing: 1.5px; text-transform: uppercase;
-    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700;
+    color: #F8B42C; letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 8px;
   }
   .forge-help-desc {
-    font-size: 14px; color: #888; line-height: 1.7;
+    font-size: 13px; color: #666; line-height: 1.7;
     font-family: 'Nunito Sans', sans-serif;
   }
-  .forge-help-desc strong { color: #bbb; }
+  .forge-help-desc strong { color: #333; }
+
+  /* Forge tagline */
+  .forge-tagline {
+    background: #fff;
+    padding: 20px 24px 48px; text-align: center;
+  }
+  .forge-tagline-text {
+    max-width: 1050px; margin: 0 auto;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: #aaa; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
+  .forge-tagline-text em { color: #888; font-style: normal; font-weight: 400; }
 
   /* ===== ANIMATIONS ===== */
   @keyframes fade-up {
@@ -1798,9 +1791,14 @@
       <img src="allowndiauto.png" alt="Allow NDi Auto local network access" class="forge-help-img">
       <div class="forge-help-text">
         <div class="forge-help-title">First-Time Setup</div>
-        <p class="forge-help-desc">Your browser will ask to allow <strong>NDi Auto</strong> to connect to your local network. <strong>Click Allow.</strong> This lets RAVEN Forge communicate with the AI model running on your own machine. No data leaves your computer — all processing happens locally between your browser and your local inference server.</p>
+        <p class="forge-help-desc">Your browser will ask to allow <strong>NDi Auto</strong> to connect to your local network. <strong>Click Allow.</strong> This lets Forge talk to the AI running on your machine. No data leaves your computer — everything stays local.</p>
       </div>
     </div>
+  </div>
+
+  <!-- FORGE TAGLINE -->
+  <div class="forge-tagline">
+    <div class="forge-tagline-text"><span>RAVEN</span> <em>|</em> Secure Local AI</div>
   </div>
 
   <!-- FOOTER -->
