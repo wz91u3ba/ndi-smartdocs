@@ -754,6 +754,78 @@
     color: var(--text-tertiary); letter-spacing: 0.3px;
   }
 
+  /* ===== RAVEN CTA ===== */
+  .raven-cta {
+    background: #fff;
+    border-top: 3px solid #1a1a1a;
+    border-bottom: 3px solid #1a1a1a;
+    padding: 56px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .raven-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.02) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .raven-cta-inner {
+    position: relative; z-index: 1;
+    max-width: 1050px; margin: 0 auto;
+    display: flex; align-items: center; gap: 40px;
+    justify-content: center;
+  }
+  .raven-cta-logo {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .raven-cta-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+  }
+  .raven-cta-social {
+    height: 44px; border-radius: 10px;
+    object-fit: cover;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+  }
+  .raven-cta-text { text-align: left; }
+  .raven-cta-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: #888; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 8px;
+  }
+  .raven-cta-title {
+    font-size: 22px; font-weight: 900; color: #1a1a1a;
+    letter-spacing: -0.3px; margin-bottom: 6px; line-height: 1.2;
+  }
+  .raven-cta-desc {
+    font-size: 14px; color: #555; line-height: 1.7;
+    max-width: 440px;
+  }
+  .raven-cta-btn {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px; border-radius: 10px;
+    background: #1a1a1a; color: #fff;
+    text-decoration: none;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .raven-cta-btn:hover {
+    background: #000;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+  }
+  @media (max-width: 768px) {
+    .raven-cta-inner { flex-direction: column; gap: 24px; text-align: center; }
+    .raven-cta-text { text-align: center; }
+    .raven-cta-desc { margin: 0 auto; }
+  }
+
   /* ===== FOOTER ===== */
   .footer {
     border-top: 1px solid var(--border);
@@ -1084,7 +1156,7 @@
     <div class="hero-layout">
       <div class="hero-text">
         <div class="hero-status-pill">
-          <div class="status-dot"></div>ALL SYSTEMS OPERATIONAL
+          <div class="status-dot"></div>OPERATIONAL | <span class="live-date"></span>
         </div>
         <h1>NDi <span>Auto</span></h1>
         <div class="hero-division">AI &amp; Automation Research Division</div>
@@ -1322,6 +1394,25 @@
     </div>
   </div>
 
+  <!-- ===== RAVEN CTA ===== -->
+  <div class="raven-cta">
+    <div class="raven-cta-inner">
+      <div class="raven-cta-logo">
+        <img src="raven-icon.png" alt="RAVEN" class="raven-cta-icon">
+        <img src="raven-social.png" alt="RAVEN Secure Networks" class="raven-cta-social">
+      </div>
+      <div class="raven-cta-text">
+        <div class="raven-cta-eyebrow">NDi Sister Company</div>
+        <div class="raven-cta-title">Classified Streaming Over Public Infrastructure</div>
+        <p class="raven-cta-desc">RAVEN delivers secure, classified-level video and data streaming across untrusted networks. The same mission-grade engineering. Different attack surface.</p>
+      </div>
+      <a href="https://ravensecurenetworks.com" target="_blank" class="raven-cta-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Visit RAVEN
+      </a>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-inner">
@@ -1333,7 +1424,7 @@
           <p class="footer-brand-desc">NDi Auto is the AI &amp; Automation Research Division of Network Designs, Inc. — a Service-Disabled Veteran-Owned Small Business delivering mission-critical IT solutions for three decades.</p>
           <div class="footer-sdvosb">
             <span class="footer-sdvosb-dot"></span>
-            ALL SYSTEMS OPERATIONAL · <span id="footerDate"></span>
+            OPERATIONAL | <span class="live-date"></span>
           </div>
           <div class="footer-social">
             <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" aria-label="LinkedIn">
@@ -1660,11 +1751,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   updateActiveNav();
 })();
 
-// ========== FOOTER DATE ==========
+// ========== LIVE DATE (header + footer) ==========
 (function() {
   const d = new Date();
-  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  document.getElementById('footerDate').textContent = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const yy = String(d.getFullYear()).slice(-2);
+  const dateStr = `${mm}.${dd}.${yy}`;
+  document.querySelectorAll('.live-date').forEach(el => el.textContent = dateStr);
 })();
 </script>
 </body>
