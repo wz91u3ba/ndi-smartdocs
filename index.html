@@ -1295,37 +1295,48 @@
     .forge-hero-stat-divider { display: none; }
   }
 
+  /* Forge dark zone (runner + tagline) */
+  .forge-dark-zone {
+    position: relative;
+    background: #0a0a0a;
+    border-top: 3px solid #F8B42C;
+  }
+  .forge-dark-glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #F8B42C, #ff6b3d, #F8B42C, transparent);
+    background-size: 200% 100%;
+    animation: glow-sweep 4s ease-in-out infinite;
+  }
+
   /* Forge model runner */
   .forge-runner {
-    background: #fff;
     padding: 0 24px;
     max-width: 1098px; margin: 0 auto;
   }
   .forge-works-with {
-    margin-top: 0; padding-top: 24px;
+    margin-top: 0; padding-top: 32px;
     border-top: none;
   }
   .forge-works-label {
-    color: #999;
+    color: #777;
   }
   .forge-chip {
-    background: #1a1a1a; border-color: rgba(255,255,255,0.08);
-    color: #bbb;
+    background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1);
+    color: #ccc;
   }
-  .marquee-track:hover .forge-chip { border-color: rgba(248,180,44,0.25); }
+  .marquee-track:hover .forge-chip { border-color: rgba(248,180,44,0.3); }
 
   /* Forge tagline */
   .forge-tagline {
-    background: #fff;
-    padding: 20px 24px 48px; text-align: center;
+    padding: 20px 24px 40px; text-align: center;
   }
   .forge-tagline-text {
     max-width: 1050px; margin: 0 auto;
     font-family: 'DM Mono', monospace; font-size: 12px;
-    color: #aaa; letter-spacing: 2px; text-transform: uppercase;
+    color: #555; letter-spacing: 2px; text-transform: uppercase;
   }
   .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
-  .forge-tagline-text em { color: #888; font-style: normal; font-weight: 400; }
+  .forge-tagline-text em { color: #444; font-style: normal; font-weight: 400; }
 
   /* ===== ANIMATIONS ===== */
   @keyframes fade-up {
@@ -1642,7 +1653,7 @@
         </div>
         <div class="research-card">
           <div class="research-card-icon">🛡️</div>
-          <div class="research-card-title">Trusted by the Mission</div>
+          <div class="research-card-title">Mission Oriented</div>
           <div class="research-card-desc">Partnered with DoD, DOJ, FAA, and FBI. SDVOSB certified. Set-aside eligible. Built by operators who understand the mission.</div>
         </div>
       </div>
@@ -1940,6 +1951,10 @@
   </div>
 
 
+  <!-- FORGE DARK ZONE -->
+  <div class="forge-dark-zone">
+    <div class="forge-dark-glow"></div>
+
   <!-- FORGE MODEL RUNNER -->
   <div class="forge-runner">
     <div class="works-with forge-works-with">
@@ -1972,6 +1987,8 @@
   <div class="forge-tagline">
     <div class="forge-tagline-text"><span>RAVEN</span> <em>|</em> Secure Local AI</div>
   </div>
+
+  </div><!-- /forge-dark-zone -->
 
   <!-- FOOTER -->
   <footer class="footer">
