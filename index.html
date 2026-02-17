@@ -2286,11 +2286,11 @@
         <h2 class="vt-hero-title">NDi <span>EVA</span></h2>
         <p class="vt-hero-sub"><strong style="color:#fff;font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text running entirely in your browser. Zero latency.</p>
         <div class="vt-hero-stats">
-          <div class="vt-hero-stat"><span class="vt-hero-stat-value">Whisper</span><span class="vt-hero-stat-label">OpenAI Model</span></div>
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value">0ms</span><span class="vt-hero-stat-label">Latency</span></div>
           <div class="vt-hero-stat-divider"></div>
           <div class="vt-hero-stat"><span class="vt-hero-stat-value">WASM</span><span class="vt-hero-stat-label">Accelerated</span></div>
           <div class="vt-hero-stat-divider"></div>
-          <div class="vt-hero-stat"><span class="vt-hero-stat-value">Real-Time</span><span class="vt-hero-stat-label">Transcription</span></div>
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value">Local</span><span class="vt-hero-stat-label">Transcription</span></div>
           <div class="vt-hero-stat-divider"></div>
           <div class="vt-hero-stat"><span class="vt-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="vt-hero-stat-label">No Cloud</span></div>
         </div>
@@ -2403,7 +2403,7 @@
 
     <!-- Tagline -->
     <div class="eva-tagline">
-      <div class="eva-tagline-text">Powered by <span>Whisper</span> · Runs on device · Your voice never leaves the browser</div>
+      <div class="eva-tagline-text">Powered by <span>local transcription</span> · Runs on device · Your voice never leaves the browser</div>
     </div>
 
   </div><!-- /eva-section -->
@@ -3043,10 +3043,11 @@ function showToast(msg, raven) {
 
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
-    // Point everything at our own CDN — zero external requests
+    // Point model loading at our R2 CDN — zero HuggingFace requests
     // WASM files live in /lib/ next to the JS (webpack resolves relative to itself)
-    env.localModelPath = EVA_CDN + '/models/';
-    env.allowRemoteModels = false;
+    env.remoteHost = EVA_CDN + '/models';
+    env.remotePathTemplate = '{model}/';
+    env.allowLocalModels = false;
 
     vtWhisperPipeline = await pipeline(
       'automatic-speech-recognition',
