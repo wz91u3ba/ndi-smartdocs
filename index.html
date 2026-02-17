@@ -1554,11 +1554,25 @@
     font-family: 'DM Mono', monospace; font-size: 10px;
     color: var(--d-blue); letter-spacing: 0.5px;
   }
+  .vt-header-right { display: flex; align-items: center; gap: 10px; }
+  .vt-reset-btn {
+    width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(255,80,80,0.25);
+    background: rgba(255,80,80,0.08); cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: all 0.2s; padding: 0;
+  }
+  .vt-reset-btn:hover { background: rgba(255,80,80,0.18); border-color: rgba(255,80,80,0.4); }
+  .vt-reset-btn svg { width: 11px; height: 11px; stroke: rgba(255,80,80,0.7); }
+  .toast.error-toast {
+    background: rgba(40,8,8,0.95); border-color: rgba(255,80,80,0.4);
+    color: #ff6b6b;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,80,80,0.1);
+  }
   .vt-transcript-body {
     padding: 16px 20px;
     font-size: 15px; color: rgba(255,255,255,0.85);
     line-height: 1.7; white-space: pre-wrap;
     max-height: 380px; overflow-y: auto;
+    outline: none; cursor: text;
   }
   .vt-transcript-body::-webkit-scrollbar { width: 4px; }
   .vt-transcript-body::-webkit-scrollbar-thumb { background: rgba(7,176,232,0.15); border-radius: 2px; }
@@ -2350,9 +2364,14 @@
     <div class="vt-transcript" id="vtTranscript" style="display:none">
       <div class="vt-transcript-header">
         <span>Transcript</span>
-        <span class="vt-word-count" id="vtWordCount">0 words</span>
+        <div class="vt-header-right">
+          <span class="vt-word-count" id="vtWordCount">0 words</span>
+          <button class="vt-reset-btn" onclick="vtReset()" title="Clear transcript">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="vt-transcript-body" id="vtTranscriptBody"></div>
+      <div class="vt-transcript-body" id="vtTranscriptBody" contenteditable="true" spellcheck="true"></div>
       <div class="vt-actions">
         <button class="vt-btn-copy" onclick="vtDownload()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -2848,10 +2867,12 @@ function copySuperPrompt() {
   navigator.clipboard.writeText(SUPER_PROMPT).then(() => showToast('NDi SuperPrompt™ copied — paste before any prompt'));
 }
 
-function showToast(msg, raven) {
+function showToast(msg, style) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.classList.toggle('raven-toast', !!raven);
+  t.classList.remove('raven-toast', 'error-toast');
+  if (style === 'raven') t.classList.add('raven-toast');
+  if (style === 'error') t.classList.add('error-toast');
   t.classList.add('visible');
   setTimeout(() => t.classList.remove('visible'), 2400);
 }
@@ -3103,7 +3124,7 @@ function showToast(msg, raven) {
   function vtUpdateTranscript() {
     if (!vtTranscriptText.trim()) return;
     vtTranscript.style.display = 'block';
-    vtTranscriptBody.textContent = vtTranscriptText;
+    vtTranscriptBody.innerText = vtTranscriptText;
     const words = vtTranscriptText.trim().split(/\s+/).filter(Boolean).length;
     vtWordCount.textContent = words + ' word' + (words !== 1 ? 's' : '');
     vtTranscriptBody.scrollTop = vtTranscriptBody.scrollHeight;
@@ -3197,8 +3218,8 @@ function showToast(msg, raven) {
         vtTranscriptText += (vtTranscriptText ? ' ' : '') + text;
         vtUpdateTranscript();
       } else {
-        vtPillStatus.textContent = 'No speech detected';
-        setTimeout(() => { vtPillStatus.textContent = ''; }, 3000);
+        vtPillStatus.textContent = '';
+        showToast('No audio was picked up', 'error');
       }
     } catch(e) {
       console.error('EVA transcription error:', e);
@@ -3219,7 +3240,7 @@ function showToast(msg, raven) {
 
   // Copy
   window.vtCopy = function() {
-    const text = vtTranscriptText.trim();
+    const text = vtTranscriptBody.innerText.trim();
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.querySelector('.vt-btn-download');
@@ -3231,7 +3252,7 @@ function showToast(msg, raven) {
 
   // Download
   window.vtDownload = function() {
-    const text = vtTranscriptText.trim();
+    const text = vtTranscriptBody.innerText.trim();
     if (!text) return;
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
@@ -3244,6 +3265,21 @@ function showToast(msg, raven) {
     a.click();
     URL.revokeObjectURL(a.href);
   };
+
+  // Reset transcript
+  window.vtReset = function() {
+    vtTranscriptText = '';
+    vtTranscriptBody.textContent = '';
+    vtTranscript.style.display = 'none';
+    vtWordCount.textContent = '0 words';
+  };
+
+  // Sync edits from contentEditable back to state
+  vtTranscriptBody.addEventListener('input', function() {
+    vtTranscriptText = vtTranscriptBody.innerText;
+    const words = vtTranscriptText.trim().split(/\s+/).filter(Boolean).length;
+    vtWordCount.textContent = words + ' word' + (words !== 1 ? 's' : '');
+  });
 
   // Spacebar toggle
   document.addEventListener('keydown', (e) => {
@@ -3541,7 +3577,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     localStorage.setItem('forge_temp', sTemp.value);
     localStorage.setItem('forge_max_tokens', sTokens.value);
     document.getElementById('forgeModalBg').classList.remove('open');
-    showToast('Forge settings saved', true);
+    showToast('Forge settings saved', 'raven');
   };
 
   // ---- MEMORY (restore chat history) ----
