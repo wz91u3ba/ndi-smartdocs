@@ -557,6 +557,11 @@
     display: block; font-size: 11px; color: rgba(255,255,255,0.6);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
+  .sp-hero-stat-note {
+    display: block; font-family: 'Nunito Sans', sans-serif;
+    font-size: 9px; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.5px; margin-top: 2px; font-style: italic;
+  }
   .sp-hero-stat-divider {
     width: 1px; height: 32px; background: rgba(255,255,255,0.15);
   }
@@ -760,6 +765,34 @@
       <span>Begin Serialization</span>
     </button>
 
+    <!-- WORKS WITH (under serialize button) -->
+    <div class="works-with" style="margin-top:20px; padding-top:16px; border-top:none;">
+      <div class="works-with-label">Works with</div>
+      <div class="marquee-mask">
+        <div class="marquee-track">
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="" onerror="this.style.display='none'">Gemini</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="" onerror="this.style.display='none'">Perplexity</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=meta.ai&sz=64" alt="" onerror="this.style.display='none'">Meta AI</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="" onerror="this.style.display='none'">Mistral</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=copilot.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Copilot</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=grok.com&sz=64" alt="" onerror="this.style.display='none'">Grok</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=cohere.com&sz=64" alt="" onerror="this.style.display='none'">Cohere</div>
+          <!-- duplicate for seamless loop -->
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="" onerror="this.style.display='none'">Gemini</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="" onerror="this.style.display='none'">Perplexity</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=meta.ai&sz=64" alt="" onerror="this.style.display='none'">Meta AI</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="" onerror="this.style.display='none'">Mistral</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=copilot.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Copilot</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=grok.com&sz=64" alt="" onerror="this.style.display='none'">Grok</div>
+          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=cohere.com&sz=64" alt="" onerror="this.style.display='none'">Cohere</div>
+        </div>
+      </div>
+    </div>
+
     <!-- PROGRESS -->
     <div class="progress-section" id="progressSection">
       <div class="progress-label" id="progressLabel">Initializing...</div>
@@ -798,7 +831,7 @@
         <div class="sp-hero-stat-divider"></div>
         <div class="sp-hero-stat"><span class="sp-hero-stat-value">10+</span><span class="sp-hero-stat-label">Models Supported</span></div>
         <div class="sp-hero-stat-divider"></div>
-        <div class="sp-hero-stat"><span class="sp-hero-stat-value">Free</span><span class="sp-hero-stat-label">Forever</span></div>
+        <div class="sp-hero-stat"><span class="sp-hero-stat-value">40%</span><span class="sp-hero-stat-label">Higher Rated Outputs</span><span class="sp-hero-stat-note">when using extended thinking</span></div>
       </div>
     </div>
   </div>
