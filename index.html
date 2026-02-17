@@ -116,7 +116,7 @@
   .topbar.dark-mode .sdvosb-logo { filter: none; }
   .topbar-inner {
     display: flex; align-items: center; justify-content: space-between;
-    max-width: 1050px; margin: 0 auto; width: 100%;
+    max-width: 975px; margin: 0 auto; width: 100%;
   }
   .topbar-left { display: flex; align-items: center; gap: 16px; }
   .ndi-logo { height: 30px; opacity: 0.95; }
@@ -181,7 +181,7 @@
   .hero-layout {
     position: relative; z-index: 1;
     display: flex; align-items: center; gap: 60px;
-    max-width: 1050px; margin: 0 auto; width: 100%;
+    max-width: 975px; margin: 0 auto; width: 100%;
   }
   .hero-text { flex: 1; min-width: 0; }
   .hero-eyebrow {
@@ -335,7 +335,7 @@
   }
 
   /* ===== MAIN CONTENT ===== */
-  .main { max-width: 1050px; margin: 0 auto; padding: 48px 24px 80px; }
+  .main { max-width: 975px; margin: 0 auto; padding: 48px 24px 80px; }
 
   /* ===== NO-CLOUD ICON (replaces "Free Forever") ===== */
   .no-cloud-icon {
@@ -679,7 +679,7 @@
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
-  .sp-hero-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+  .sp-hero-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
   .sp-hero-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 12px;
@@ -820,7 +820,7 @@
     animation: glow-sweep 4s ease-in-out infinite;
   }
   .raven-cta {
-    max-width: 1050px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
     display: flex; align-items: center; gap: 40px;
   }
   .raven-cta-text {
@@ -895,7 +895,7 @@
     padding: 0;
   }
   .footer-inner {
-    max-width: 1050px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
     padding: 56px 32px 0;
   }
   /* Certification logos bar — full width above bottom */
@@ -989,7 +989,7 @@
     padding: 48px 32px 40px;
     text-align: center;
   }
-  .forge-hero-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+  .forge-hero-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
   .forge-hero-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 12px;
@@ -1037,7 +1037,7 @@
     padding: 48px 24px 40px;
   }
   .forge {
-    max-width: 1050px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
     height: 600px;
     display: flex; flex-direction: column;
     background: #242424;
@@ -1331,40 +1331,63 @@
     padding: 20px 24px 40px; text-align: center;
   }
   .forge-tagline-text {
-    max-width: 1050px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
     font-family: 'DM Mono', monospace; font-size: 12px;
     color: #555; letter-spacing: 2px; text-transform: uppercase;
   }
   .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
   .forge-tagline-text em { color: #444; font-style: normal; font-weight: 400; }
 
-  /* ===== EVA ===== */
-  .vt-hero {
+  /* ===== EVA — Unified Dark Section ===== */
+  .eva-section {
     position: relative; overflow: hidden;
-    background: #fff;
+    background: var(--n-blue-deep);
     border-top: 3px solid var(--d-blue);
-    padding: 48px 32px 40px;
-    text-align: center;
   }
-  .vt-hero-glow {
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  .eva-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(7,176,232,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 20% 80%, rgba(99,102,241,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 40% at 80% 60%, rgba(7,176,232,0.04) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+  .eva-section::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(7,176,232,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(7,176,232,0.015) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
+  .eva-glow-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 2;
     background: linear-gradient(90deg, transparent, var(--d-blue), #6366f1, var(--d-blue), transparent);
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
-  .vt-hero-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+
+  /* EVA Hero (top area with title) */
+  .vt-hero {
+    position: relative; z-index: 1;
+    padding: 56px 32px 32px;
+    text-align: center;
+  }
+  .vt-hero-content { max-width: 975px; margin: 0 auto; }
   .vt-hero-badge {
     display: inline-block;
-    font-family: 'DM Mono', monospace; font-size: 12px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
     color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
     font-weight: 700; margin-bottom: 20px;
     padding: 6px 16px; border-radius: 50px;
-    border: 1.5px solid var(--d-blue);
+    border: 1.5px solid rgba(7,176,232,0.3);
     background: rgba(7,176,232,0.06);
   }
   .vt-hero-title {
     font-size: clamp(32px, 5vw, 52px); font-weight: 900;
-    color: var(--n-blue); letter-spacing: -1px; line-height: 1.1;
+    color: #fff; letter-spacing: -1px; line-height: 1.1;
     margin-bottom: 18px;
   }
   .vt-hero-title span {
@@ -1373,15 +1396,15 @@
     background-clip: text;
   }
   .vt-hero-sub {
-    font-size: 18px; color: #444; max-width: 580px;
+    font-size: 18px; color: var(--text-secondary); max-width: 580px;
     margin: 0 auto; line-height: 1.7;
   }
-  .vt-hero-sub strong { color: #111; }
+  .vt-hero-sub strong { color: #fff; }
   .vt-hero-stats {
     display: inline-flex; align-items: center; gap: 24px;
     margin-top: 28px; padding: 16px 32px;
-    background: var(--n-blue); border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(2,38,64,0.3);
+    background: rgba(7,176,232,0.04); border-radius: 12px;
+    border: 1px solid rgba(7,176,232,0.1);
   }
   .vt-hero-stat { text-align: center; }
   .vt-hero-stat-value {
@@ -1389,33 +1412,43 @@
     font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
   }
   .vt-hero-stat-label {
-    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    display: block; font-size: 11px; color: rgba(255,255,255,0.45);
     text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
   }
   .vt-hero-stat-divider {
-    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+    width: 1px; height: 32px; background: rgba(255,255,255,0.08);
+  }
+
+  /* EVA Tool area */
+  .eva-tool-area {
+    position: relative; z-index: 1;
+    max-width: 975px; margin: 0 auto;
+    padding: 0 24px 48px;
   }
 
   /* EVA Tool — horizontal pill */
   .vt-tool {
-    max-width: 640px; margin: 0 auto;
-    background: var(--n-blue);
+    max-width: 975px; margin: 0 auto;
+    background: rgba(2,38,64,0.6);
+    backdrop-filter: blur(20px);
     border-radius: 60px;
     padding: 10px 10px 10px 28px;
-    border: 1px solid rgba(7,176,232,0.15);
-    box-shadow: 0 8px 40px rgba(2,38,64,0.18);
+    border: 1px solid rgba(7,176,232,0.12);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
     display: flex; align-items: center; gap: 16px;
     min-height: 68px;
     transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
   }
   .vt-tool.recording {
-    box-shadow: 0 0 0 1px rgba(239,68,68,0.2), 0 0 40px rgba(239,68,68,0.12), 0 8px 40px rgba(2,38,64,0.18);
+    border-color: rgba(239,68,68,0.25);
+    box-shadow: 0 0 0 1px rgba(239,68,68,0.15), 0 0 60px rgba(239,68,68,0.1), 0 8px 40px rgba(0,0,0,0.25);
   }
   .vt-tool.loading {
-    box-shadow: 0 0 0 1px rgba(7,176,232,0.15), 0 0 30px rgba(99,102,241,0.12), 0 8px 40px rgba(2,38,64,0.18);
+    border-color: rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 0 40px rgba(99,102,241,0.08), 0 8px 40px rgba(0,0,0,0.25);
   }
 
-  /* Waveform — left side of pill, uses SVG path */
+  /* Waveform — left side of pill */
   .vt-wave-area {
     flex: 1; height: 48px; position: relative; overflow: hidden;
     display: flex; align-items: center;
@@ -1505,20 +1538,20 @@
   .vt-rec-btn.processing .vt-stop-shape { display: none; }
   .vt-rec-btn.processing .vt-spin { display: block; }
 
-  /* Transcript — below the pill */
+  /* Transcript — below the pill (dark theme) */
   .vt-transcript {
-    max-width: 640px; margin: 16px auto 0; text-align: left;
-    background: rgba(2,38,64,0.04); border-radius: 14px;
-    border: 1px solid rgba(2,38,64,0.08);
+    max-width: 975px; margin: 16px auto 0; text-align: left;
+    background: rgba(7,176,232,0.03); border-radius: 14px;
+    border: 1px solid rgba(7,176,232,0.08);
     overflow: hidden;
     display: none;
     animation: fade-up 0.3s ease-out;
   }
   .vt-transcript-header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 20px; border-bottom: 1px solid rgba(2,38,64,0.06);
+    padding: 12px 20px; border-bottom: 1px solid rgba(7,176,232,0.06);
     font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
-    color: rgba(2,38,64,0.4); letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); letter-spacing: 1.5px; text-transform: uppercase;
   }
   .vt-word-count {
     font-family: 'DM Mono', monospace; font-size: 10px;
@@ -1526,14 +1559,14 @@
   }
   .vt-transcript-body {
     padding: 16px 20px;
-    font-size: 15px; color: var(--n-blue);
+    font-size: 15px; color: rgba(255,255,255,0.85);
     line-height: 1.7; white-space: pre-wrap;
     max-height: 180px; overflow-y: auto;
   }
   .vt-transcript-body::-webkit-scrollbar { width: 4px; }
-  .vt-transcript-body::-webkit-scrollbar-thumb { background: rgba(2,38,64,0.12); border-radius: 2px; }
+  .vt-transcript-body::-webkit-scrollbar-thumb { background: rgba(7,176,232,0.15); border-radius: 2px; }
   .vt-actions {
-    display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid rgba(2,38,64,0.06);
+    display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid rgba(7,176,232,0.06);
   }
   .vt-btn-copy {
     flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -1547,11 +1580,36 @@
   .vt-btn-download {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     padding: 10px 16px; border-radius: 10px; cursor: pointer;
-    background: rgba(2,38,64,0.04); border: 1px solid rgba(2,38,64,0.1);
-    color: var(--n-blue); font-family: 'DM Mono', monospace; font-size: 11px;
+    background: rgba(7,176,232,0.04); border: 1px solid rgba(7,176,232,0.1);
+    color: rgba(255,255,255,0.7); font-family: 'DM Mono', monospace; font-size: 11px;
     font-weight: 600; letter-spacing: 0.5px; transition: all 0.2s;
   }
-  .vt-btn-download:hover { background: rgba(2,38,64,0.08); }
+  .vt-btn-download:hover { background: rgba(7,176,232,0.08); }
+
+  /* EVA works-with (dark variant) */
+  .eva-works-with {
+    position: relative; z-index: 1;
+    max-width: 975px; margin: 0 auto;
+    padding: 16px 24px 0;
+  }
+  .eva-works-with .works-with-label { color: rgba(255,255,255,0.25); }
+  .eva-works-with .ai-logo-chip {
+    background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+  }
+  .eva-works-with .marquee-track:hover .ai-logo-chip { border-color: rgba(7,176,232,0.25); }
+
+  /* EVA tagline */
+  .eva-tagline {
+    position: relative; z-index: 1;
+    padding: 24px 24px 48px; text-align: center;
+  }
+  .eva-tagline-text {
+    max-width: 975px; margin: 0 auto;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: rgba(255,255,255,0.2); letter-spacing: 2px; text-transform: uppercase;
+  }
+  .eva-tagline-text span { color: var(--d-blue); font-weight: 700; }
 
   @media (max-width: 768px) {
     .vt-hero-stats { flex-wrap: wrap; gap: 16px; padding: 14px 20px; justify-content: center; }
@@ -1559,6 +1617,7 @@
     .vt-tool { max-width: 100%; border-radius: 50px; padding: 8px 8px 8px 20px; }
     .vt-transcript { border-radius: 12px; }
     .vt-actions { flex-direction: column; }
+    .eva-tool-area { padding: 0 16px 40px; }
   }
 
   /* ===== ANIMATIONS ===== */
@@ -1665,7 +1724,7 @@
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
-  .sd-hero-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+  .sd-hero-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
   .sd-hero-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 12px;
@@ -1721,7 +1780,7 @@
     background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(7,176,232,0.06) 0%, transparent 70%);
     pointer-events: none;
   }
-  .research-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+  .research-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
   .research-badge {
     display: inline-block;
     font-family: 'DM Mono', monospace; font-size: 11px;
@@ -1743,7 +1802,7 @@
   }
   .research-cards {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-    max-width: 1050px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
   }
   .research-card {
     padding: 28px 20px; border-radius: 12px;
@@ -2214,27 +2273,30 @@
 
   </div><!-- /forge-dark-zone -->
 
-  <!-- ===== EVA HERO ===== -->
-  <div class="vt-hero" id="eva">
-    <div class="vt-hero-glow"></div>
-    <div class="vt-hero-content">
-      <div class="vt-hero-badge">Voice Intelligence</div>
-      <h2 class="vt-hero-title">NDi <span>EVA</span></h2>
-      <p class="vt-hero-sub"><strong style="color:var(--n-blue);font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text running entirely in your browser. Zero latency.</p>
-      <div class="vt-hero-stats">
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value">Whisper</span><span class="vt-hero-stat-label">OpenAI Model</span></div>
-        <div class="vt-hero-stat-divider"></div>
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value">WASM</span><span class="vt-hero-stat-label">Accelerated</span></div>
-        <div class="vt-hero-stat-divider"></div>
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value">Real-Time</span><span class="vt-hero-stat-label">Transcription</span></div>
-        <div class="vt-hero-stat-divider"></div>
-        <div class="vt-hero-stat"><span class="vt-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="vt-hero-stat-label">No Cloud</span></div>
+  <!-- ===== EVA ===== -->
+  <div class="eva-section" id="eva">
+    <div class="eva-glow-bar"></div>
+
+    <!-- Hero -->
+    <div class="vt-hero">
+      <div class="vt-hero-content">
+        <div class="vt-hero-badge">Voice Intelligence</div>
+        <h2 class="vt-hero-title">NDi <span>EVA</span></h2>
+        <p class="vt-hero-sub"><strong style="color:#fff;font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text running entirely in your browser. Zero latency.</p>
+        <div class="vt-hero-stats">
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value">Whisper</span><span class="vt-hero-stat-label">OpenAI Model</span></div>
+          <div class="vt-hero-stat-divider"></div>
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value">WASM</span><span class="vt-hero-stat-label">Accelerated</span></div>
+          <div class="vt-hero-stat-divider"></div>
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value">Real-Time</span><span class="vt-hero-stat-label">Transcription</span></div>
+          <div class="vt-hero-stat-divider"></div>
+          <div class="vt-hero-stat"><span class="vt-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="vt-hero-stat-label">No Cloud</span></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ===== EVA TOOL ===== -->
-  <div class="main">
+    <!-- Tool area -->
+    <div class="eva-tool-area">
 
     <!-- SVG gradient defs for waveform + squiggle -->
     <svg width="0" height="0" style="position:absolute">
@@ -2307,32 +2369,42 @@
       </div>
     </div>
 
-    <!-- WORKS WITH -->
-    <div class="works-with" style="margin-top:28px; padding-top:16px; border-top:none;">
-      <div class="works-with-label">Works with</div>
-      <div class="marquee-mask">
-        <div class="marquee-track">
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=64" alt="" onerror="this.style.display='none'">Google Docs</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="" onerror="this.style.display='none'">Notion</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="" onerror="this.style.display='none'">Slack</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="" onerror="this.style.display='none'">Gmail</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Word</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=teams.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Teams</div>
-          <!-- duplicate for seamless loop -->
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=64" alt="" onerror="this.style.display='none'">Google Docs</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="" onerror="this.style.display='none'">Notion</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="" onerror="this.style.display='none'">Slack</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="" onerror="this.style.display='none'">Gmail</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Word</div>
-          <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=teams.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Teams</div>
+    </div><!-- /eva-tool-area -->
+
+    <!-- Works with (dark variant) -->
+    <div class="eva-works-with">
+      <div class="works-with" style="margin-top:0; padding-top:16px; border-top:none;">
+        <div class="works-with-label">Works with</div>
+        <div class="marquee-mask">
+          <div class="marquee-track">
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=64" alt="" onerror="this.style.display='none'">Google Docs</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="" onerror="this.style.display='none'">Notion</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="" onerror="this.style.display='none'">Slack</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="" onerror="this.style.display='none'">Gmail</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Word</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=teams.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Teams</div>
+            <!-- duplicate for seamless loop -->
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=64" alt="" onerror="this.style.display='none'">Google Docs</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=notion.so&sz=64" alt="" onerror="this.style.display='none'">Notion</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=slack.com&sz=64" alt="" onerror="this.style.display='none'">Slack</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="" onerror="this.style.display='none'">ChatGPT</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="" onerror="this.style.display='none'">Claude</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="" onerror="this.style.display='none'">Gmail</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Word</div>
+            <div class="ai-logo-chip"><img src="https://www.google.com/s2/favicons?domain=teams.microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Teams</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Tagline -->
+    <div class="eva-tagline">
+      <div class="eva-tagline-text">Powered by <span>Whisper</span> · Runs on device · Your voice never leaves the browser</div>
+    </div>
+
+  </div><!-- /eva-section -->
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -3185,7 +3257,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     { id: 'forge', el: document.getElementById('forge') },
     { id: 'eva', el: document.getElementById('eva') },
   ];
-  const ravenIds = new Set(['raven', 'forge']);
+  const ravenIds = new Set(['raven', 'forge', 'eva']);
   const ravenEl = document.getElementById('raven');
 
   function updateActiveNav() {
