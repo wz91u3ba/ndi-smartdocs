@@ -1295,6 +1295,18 @@
     .forge-hero-stat-divider { display: none; }
   }
 
+  /* Forge model runner */
+  .forge-runner {
+    background: #fff;
+    padding: 32px 24px 0;
+    max-width: 1050px; margin: 0 auto;
+  }
+  .forge-chip {
+    background: #1a1a1a; border-color: rgba(255,255,255,0.08);
+    color: #bbb;
+  }
+  .marquee-track:hover .forge-chip { border-color: rgba(248,180,44,0.25); }
+
   /* Forge tagline */
   .forge-tagline {
     background: #fff;
@@ -1841,7 +1853,7 @@
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
       <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
       <div class="forge-hero-stats">
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3B</span><span class="forge-hero-stat-label">Parameters</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">WebGPU</span><span class="forge-hero-stat-label">Accelerated</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -1920,6 +1932,33 @@
     </div>
   </div>
 
+
+  <!-- FORGE MODEL RUNNER -->
+  <div class="forge-runner">
+    <div class="marquee-mask">
+      <div class="marquee-track">
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=qwenlm.ai&sz=64" alt="" onerror="this.style.display='none'">Qwen</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=llama.meta.com&sz=64" alt="" onerror="this.style.display='none'">Llama</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=ai.google.dev&sz=64" alt="" onerror="this.style.display='none'">Gemma</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="" onerror="this.style.display='none'">Mistral</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Phi</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=deepseek.com&sz=64" alt="" onerror="this.style.display='none'">DeepSeek</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=huggingface.co&sz=64" alt="" onerror="this.style.display='none'">SmolLM</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=stability.ai&sz=64" alt="" onerror="this.style.display='none'">StableLM</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=together.ai&sz=64" alt="" onerror="this.style.display='none'">RedPajama</div>
+        <!-- duplicate set for seamless loop -->
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=qwenlm.ai&sz=64" alt="" onerror="this.style.display='none'">Qwen</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=llama.meta.com&sz=64" alt="" onerror="this.style.display='none'">Llama</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=ai.google.dev&sz=64" alt="" onerror="this.style.display='none'">Gemma</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="" onerror="this.style.display='none'">Mistral</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" alt="" onerror="this.style.display='none'">Phi</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=deepseek.com&sz=64" alt="" onerror="this.style.display='none'">DeepSeek</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=huggingface.co&sz=64" alt="" onerror="this.style.display='none'">SmolLM</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=stability.ai&sz=64" alt="" onerror="this.style.display='none'">StableLM</div>
+        <div class="ai-logo-chip forge-chip"><img src="https://www.google.com/s2/favicons?domain=together.ai&sz=64" alt="" onerror="this.style.display='none'">RedPajama</div>
+      </div>
+    </div>
+  </div>
 
   <!-- FORGE TAGLINE -->
   <div class="forge-tagline">
