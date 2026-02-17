@@ -1249,8 +1249,8 @@
   }
   .forge-setup-sub strong { color: #eee; font-weight: 700; }
   .forge-setup-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 13px 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 13px 32px; border-radius: 10px;
     background: #F8B42C; color: #000; border: none; cursor: pointer;
     font-family: 'Nunito Sans', sans-serif; font-size: 13px;
     font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
@@ -1267,7 +1267,7 @@
   @keyframes forge-spin { to { transform: rotate(360deg); } }
   /* Loading progress area */
   .forge-load-progress {
-    margin-top: 28px; display: inline-block;
+    margin-top: 28px; width: 100%;
   }
   .forge-load-bar {
     height: 6px; border-radius: 3px; width: 100%;
@@ -3350,8 +3350,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
   // Config with localStorage persistence
   const FC = {
-    get temp() { return parseFloat(localStorage.getItem('forge_temp') || '0.7'); },
-    get tokens() { return parseInt(localStorage.getItem('forge_max_tokens') || '1024'); },
+    get temp() { return parseFloat(localStorage.getItem('forge_temp') || '0.5'); },
+    get tokens() { return parseInt(localStorage.getItem('forge_max_tokens') || '2048'); },
   };
 
   // Load saved settings into modal inputs
@@ -3366,7 +3366,16 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
   // ---- CHAT ----
   function forgeBuildPayload() {
-    const sys = 'You are RAVEN Forge, a hyper-capable local AI assistant. Be direct, concise, and precise. Use markdown formatting when helpful.';
+    const sys = `You are RAVEN Forge, an expert AI assistant running locally in the user's browser. You are knowledgeable, thoughtful, and thorough.
+
+RULES:
+- Answer the user's actual question completely. Think step-by-step for complex problems.
+- If you write code, make it correct and complete — not just pseudocode or skeleton.
+- Use markdown: **bold** for emphasis, \`code\` for inline code, \`\`\`lang for code blocks, lists for multi-part answers.
+- If the question is ambiguous, address the most likely interpretation and note alternatives.
+- For math, science, logic, and reasoning: show your work clearly.
+- Be concise but never at the cost of correctness or completeness.
+- You do NOT have internet access, file access, or tool use. You can only respond with text.`;
     return [{ role: 'system', content: sys }, ...forgeMessages];
   }
 
@@ -3469,6 +3478,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         stream: true,
         temperature: FC.temp,
         max_tokens: FC.tokens,
+        top_p: 0.9,
+        frequency_penalty: 0.3,
       });
 
       for await (const chunk of chunks) {
@@ -3525,7 +3536,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     loadBtn.disabled = true;
     loadBtnText.textContent = 'Downloading...';
     loadBtn.querySelector('svg').style.display = 'none';
-    loadProgress.style.width = loadBtn.offsetWidth + 'px';
     loadProgress.style.display = 'block';
     loadError.style.display = 'none';
 
