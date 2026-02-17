@@ -953,6 +953,63 @@
     .footer-certs { flex-wrap: wrap; gap: 16px; }
   }
 
+  /* ===== FORGE HERO ===== */
+  .forge-hero {
+    position: relative; overflow: hidden;
+    background: #fff;
+    border-top: 3px solid #F8B42C;
+    border-bottom: 3px solid #F8B42C;
+    padding: 64px 32px;
+    text-align: center;
+  }
+  .forge-hero-glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #F8B42C, #ff6b3d, #F8B42C, transparent);
+    background-size: 200% 100%;
+    animation: glow-sweep 4s ease-in-out infinite;
+  }
+  .forge-hero-content { position: relative; z-index: 1; max-width: 1050px; margin: 0 auto; }
+  .forge-hero-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: #F8B42C; letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 20px;
+    padding: 6px 16px; border-radius: 50px;
+    border: 1.5px solid #F8B42C;
+    background: rgba(248,180,44,0.06);
+  }
+  .forge-hero-title {
+    font-size: clamp(32px, 5vw, 52px); font-weight: 900;
+    color: #111; letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .forge-hero-title span {
+    color: #F8B42C;
+  }
+  .forge-hero-sub {
+    font-size: 18px; color: #444; max-width: 580px;
+    margin: 0 auto; line-height: 1.7;
+  }
+  .forge-hero-sub strong { color: #111; }
+  .forge-hero-stats {
+    display: inline-flex; align-items: center; gap: 24px;
+    margin-top: 28px; padding: 16px 32px;
+    background: #111; border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .forge-hero-stat { text-align: center; }
+  .forge-hero-stat-value {
+    display: block; font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 700; color: #F8B42C; letter-spacing: 0.5px;
+  }
+  .forge-hero-stat-label {
+    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+  }
+  .forge-hero-stat-divider {
+    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+  }
+
   /* ===== RAVEN FORGE ===== */
   .forge-wrap {
     background: #fff;
@@ -1012,12 +1069,12 @@
     font-family: 'DM Mono', monospace; font-size: 12px;
     color: #666; letter-spacing: 0.5px;
   }
-  .forge-msg { display: flex; gap: 10px; max-width: 85%; animation: fade-up 0.25s ease-out; }
+  .forge-msg { display: flex; align-items: flex-start; gap: 10px; max-width: 85%; animation: fade-up 0.25s ease-out; }
   .forge-msg-ai { align-self: flex-start; }
   .forge-msg-user { align-self: flex-end; flex-direction: row-reverse; }
   .forge-msg-avatar {
-    width: 24px; height: 24px; border-radius: 6px;
-    flex-shrink: 0; margin-top: 2px;
+    width: 22px; height: 22px; border-radius: 6px;
+    flex-shrink: 0; margin-top: 4px;
   }
   .forge-msg-user .forge-msg-avatar { display: none; }
   .forge-msg-bubble {
@@ -1031,7 +1088,6 @@
   }
   .forge-msg-user .forge-msg-bubble {
     background: #2f2a1e;
-    border-left: 2px solid rgba(248,180,44,0.4);
     border: 1px solid rgba(248,180,44,0.1);
     border-left: 2px solid rgba(248,180,44,0.4);
   }
@@ -1802,8 +1858,34 @@
     </div>
   </div>
 
+  <!-- ===== FORGE HERO ===== -->
+  <div class="forge-hero" id="forge">
+    <div class="forge-hero-glow"></div>
+    <div class="forge-hero-content">
+      <div class="forge-hero-badge">AI Acceleration</div>
+      <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage. Powered by Ollama + Qwen — your documents, your machine, your control.</p>
+      <div class="forge-hero-stats">
+        <div class="forge-hero-stat">
+          <span class="forge-hero-stat-value">100%</span>
+          <span class="forge-hero-stat-label">Local</span>
+        </div>
+        <div class="forge-hero-stat-divider"></div>
+        <div class="forge-hero-stat">
+          <span class="forge-hero-stat-value">0 B</span>
+          <span class="forge-hero-stat-label">Data Sent</span>
+        </div>
+        <div class="forge-hero-stat-divider"></div>
+        <div class="forge-hero-stat">
+          <span class="forge-hero-stat-value">∞</span>
+          <span class="forge-hero-stat-label">Privacy</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== RAVEN FORGE ===== -->
-  <div class="forge-wrap" id="forge">
+  <div class="forge-wrap">
     <div class="forge" style="position:relative;">
       <!-- Gate Overlay -->
       <div class="forge-gate" id="forgeGate">
@@ -2522,6 +2604,32 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
+  // Debug helper — renders error with full context into a bubble
+  function forgeDebugError(bubble, step, err, extra) {
+    const errName = err?.name || 'Unknown';
+    const errMsg = err?.message || String(err);
+    const codeStyle = 'background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:"DM Mono",monospace;font-size:10px';
+    const dimStyle = 'color:#666;font-size:10px;font-family:"DM Mono",monospace;word-break:break-all';
+    bubble.innerHTML = `<div style="font-size:13px;line-height:1.7">
+      <strong style="color:#ff6b6b">⚡ Error at: ${step}</strong><br>
+      <span style="color:#ff8a80;font-size:12px">${esc(errName)}: ${esc(errMsg.slice(0,300))}</span>
+      ${extra ? `<div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:6px;border:1px solid rgba(255,255,255,0.06)">
+        <div style="${dimStyle}">${extra}</div>
+      </div>` : ''}
+      <div style="margin-top:10px;color:#999;font-size:12px;line-height:1.6">
+        <strong style="color:#bbb">Checklist:</strong>
+        <ol style="margin:4px 0 0 16px">
+          <li>Ollama running? → <code style="${codeStyle}">ollama serve</code></li>
+          <li>Model pulled? → <code style="${codeStyle}">ollama pull ${FC.model}</code></li>
+          <li>Loopback allowed? → Click Allow when browser asks</li>
+        </ol>
+      </div>
+      <div style="margin-top:8px;${dimStyle}">
+        url: ${esc(FC.url)}<br>model: ${esc(FC.model)} · temp: ${FC.temp} · max_tokens: ${FC.tokens}
+      </div>
+    </div>`;
+  }
+
   window.forgeSend = async function() {
     const text = inputEl.value.trim();
     if (!text || forgeStreaming) return;
@@ -2535,38 +2643,52 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     const msgDiv = forgeRenderMsg('assistant', '', true);
     const bubble = msgDiv.querySelector('.forge-msg-bubble');
     let full = '';
+    let step = 'init';
 
     try {
+      // Step 1: Build payload
+      step = 'Building payload';
+      const payload = {
+        model: FC.model,
+        messages: forgeBuildPayload(),
+        stream: true,
+        temperature: FC.temp,
+        max_tokens: FC.tokens,
+      };
+
+      // Step 2: Send fetch
+      step = 'Fetching ' + FC.url;
       const res = await fetch(FC.url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: FC.model,
-          messages: forgeBuildPayload(),
-          stream: true,
-          temperature: FC.temp,
-          max_tokens: FC.tokens,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      // Step 3: Check response status
+      step = 'Checking response (HTTP ' + res.status + ')';
       if (!res.ok) {
-        const err = await res.text();
-        bubble.innerHTML = `<div style="color:#ff8a80;font-size:13px;line-height:1.6">
-          <strong style="color:#ff6b6b">⚡ Error ${res.status}</strong><br>
-          <span style="color:#999;font-size:12px">${err.slice(0,200) || 'No details provided'}</span>
-        </div>`;
+        const errBody = await res.text();
+        forgeDebugError(bubble, step, { name: 'HTTP ' + res.status, message: errBody.slice(0,300) || res.statusText },
+          'content-type: ' + (res.headers.get('content-type') || 'none'));
         forgeMessages.push({ role: 'assistant', content: `(Error ${res.status})` });
         forgeStreaming = false;
         return;
       }
 
+      // Step 4: Get reader
+      step = 'Opening stream reader';
+      if (!res.body) throw new Error('Response body is null — streaming not supported');
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = '';
+      let chunkCount = 0;
 
+      // Step 5: Read stream
+      step = 'Reading stream';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+        chunkCount++;
         buf += dec.decode(value, { stream: true });
         const lines = buf.split('\n');
         buf = lines.pop() || '';
@@ -2582,29 +2704,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
               bubble.innerHTML = forgeMd(full) + '<span class="forge-cursor"></span>';
               chatEl.scrollTop = chatEl.scrollHeight;
             }
-          } catch(e) {}
+          } catch (parseErr) {
+            // Log SSE parse errors but don't break
+            console.warn('[Forge] SSE parse error on chunk #' + chunkCount + ':', data.slice(0, 100), parseErr);
+          }
         }
       }
+      step = 'Stream complete (' + chunkCount + ' chunks, ' + full.length + ' chars)';
+
     } catch (e) {
       if (!full) {
-        bubble.innerHTML = `<div style="color:#ff8a80;font-size:13px;line-height:1.6">
-          <strong style="color:#ff6b6b">⚡ Connection Failed</strong><br>
-          <span style="color:#bbb">Couldn't reach your local AI. Make sure:</span>
-          <ul style="margin:8px 0 4px 16px;color:#999;font-size:12px">
-            <li>Ollama is running — <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:'DM Mono',monospace;font-size:11px">ollama serve</code></li>
-            <li>Model is pulled — <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:3px;color:#F8B42C;font-family:'DM Mono',monospace;font-size:11px">ollama pull ${FC.model}</code></li>
-            <li>You allowed loopback access in the browser dialog</li>
-          </ul>
-          <span style="color:#555;font-size:10px;font-family:'DM Mono',monospace">${FC.url}</span>
-        </div>`;
-        forgeMessages.push({ role: 'assistant', content: '(Connection failed)' });
+        forgeDebugError(bubble, step, e);
+        forgeMessages.push({ role: 'assistant', content: '(Error: ' + step + ')' });
         forgeStreaming = false;
         return;
       }
     }
 
     // Finalize
-    bubble.innerHTML = forgeMd(full || '(Empty response from model)');
+    bubble.innerHTML = forgeMd(full || '(Empty response — 0 tokens received)');
     forgeMessages.push({ role: 'assistant', content: full });
     forgeStreaming = false;
   };
