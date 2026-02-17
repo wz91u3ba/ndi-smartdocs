@@ -1270,7 +1270,7 @@
     margin-top: 28px; display: inline-block;
   }
   .forge-load-bar {
-    height: 6px; border-radius: 3px; width: 100%; min-width: 200px;
+    height: 6px; border-radius: 3px; width: 100%;
     background: rgba(255,255,255,0.08); overflow: hidden;
   }
   .forge-load-fill {
@@ -3482,6 +3482,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       return;
     }
 
+    loadProgress.style.width = loadBtn.offsetWidth + 'px';
     loadBtn.disabled = true;
     loadBtnText.textContent = 'Downloading...';
     loadBtn.querySelector('svg').style.display = 'none';
