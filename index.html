@@ -381,9 +381,14 @@
   .format-chip {
     font-family: 'DM Mono', monospace; font-size: 13px;
     padding: 8px 16px; border-radius: 6px;
-    background: rgba(7,176,232,0.12); border: 1px solid rgba(7,176,232,0.3);
-    color: #4dc9f6; letter-spacing: 0.5px; font-weight: 500;
+    letter-spacing: 0.5px; font-weight: 500;
   }
+  .format-chip-pdf { background: rgba(220,53,69,0.12); border: 1px solid rgba(220,53,69,0.3); color: #e85d6f; }
+  .format-chip-docx { background: rgba(43,87,154,0.12); border: 1px solid rgba(43,87,154,0.3); color: #5b9aed; }
+  .format-chip-pptx { background: rgba(209,105,46,0.12); border: 1px solid rgba(209,105,46,0.3); color: #e8874a; }
+  .format-chip-xlsx { background: rgba(33,115,70,0.12); border: 1px solid rgba(33,115,70,0.3); color: #3dbf6e; }
+  .format-chip-csv { background: rgba(130,150,50,0.12); border: 1px solid rgba(130,150,50,0.3); color: #a8b84a; }
+  .format-chip-txt { background: rgba(140,140,140,0.12); border: 1px solid rgba(140,140,140,0.3); color: #a0a0a0; }
 
   /* ===== FILE LIST ===== */
   .file-list { margin-top: 20px; }
@@ -399,10 +404,9 @@
   .file-item:hover { border-color: var(--border-hover); }
   .file-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .file-ext {
-    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
-    padding: 3px 7px; border-radius: 3px; letter-spacing: 0.8px;
-    background: var(--surface-2); border: 1px solid var(--border);
-    color: var(--d-blue); text-transform: uppercase; flex-shrink: 0;
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600;
+    padding: 4px 8px; border-radius: 4px; letter-spacing: 0.8px;
+    text-transform: uppercase; flex-shrink: 0;
   }
   .file-name {
     font-size: 15px; font-weight: 700; color: #fff;
@@ -435,6 +439,18 @@
     font-family: 'DM Mono', monospace; font-size: 14px; color: #c0d0dc; font-weight: 500;
   }
   .staged-count { color: var(--d-blue); font-weight: 500; }
+  .btn-clear-all {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 6px;
+    background: rgba(140,140,140,0.1); border: 1px solid rgba(140,140,140,0.2);
+    color: #8fa4b3; font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-clear-all:hover {
+    background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3);
+    color: var(--danger);
+  }
 
   /* ===== BUTTON ===== */
   .btn-process {
@@ -1246,12 +1262,12 @@
       <div class="drop-title">Drop documents here or click to browse</div>
       <div class="drop-sub">Your files never leave this browser</div>
       <div class="drop-formats">
-        <span class="format-chip">.pdf</span>
-        <span class="format-chip">.docx</span>
-        <span class="format-chip">.pptx</span>
-        <span class="format-chip">.xlsx</span>
-        <span class="format-chip">.csv</span>
-        <span class="format-chip">.txt</span>
+        <span class="format-chip format-chip-pdf">.pdf</span>
+        <span class="format-chip format-chip-docx">.docx</span>
+        <span class="format-chip format-chip-pptx">.pptx</span>
+        <span class="format-chip format-chip-xlsx">.xlsx</span>
+        <span class="format-chip format-chip-csv">.csv</span>
+        <span class="format-chip format-chip-txt">.txt</span>
       </div>
     </div>
 
@@ -1260,7 +1276,8 @@
 
     <!-- STAGED BAR -->
     <div class="staged-bar" id="stagedBar">
-      <div class="staged-text"><span class="staged-count" id="stagedCount">0</span> documents staged · <span id="stagedSize">0</span> KB</div>
+      <div class="staged-text"><span class="staged-count" id="stagedCount">0</span> documents staged · <span id="stagedSize">0 KB</span></div>
+      <button class="btn-clear-all" onclick="clearAllFiles()">✕ Clear All</button>
     </div>
 
     <!-- PROCESS BUTTON -->
@@ -1582,25 +1599,56 @@ function addFiles(list) {
 
 function removeFile(i) { stagedFiles.splice(i, 1); renderFiles(); }
 
+function clearAllFiles() {
+  if (stagedFiles.length === 0) return;
+  if (!confirm(`Remove all ${stagedFiles.length} staged documents?`)) return;
+  stagedFiles = []; renderFiles();
+}
+
+// File type color map
+const extColors = {
+  pdf:  { bg: 'rgba(220,53,69,0.15)', border: 'rgba(220,53,69,0.35)', color: '#e85d6f' },
+  docx: { bg: 'rgba(43,87,154,0.15)', border: 'rgba(43,87,154,0.35)', color: '#5b9aed' },
+  doc:  { bg: 'rgba(43,87,154,0.15)', border: 'rgba(43,87,154,0.35)', color: '#5b9aed' },
+  pptx: { bg: 'rgba(209,105,46,0.15)', border: 'rgba(209,105,46,0.35)', color: '#e8874a' },
+  ppt:  { bg: 'rgba(209,105,46,0.15)', border: 'rgba(209,105,46,0.35)', color: '#e8874a' },
+  xlsx: { bg: 'rgba(33,115,70,0.15)', border: 'rgba(33,115,70,0.35)', color: '#3dbf6e' },
+  xls:  { bg: 'rgba(33,115,70,0.15)', border: 'rgba(33,115,70,0.35)', color: '#3dbf6e' },
+  csv:  { bg: 'rgba(130,150,50,0.15)', border: 'rgba(130,150,50,0.35)', color: '#a8b84a' },
+  txt:  { bg: 'rgba(140,140,140,0.15)', border: 'rgba(140,140,140,0.3)', color: '#a0a0a0' },
+  jpg:  { bg: 'rgba(128,60,180,0.15)', border: 'rgba(128,60,180,0.35)', color: '#b07ce0' },
+  jpeg: { bg: 'rgba(128,60,180,0.15)', border: 'rgba(128,60,180,0.35)', color: '#b07ce0' },
+  png:  { bg: 'rgba(128,60,180,0.15)', border: 'rgba(128,60,180,0.35)', color: '#b07ce0' },
+};
+const defaultExtColor = { bg: 'rgba(7,176,232,0.1)', border: 'rgba(7,176,232,0.25)', color: '#4dc9f6' };
+
+function formatSize(bytes) {
+  if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+  return (bytes / 1024).toFixed(1) + ' KB';
+}
+
 function renderFiles() {
   fileListEl.innerHTML = stagedFiles.map((f, i) => {
-    const ext = f.name.split('.').pop().toUpperCase();
+    const ext = f.name.split('.').pop().toLowerCase();
+    const extUp = ext.toUpperCase();
+    const c = extColors[ext] || defaultExtColor;
     return `<div class="file-item">
       <div class="file-info">
-        <span class="file-ext">${ext}</span>
+        <span class="file-ext" style="background:${c.bg};border:1px solid ${c.border};color:${c.color}">${extUp}</span>
         <span class="file-name">${f.name}</span>
       </div>
       <div class="file-meta">
-        <span class="file-size">${(f.size/1024).toFixed(1)} KB</span>
+        <span class="file-size">${formatSize(f.size)}</span>
         <button class="file-remove" onclick="removeFile(${i})">✕</button>
       </div>
     </div>`;
   }).join('');
 
   if (stagedFiles.length) {
-    const totalKB = stagedFiles.reduce((s,f) => s + f.size, 0) / 1024;
+    const totalBytes = stagedFiles.reduce((s,f) => s + f.size, 0);
     document.getElementById('stagedCount').textContent = stagedFiles.length;
-    document.getElementById('stagedSize').textContent = totalKB.toFixed(1);
+    document.getElementById('stagedSize').textContent = formatSize(totalBytes);
     stagedBar.classList.add('visible');
     processBtn.disabled = false;
   } else {
