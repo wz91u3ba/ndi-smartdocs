@@ -359,6 +359,15 @@
     background: var(--d-blue-hover);
     box-shadow: 0 2px 16px rgba(7,176,232,0.25);
   }
+  .btn-action-download {
+    background: var(--grey-1); color: var(--n-blue); border: none;
+    font-weight: 800; font-size: 13px; height: 48px; padding: 0 28px;
+  }
+  .btn-action-download:hover {
+    background: #fff; color: var(--n-blue-deep);
+    box-shadow: 0 4px 20px rgba(241,242,242,0.3);
+    transform: translateY(-1px);
+  }
   .btn-action-ghost {
     background: transparent; color: var(--d-blue);
     border: 1px solid var(--border-hover);
@@ -655,7 +664,7 @@
         <div class="result-text" id="resultText">Complete</div>
       </div>
       <div class="result-actions">
-        <button class="btn-action btn-action-primary" onclick="downloadCorpus()">
+        <button class="btn-action btn-action-download" onclick="downloadCorpus()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Download SmartDoc (.txt)
         </button>
