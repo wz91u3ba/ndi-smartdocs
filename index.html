@@ -92,7 +92,28 @@
     backdrop-filter: blur(20px);
     background: rgba(1,26,46,0.8);
     position: sticky; top: 0; z-index: 100;
+    transition: background 0.4s ease, border-color 0.4s ease;
   }
+  .topbar.dark-mode {
+    background: rgba(10,10,10,0.95);
+    border-bottom-color: rgba(255,255,255,0.06);
+  }
+  .topbar.dark-mode .ndi-logo,
+  .topbar.dark-mode .topbar-attribution-logo {
+    filter: brightness(0) invert(1); transition: filter 0.4s ease;
+  }
+  .topbar.dark-mode .topbar-divider { background: rgba(255,255,255,0.15); transition: background 0.4s ease; }
+  .topbar.dark-mode .topbar-attribution-text { color: #999; }
+  .topbar.dark-mode .btn-partner {
+    background: rgba(255,255,255,0.1); color: #eee;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .topbar.dark-mode .btn-partner:hover {
+    background: rgba(255,255,255,0.18); color: #fff;
+    box-shadow: 0 2px 12px rgba(255,255,255,0.1);
+  }
+  .topbar.dark-mode .btn-partner-divider { background: rgba(255,255,255,0.2); }
+  .topbar.dark-mode .sdvosb-logo { filter: brightness(0) invert(1); transition: filter 0.4s ease; }
   .topbar-inner {
     display: flex; align-items: center; justify-content: space-between;
     max-width: 1050px; margin: 0 auto; width: 100%;
@@ -2429,10 +2450,11 @@ function showToast(msg, raven) {
 // ========== PDF.js Worker ==========
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ========== FLOATING NAV: active state on scroll ==========
+// ========== FLOATING NAV + TOPBAR: scroll-aware theming ==========
 (function() {
   const navEl = document.querySelector('.floating-nav');
   const navLinks = document.querySelectorAll('.floating-nav a');
+  const topbar = document.querySelector('.topbar');
   const sections = [
     { id: 'smartdoc', el: document.getElementById('smartdoc') },
     { id: 'superprompt', el: document.getElementById('superprompt') },
@@ -2440,6 +2462,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     { id: 'raven', el: document.getElementById('raven') },
   ];
   const ravenIds = new Set(['raven', 'forge']);
+  const ravenEl = document.getElementById('raven');
 
   function updateActiveNav() {
     const scrollY = window.scrollY + 120;
@@ -2452,6 +2475,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       link.classList.toggle('active', isActive);
     });
     navEl.classList.toggle('raven-mode', ravenIds.has(activeId));
+
+    // Topbar dark mode: activate when topbar overlaps RAVEN section
+    const topbarH = topbar.offsetHeight;
+    const ravenTop = ravenEl ? ravenEl.offsetTop : Infinity;
+    topbar.classList.toggle('dark-mode', window.scrollY + topbarH >= ravenTop);
   }
 
   window.addEventListener('scroll', updateActiveNav, { passive: true });
