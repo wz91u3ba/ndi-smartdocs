@@ -1558,7 +1558,7 @@
     padding: 16px 20px;
     font-size: 15px; color: rgba(255,255,255,0.85);
     line-height: 1.7; white-space: pre-wrap;
-    max-height: 180px; overflow-y: auto;
+    max-height: 380px; overflow-y: auto;
   }
   .vt-transcript-body::-webkit-scrollbar { width: 4px; }
   .vt-transcript-body::-webkit-scrollbar-thumb { background: rgba(7,176,232,0.15); border-radius: 2px; }
@@ -2354,13 +2354,13 @@
       </div>
       <div class="vt-transcript-body" id="vtTranscriptBody"></div>
       <div class="vt-actions">
-        <button class="vt-btn-copy" onclick="vtCopy()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
-          Save
-        </button>
-        <button class="vt-btn-download" onclick="vtDownload()">
+        <button class="vt-btn-copy" onclick="vtDownload()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download
+        </button>
+        <button class="vt-btn-download" onclick="vtCopy()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
+          Copy
         </button>
       </div>
     </div>
@@ -3222,7 +3222,7 @@ function showToast(msg, raven) {
     const text = vtTranscriptText.trim();
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.vt-btn-copy');
+      const btn = document.querySelector('.vt-btn-download');
       const orig = btn.innerHTML;
       btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
       setTimeout(() => btn.innerHTML = orig, 1500);
@@ -3236,7 +3236,11 @@ function showToast(msg, raven) {
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'eva-transcript-' + new Date().toISOString().slice(0,10) + '.txt';
+    const d = new Date();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const yy = String(d.getFullYear()).slice(-2);
+    a.download = `NDi_EVA_${mm}-${dd}-${yy}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
