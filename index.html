@@ -1289,6 +1289,7 @@
   .forge-setup-sub {
     font-size: 13px; color: #bbb; line-height: 1.7; margin-bottom: 24px;
   }
+  .forge-setup-sub strong { color: #eee; font-weight: 700; }
   .forge-setup-btn {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 13px 32px; border-radius: 10px;
@@ -1319,20 +1320,9 @@
     background: linear-gradient(90deg, #F8B42C, #f9c35a);
     transition: width 0.4s ease;
   }
-  .forge-load-meta {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 10px;
-  }
-  .forge-load-pct {
-    font-family: 'DM Mono', monospace; font-size: 12px;
-    font-weight: 700; color: #F8B42C;
-  }
-  .forge-load-timer {
-    font-family: 'DM Mono', monospace; font-size: 11px; color: #777;
-  }
   .forge-load-status {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    color: #999; margin-top: 12px; line-height: 1.5;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: #999; margin-top: 12px; text-align: center;
   }
   .forge-load-hint {
     font-size: 12px; color: #666; margin-top: 16px;
@@ -1903,17 +1893,13 @@
         <div class="forge-setup">
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
           <div class="forge-setup-title">RAVEN Forge</div>
-          <p class="forge-setup-sub">3B-parameter AI runs entirely in your browser.<br>First load downloads ~1.7 GB, then it's cached locally. No data ever leaves your device.</p>
+          <p class="forge-setup-sub">3B Parameter AI — Entirely in your browser.<br>Downloads once, then it's cached locally. <strong>No data ever leaves your device.</strong></p>
           <button class="forge-setup-btn" id="forgeLoadBtn" onclick="forgeStartEngine()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span id="forgeLoadBtnText">Load AI Model</span>
           </button>
           <div class="forge-load-progress" id="forgeLoadProgress" style="display:none;">
             <div class="forge-load-bar"><div class="forge-load-fill" id="forgeLoadFill"></div></div>
-            <div class="forge-load-meta">
-              <span class="forge-load-pct" id="forgeLoadPct">0%</span>
-              <span class="forge-load-timer" id="forgeLoadTimer">0s elapsed</span>
-            </div>
             <div class="forge-load-status" id="forgeLoadStatus">Preparing download...</div>
             <div class="forge-load-hint">Feel free to leave this tab open in the background.</div>
           </div>
@@ -2581,7 +2567,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     let sys = 'You are RAVEN Forge, a hyper-capable local AI assistant. Be direct, concise, and precise. Use markdown formatting when helpful.';
     if (forgeDocs.length) {
       sys += '\n\nDocuments loaded as context:\n';
-      forgeDocs.forEach(d => { sys += `\n<Doc name="${d.name}">\n${d.text.slice(0, 8000)}\n</Doc>\n`; });
+      forgeDocs.forEach(d => { sys += `\n<Doc name="${d.name}">\n${d.text.slice(0, 24000)}\n</Doc>\n`; });
       sys += '\nReference these documents when relevant.';
     }
     return [{ role: 'system', content: sys }, ...forgeMessages];
@@ -2718,8 +2704,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   const loadBtnText = document.getElementById('forgeLoadBtnText');
   const loadProgress = document.getElementById('forgeLoadProgress');
   const loadFill = document.getElementById('forgeLoadFill');
-  const loadPct = document.getElementById('forgeLoadPct');
-  const loadTimer = document.getElementById('forgeLoadTimer');
   const loadStatus = document.getElementById('forgeLoadStatus');
   const loadError = document.getElementById('forgeLoadError');
 
@@ -2736,13 +2720,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     loadProgress.style.display = 'block';
     loadError.style.display = 'none';
 
-    // Elapsed timer
     const startTime = Date.now();
-    const timerInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const mins = Math.floor(elapsed / 60);
-      const secs = elapsed % 60;
-      loadTimer.textContent = mins > 0 ? `${mins}m ${secs}s elapsed` : `${secs}s elapsed`;
+    let timerInterval = setInterval(() => {
+      const s = Math.floor((Date.now() - startTime) / 1000);
+      const mins = Math.floor(s / 60);
+      const secs = s % 60;
+      const pct = loadFill.style.width || '0%';
+      loadStatus.textContent = `${pct} — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
     }, 1000);
 
     try {
@@ -2752,14 +2736,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         initProgressCallback: (report) => {
           const pct = Math.floor(report.progress * 100);
           loadFill.style.width = pct + '%';
-          loadPct.textContent = pct + '%';
-          loadStatus.textContent = report.text;
+          const s = Math.floor((Date.now() - startTime) / 1000);
+          const mins = Math.floor(s / 60);
+          const secs = s % 60;
+          loadStatus.textContent = `${pct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
         },
-      });
+      }, { context_window_size: 32768 });
 
       clearInterval(timerInterval);
       loadFill.style.width = '100%';
-      loadPct.textContent = '100%';
       loadStatus.textContent = 'Ready!';
       loadBtnText.textContent = 'Loaded';
       setTimeout(() => gateEl.classList.add('dismissed'), 600);
