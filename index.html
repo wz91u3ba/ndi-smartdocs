@@ -454,7 +454,10 @@
   }
   .super-prompt-header {
     display: flex; align-items: center; gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 24px; justify-content: space-between;
+  }
+  .super-prompt-header-left {
+    display: flex; align-items: center; gap: 16px;
   }
   .super-prompt-icon {
     width: 52px; height: 52px; border-radius: 12px;
@@ -666,15 +669,21 @@
     <!-- NDi SUPER PROMPT™ -->
     <div class="super-prompt-section">
       <div class="super-prompt-header">
-        <div class="super-prompt-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--d-blue)">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <div class="super-prompt-header-left">
+          <div class="super-prompt-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--d-blue)">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="super-prompt-title">NDi Super Prompt™</div>
+            <div class="super-prompt-sub">Paste before any prompt. Any model. Instant overdrive.</div>
+          </div>
         </div>
-        <div>
-          <div class="super-prompt-title">NDi Super Prompt™</div>
-          <div class="super-prompt-sub">Paste before any prompt. Any model. Instant overdrive.</div>
-        </div>
+        <button class="btn-action btn-action-primary btn-super" onclick="copySuperPrompt()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
+          Copy Super Prompt
+        </button>
       </div>
 
       <div class="super-prompt-card">
@@ -682,38 +691,32 @@
         <div class="super-prompt-content" id="superPromptBox"></div>
       </div>
 
-      <div class="super-prompt-actions">
-        <button class="btn-action btn-action-primary btn-super" onclick="copySuperPrompt()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
-          Copy Super Prompt
-        </button>
-      </div>
 
       <div class="works-with">
         <div class="works-with-label">Works with</div>
         <div class="marquee-mask">
           <div class="marquee-track">
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/chatgpt-6.svg" alt="ChatGPT">ChatGPT</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/claude-ai-icon.svg" alt="Claude">Claude</div>
-            <div class="ai-logo-chip"><img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg" alt="Gemini">Gemini</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/perplexity-ai-icon.svg" alt="Perplexity">Perplexity</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/meta-icon.svg" alt="Meta AI">Meta AI</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/mistral-ai-icon.svg" alt="Mistral">Mistral</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/microsoft-copilot.svg" alt="Copilot">Copilot</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/grok-1.svg" alt="Grok">Grok</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/deepseek.svg" alt="DeepSeek">DeepSeek</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/cohere-1.svg" alt="Cohere">Cohere</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#10a37f"/><path d="M12 7v5l3 3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>ChatGPT</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#d97706"/><path d="M7 8h10M7 12h7M7 16h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>Claude</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>Gemini</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1a7f64"/><path d="M6 12h12M12 6v12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Perplexity</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#0668E1"/><path d="M8 10c0-3 8-3 8 0s-8 5-8 8h8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Meta AI</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#f54e00"/><path d="M4 12h16M12 4l-8 16M12 4l8 16" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>Mistral</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B61FF"/><path d="M6 17L12 7l6 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Copilot</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M6 18L18 6M6 6l12 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Grok</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4D6BFE"/><path d="M7 17V7h3l4 6V7h3v10h-3l-4-6v6z" fill="#fff"/></svg>DeepSeek</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#39594D"/><path d="M6 12a6 6 0 0112 0 6 6 0 01-12 0z" stroke="#D18EE2" stroke-width="2" fill="none"/></svg>Cohere</div>
             <!-- duplicate set for seamless loop -->
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/chatgpt-6.svg" alt="ChatGPT">ChatGPT</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/claude-ai-icon.svg" alt="Claude">Claude</div>
-            <div class="ai-logo-chip"><img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg" alt="Gemini">Gemini</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/perplexity-ai-icon.svg" alt="Perplexity">Perplexity</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/meta-icon.svg" alt="Meta AI">Meta AI</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/mistral-ai-icon.svg" alt="Mistral">Mistral</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/microsoft-copilot.svg" alt="Copilot">Copilot</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/grok-1.svg" alt="Grok">Grok</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/deepseek.svg" alt="DeepSeek">DeepSeek</div>
-            <div class="ai-logo-chip"><img src="https://cdn.worldvectorlogo.com/logos/cohere-1.svg" alt="Cohere">Cohere</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#10a37f"/><path d="M12 7v5l3 3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>ChatGPT</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#d97706"/><path d="M7 8h10M7 12h7M7 16h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>Claude</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8" fill="#4285f4"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>Gemini</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#1a7f64"/><path d="M6 12h12M12 6v12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Perplexity</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#0668E1"/><path d="M8 10c0-3 8-3 8 0s-8 5-8 8h8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Meta AI</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#f54e00"/><path d="M4 12h16M12 4l-8 16M12 4l8 16" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>Mistral</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#7B61FF"/><path d="M6 17L12 7l6 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Copilot</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#000"/><path d="M6 18L18 6M6 6l12 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Grok</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#4D6BFE"/><path d="M7 17V7h3l4 6V7h3v10h-3l-4-6v6z" fill="#fff"/></svg>DeepSeek</div>
+            <div class="ai-logo-chip"><svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#39594D"/><path d="M6 12a6 6 0 0112 0 6 6 0 01-12 0z" stroke="#D18EE2" stroke-width="2" fill="none"/></svg>Cohere</div>
           </div>
         </div>
       </div>
