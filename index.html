@@ -1105,8 +1105,11 @@
   }
   .forge-msg-bubble pre code { background: none; padding: 0; color: #ddd; }
   .forge-msg-bubble strong { color: #fff; }
-  .forge-msg-bubble ul, .forge-msg-bubble ol { padding-left: 18px; margin: 6px 0; }
-  .forge-msg-bubble li { margin: 3px 0; }
+  .forge-msg-bubble ul, .forge-msg-bubble ol { padding-left: 20px; margin: 6px 0; }
+  .forge-msg-bubble ul { list-style: disc; }
+  .forge-msg-bubble ol { list-style: decimal; }
+  .forge-msg-bubble li { margin: 3px 0; line-height: 1.5; }
+  .forge-msg-bubble h2, .forge-msg-bubble h3, .forge-msg-bubble h4 { line-height: 1.3; }
   /* Error bubble */
   .forge-error-details {
     margin-top: 10px; border: none; font-size: 11px;
@@ -1855,16 +1858,6 @@
     </div>
   </div>
 
-  <!-- ===== FORGE HERO ===== -->
-  <div class="forge-hero" id="forge">
-    <div class="forge-hero-glow"></div>
-    <div class="forge-hero-content">
-      <div class="forge-hero-badge">AI Acceleration</div>
-      <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
-    </div>
-  </div>
-
   <!-- ===== RAVEN CTA ===== -->
   <div class="raven-cta-wrap" id="raven">
     <div class="raven-cta">
@@ -1882,6 +1875,16 @@
           </div>
         </a>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== FORGE HERO ===== -->
+  <div class="forge-hero" id="forge">
+    <div class="forge-hero-glow"></div>
+    <div class="forge-hero-content">
+      <div class="forge-hero-badge">AI Acceleration</div>
+      <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
     </div>
   </div>
 
@@ -2444,11 +2447,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   const sections = [
     { id: 'smartdoc', el: document.getElementById('smartdoc') },
     { id: 'superprompt', el: document.getElementById('superprompt') },
-    { id: 'forge', el: document.getElementById('forge') },
     { id: 'raven', el: document.getElementById('raven') },
+    { id: 'forge', el: document.getElementById('forge') },
   ];
   const ravenIds = new Set(['raven', 'forge']);
-  const forgeEl = document.getElementById('forge');
+  const ravenEl = document.getElementById('raven');
 
   function updateActiveNav() {
     const scrollY = window.scrollY + 120;
@@ -2462,10 +2465,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     });
     navEl.classList.toggle('raven-mode', ravenIds.has(activeId));
 
-    // Topbar dark mode: activate 1px before the Forge Hero section
+    // Topbar dark mode: activate when topbar reaches RAVEN CTA section
     const topbarH = topbar.offsetHeight;
-    const forgeTop = forgeEl ? forgeEl.offsetTop : Infinity;
-    topbar.classList.toggle('dark-mode', window.scrollY + topbarH >= forgeTop - 1);
+    const ravenTop = ravenEl ? ravenEl.offsetTop : Infinity;
+    topbar.classList.toggle('dark-mode', window.scrollY + topbarH >= ravenTop);
   }
 
   window.addEventListener('scroll', updateActiveNav, { passive: true });
@@ -2574,25 +2577,36 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   }
 
   function forgeMd(text) {
-    // Code blocks first
-    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+    // Code blocks — preserve content
+    const codeBlocks = [];
+    text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+      codeBlocks.push(`<pre><code>${code}</code></pre>`);
+      return `\x00CB${codeBlocks.length - 1}\x00`;
+    });
     // Inline code
     text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-    // Bold
+    // Bold before italic
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // Italic
-    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    // Unordered lists
-    text = text.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
-    text = text.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-    // Ordered lists
-    text = text.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+    text = text.replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em>$1</em>');
     // Headers
-    text = text.replace(/^### (.+)$/gm, '<strong style="font-size:14px">$1</strong>');
-    text = text.replace(/^## (.+)$/gm, '<strong style="font-size:15px">$1</strong>');
-    text = text.replace(/^# (.+)$/gm, '<strong style="font-size:16px">$1</strong>');
-    // Line breaks
+    text = text.replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:#fff;margin:10px 0 4px">$1</h4>');
+    text = text.replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:#fff;margin:12px 0 4px">$1</h3>');
+    text = text.replace(/^# (.+)$/gm, '<h2 style="font-size:16px;font-weight:700;color:#fff;margin:14px 0 6px">$1</h2>');
+    // Lists — group consecutive lines
+    text = text.replace(/(^[-*] .+$\n?)+/gm, m => {
+      const items = m.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+    text = text.replace(/(^\d+\. .+$\n?)+/gm, m => {
+      const items = m.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    });
+    // Line breaks — but not after block elements
     text = text.replace(/\n/g, '<br>');
+    text = text.replace(/(<\/ul>|<\/ol>|<\/h[234]>|<\/pre>)<br>/g, '$1');
+    text = text.replace(/<br>(<ul>|<ol>|<h[234]|<pre>)/g, '$1');
+    // Restore code blocks
+    text = text.replace(/\x00CB(\d+)\x00/g, (_, i) => codeBlocks[i]);
     return text;
   }
 
