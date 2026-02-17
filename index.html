@@ -3191,8 +3191,10 @@ function showToast(msg, raven) {
         chunk_length_s: 30, stride_length_s: 5,
       });
       console.log('EVA: pipeline result', JSON.stringify(result).slice(0, 300));
-      const text = (result.text || (Array.isArray(result) && result[0]?.text) || '').trim();
-      if (text) {
+      let text = (result.text || (Array.isArray(result) && result[0]?.text) || '').trim();
+      // Filter Whisper hallucinations on silence/noise
+      text = text.replace(/\[.*?\]/g, '').replace(/\(.*?\)/g, '').trim();
+      if (text && text.length > 1) {
         vtTranscriptText += (vtTranscriptText ? ' ' : '') + text;
         vtUpdateTranscript();
       } else {
