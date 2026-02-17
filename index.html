@@ -501,6 +501,66 @@
     object-fit: contain;
   }
 
+  /* ===== SUPERPROMPT HERO ===== */
+  .sp-hero {
+    position: relative; overflow: hidden;
+    background: #fff;
+    border-top: 3px solid var(--d-blue);
+    border-bottom: 3px solid var(--d-blue);
+    margin-top: 56px;
+    padding: 64px 32px;
+    text-align: center;
+    animation: fade-up 0.8s ease-out 0.2s both;
+  }
+  .sp-hero-glow {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--d-blue), var(--success), var(--d-blue), transparent);
+    background-size: 200% 100%;
+    animation: glow-sweep 4s ease-in-out infinite;
+  }
+  .sp-hero-content { position: relative; z-index: 1; }
+  .sp-hero-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 20px;
+    padding: 6px 16px; border-radius: 50px;
+    border: 1.5px solid var(--d-blue);
+    background: rgba(7,176,232,0.06);
+  }
+  .sp-hero-title {
+    font-size: clamp(32px, 5vw, 52px); font-weight: 900;
+    color: var(--n-blue); letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .sp-hero-title span {
+    background: linear-gradient(135deg, var(--d-blue), #00C9A7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sp-hero-sub {
+    font-size: 18px; color: #3a5568; max-width: 580px;
+    margin: 0 auto; line-height: 1.7;
+  }
+  .sp-hero-stats {
+    display: inline-flex; align-items: center; gap: 24px;
+    margin-top: 28px; padding: 16px 32px;
+    background: var(--n-blue); border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(2,38,64,0.3);
+  }
+  .sp-hero-stat { text-align: center; }
+  .sp-hero-stat-value {
+    display: block; font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
+  }
+  .sp-hero-stat-label {
+    display: block; font-size: 11px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+  }
+  .sp-hero-stat-divider {
+    width: 1px; height: 32px; background: rgba(255,255,255,0.15);
+  }
+
   /* ===== NDi SUPER PROMPT™ ===== */
   .super-prompt-section {
     margin-top: 48px; padding-top: 40px;
@@ -724,8 +784,25 @@
       </div>
     </div>
 
+    <!-- NDi SUPERPROMPT HERO -->
+    <div class="sp-hero">
+      <div class="sp-hero-glow"></div>
+      <div class="sp-hero-content">
+        <div class="sp-hero-badge">AI ACCELERATION</div>
+        <h2 class="sp-hero-title">NDi <span>SuperPrompt</span>™</h2>
+        <p class="sp-hero-sub">One prompt. Any model. Maximum intelligence.<br>Paste before any input to unlock deeper reasoning, structured thinking, and zero-filler output.</p>
+        <div class="sp-hero-stats">
+          <div class="sp-hero-stat"><span class="sp-hero-stat-value">4-Phase</span><span class="sp-hero-stat-label">Cognitive Protocol</span></div>
+          <div class="sp-hero-stat-divider"></div>
+          <div class="sp-hero-stat"><span class="sp-hero-stat-value">10+</span><span class="sp-hero-stat-label">Models Supported</span></div>
+          <div class="sp-hero-stat-divider"></div>
+          <div class="sp-hero-stat"><span class="sp-hero-stat-value">Free</span><span class="sp-hero-stat-label">Forever</span></div>
+        </div>
+      </div>
+    </div>
+
     <!-- NDi SUPER PROMPT™ -->
-    <div class="super-prompt-section">
+    <div class="super-prompt-section" style="margin-top:0; border-top:none; padding-top:32px;">
       <div class="super-prompt-header">
         <div class="super-prompt-header-left">
           <div class="super-prompt-icon">
