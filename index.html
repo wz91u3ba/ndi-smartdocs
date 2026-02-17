@@ -1135,16 +1135,12 @@
     max-height: 120px; /* ~6 lines */
   }
   .forge-textarea::placeholder { color: #3a3a3a; }
-  .forge-mic, .forge-send {
+  .forge-send {
     background: none; border: none; cursor: pointer;
     padding: 6px; border-radius: 6px; transition: all 0.2s;
     flex-shrink: 0; display: flex; align-items: center;
+    color: #333;
   }
-  .forge-mic { color: #444; }
-  .forge-mic:hover { color: #888; }
-  .forge-mic.recording { color: #4ade80; animation: forge-pulse 1.2s ease-in-out infinite; }
-  @keyframes forge-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .forge-send { color: #333; }
   .forge-send.active { color: #4ade80; }
   .forge-send:disabled { opacity: 0.3; cursor: default; }
 
@@ -1190,7 +1186,48 @@
   @media (max-width: 768px) {
     .forge { height: 500px; }
     .forge-msg { max-width: 92%; }
+    .forge-help-inner { flex-direction: column; text-align: center; }
+    .forge-help-img { max-width: 260px; }
   }
+
+  /* Forge Help */
+  .forge-help {
+    background: #0c0c0c;
+    background-image: url('camo-pattern.png');
+    background-size: 300px;
+    background-blend-mode: overlay;
+    padding: 32px 24px 48px;
+    position: relative;
+  }
+  .forge-help::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(12,12,12,0.97);
+    pointer-events: none;
+  }
+  .forge-help-inner {
+    position: relative; z-index: 1;
+    max-width: 1050px; margin: 0 auto;
+    display: flex; align-items: center; gap: 32px;
+  }
+  .forge-help-img {
+    flex-shrink: 0; max-width: 340px; width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  .forge-help-text {
+    flex: 1; min-width: 0;
+  }
+  .forge-help-title {
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700;
+    color: #4ade80; letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .forge-help-desc {
+    font-size: 14px; color: #888; line-height: 1.7;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  .forge-help-desc strong { color: #bbb; }
 
   /* ===== ANIMATIONS ===== */
   @keyframes fade-up {
@@ -1731,9 +1768,6 @@
           </button>
           <input type="file" id="forgeFileInput" multiple accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.pptx,.ppt" style="display:none;" onchange="forgeAddFiles(this.files);this.value='';">
           <textarea class="forge-textarea" id="forgeInput" rows="1" placeholder="Message RAVEN Forge..." onkeydown="forgeKeydown(event)" oninput="forgeResizeInput()"></textarea>
-          <button class="forge-mic" id="forgeMicBtn" onclick="forgeToggleMic()" title="Voice input">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </button>
           <button class="forge-send" id="forgeSendBtn" disabled onclick="forgeSend()" title="Send">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
           </button>
@@ -1755,6 +1789,17 @@
       <label>Max Tokens</label>
       <input id="forgeSettingTokens" type="number" step="256" min="256" max="16384" value="4096">
       <button class="forge-modal-close" onclick="forgeSaveSettings()">Save & Close</button>
+    </div>
+  </div>
+
+  <!-- FORGE HELP -->
+  <div class="forge-help">
+    <div class="forge-help-inner">
+      <img src="allowndiauto.png" alt="Allow NDi Auto local network access" class="forge-help-img">
+      <div class="forge-help-text">
+        <div class="forge-help-title">First-Time Setup</div>
+        <p class="forge-help-desc">Your browser will ask to allow <strong>NDi Auto</strong> to connect to your local network. <strong>Click Allow.</strong> This lets RAVEN Forge communicate with the AI model running on your own machine. No data leaves your computer — all processing happens locally between your browser and your local inference server.</p>
+      </div>
     </div>
   </div>
 
@@ -2122,13 +2167,18 @@ async function beginProcess() {
   processBtn.classList.remove('done');
   processBtn.classList.add('processing');
   btnLaser.style.width = '0%';
+  btnLaser.style.opacity = '0';
   processStatus.innerHTML = '';
   resultSection.classList.remove('visible');
 
+  // Brief delay before laser starts — prevents the initial sliver flash
+  await new Promise(r => setTimeout(r, 200));
+  btnLaser.style.opacity = '1';
+
   const startTime = Date.now();
 
-  // Rolling status messages — 1.2s each, pick enough to fill the duration
-  const msgCount = Math.min(PROCESS_MESSAGES.length, Math.floor(totalMs / 1200) + 1);
+  // Rolling status messages — 1.8s each for slower readability
+  const msgCount = Math.min(PROCESS_MESSAGES.length, Math.floor(totalMs / 1800) + 1);
   let msgIdx = 0;
   function showNextMessage() {
     if (msgIdx < msgCount) {
@@ -2137,7 +2187,7 @@ async function beginProcess() {
     }
   }
   showNextMessage();
-  const msgInterval = setInterval(() => showNextMessage(), 1200);
+  const msgInterval = setInterval(() => showNextMessage(), 1800);
 
   // Organic laser fill — uses easing + random micro-stutters
   let laserTarget = 0;
@@ -2148,8 +2198,9 @@ async function beginProcess() {
     // Ease to 92% during processing, leave room for final surge
     laserTarget = organicEase(t) * 92;
     // Smooth chase with slight lag for organic feel
-    laserCurrent += (laserTarget - laserCurrent) * 0.12;
-    btnLaser.style.width = laserCurrent.toFixed(2) + '%';
+    laserCurrent += (laserTarget - laserCurrent) * 0.08;
+    // Don't render below 0.5% to prevent sliver
+    btnLaser.style.width = (laserCurrent < 0.5 ? 0 : laserCurrent).toFixed(2) + '%';
     if (t < 1) requestAnimationFrame(fillFrame);
   };
   requestAnimationFrame(fillFrame);
@@ -2192,25 +2243,14 @@ async function beginProcess() {
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ========== ACTIONS ==========
-// Lightweight keyword extractor — picks 1-3 top words from corpus content
-function extractSmartName() {
-  const stop = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','shall','should','may','might','must','can','could','this','that','these','those','it','its','i','you','he','she','we','they','me','him','her','us','them','my','your','his','our','their','what','which','who','whom','how','when','where','why','not','no','nor','so','if','then','than','too','very','just','also','as','about','up','out','all','each','every','any','some','into','over','after','before','between','under','above','below','more','most','other','such','only','same','new','old','first','last','next','few','many','much','well','back','still','even','here','there','now','one','two','three','four','five','six','seven','eight','nine','ten','get','got','make','made','take','took','come','came','go','went','see','saw','know','knew','think','thought','say','said','use','used','way','like','need','want','look','work','part','time','year','people','day','man','woman','thing','child','world','life','hand','long','own','right','left','good','great','high','small','large','company','number','group','point','end','case','place','set','per','nbsp','amp','lt','gt','meta','body','doc','smartdocs']);
-  // Strip XML tags and system prompt, take just body content
-  const bodyContent = masterCorpus.replace(/<[^>]+>/g, ' ').replace(/SmartDocs_Instructions[\s\S]*?SmartDocs_Instructions/g, '');
-  const words = bodyContent.toLowerCase().match(/[a-z]{4,}/g) || [];
-  const freq = {};
-  for (const w of words) { if (!stop.has(w)) freq[w] = (freq[w] || 0) + 1; }
-  const top = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
-  if (top.length === 0) return 'SmartDoc';
-  // Title case, join with underscores
-  return top.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
-}
-
 function downloadCorpus() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([masterCorpus], { type: 'text/plain' }));
-  const smartName = extractSmartName();
-  a.download = `${smartName}.txt`;
+  const d = new Date();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const yy = String(d.getFullYear()).slice(-2);
+  a.download = `NDi_SmartDoc_${mm}-${dd}-${yy}.txt`;
   a.click(); URL.revokeObjectURL(a.href);
   showToast('SmartDoc downloaded');
 }
@@ -2271,8 +2311,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   let forgeMessages = [];
   let forgeDocs = [];
   let forgeStreaming = false;
-  let forgeRecording = false;
-  let forgeSR = null; // SpeechRecognition instance
 
   // Config with localStorage persistence
   const FC = {
@@ -2293,7 +2331,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   const chatEl = document.getElementById('forgeChat');
   const inputEl = document.getElementById('forgeInput');
   const sendBtn = document.getElementById('forgeSendBtn');
-  const micBtn = document.getElementById('forgeMicBtn');
   const docDrawer = document.getElementById('forgeDocDrawer');
   const docList = document.getElementById('forgeDocList');
   const docActions = document.getElementById('forgeDocActions');
@@ -2535,31 +2572,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     const hasText = inputEl.value.trim().length > 0;
     sendBtn.disabled = !hasText;
     sendBtn.classList.toggle('active', hasText);
-  };
-
-  // ---- MIC ----
-  window.forgeToggleMic = function() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { showToast('Speech recognition not supported'); return; }
-    if (forgeRecording && forgeSR) {
-      forgeSR.stop(); forgeRecording = false;
-      micBtn.classList.remove('recording');
-      return;
-    }
-    forgeSR = new SR();
-    forgeSR.continuous = false;
-    forgeSR.interimResults = false;
-    forgeSR.lang = 'en-US';
-    forgeSR.onresult = (e) => {
-      const t = e.results[0][0].transcript;
-      inputEl.value += (inputEl.value ? ' ' : '') + t;
-      forgeResizeInput();
-    };
-    forgeSR.onend = () => { forgeRecording = false; micBtn.classList.remove('recording'); };
-    forgeSR.onerror = () => { forgeRecording = false; micBtn.classList.remove('recording'); };
-    forgeSR.start();
-    forgeRecording = true;
-    micBtn.classList.add('recording');
   };
 
   // ---- SETTINGS ----
