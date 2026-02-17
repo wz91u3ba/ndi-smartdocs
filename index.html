@@ -1173,6 +1173,41 @@
   }
   .forge-modal-close:hover { background: rgba(255,255,255,0.1); color: #bbb; }
 
+  /* Forge Gate Overlay */
+  .forge-gate {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+    background: rgba(14,14,14,0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 14px;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .forge-gate.dismissed { opacity: 0; visibility: hidden; pointer-events: none; }
+  .forge-gate-icon { width: 44px; height: 44px; border-radius: 12px; opacity: 0.6; }
+  .forge-gate-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 32px; border-radius: 10px;
+    background: #F8B42C; color: #000;
+    border: none; cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 13px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(248,180,44,0.25);
+  }
+  .forge-gate-btn:hover {
+    background: #f9c35a;
+    box-shadow: 0 6px 28px rgba(248,180,44,0.35);
+    transform: translateY(-1px);
+  }
+  .forge-gate-desc {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: #555; letter-spacing: 0.3px; text-align: center;
+    max-width: 320px; line-height: 1.6;
+  }
+  .forge-gate-desc strong { color: #888; }
+
   @media (max-width: 768px) {
     .forge { height: 500px; }
     .forge-msg { max-width: 92%; }
@@ -1719,7 +1754,17 @@
 
   <!-- ===== RAVEN FORGE ===== -->
   <div class="forge-wrap" id="forge">
-    <div class="forge">
+    <div class="forge" style="position:relative;">
+      <!-- Gate Overlay -->
+      <div class="forge-gate" id="forgeGate">
+        <img src="raven-icon.png" alt="RAVEN" class="forge-gate-icon">
+        <button class="forge-gate-btn" onclick="forgeRequestAccess()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Connect to Local AI
+        </button>
+        <p class="forge-gate-desc">Talk to a browser-run LLM.<br><strong>No data leakage. Totally secure.</strong></p>
+      </div>
+
       <!-- Header -->
       <div class="forge-head">
         <div class="forge-head-left">
@@ -2570,6 +2615,26 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
     const hasText = inputEl.value.trim().length > 0;
     sendBtn.disabled = !hasText;
     sendBtn.classList.toggle('active', hasText);
+  };
+
+  // ---- GATE (loopback permission) ----
+  // Skip gate if already granted (persisted in localStorage)
+  if (localStorage.getItem('forge_access_granted')) {
+    document.getElementById('forgeGate').classList.add('dismissed');
+  }
+
+  window.forgeRequestAccess = function() {
+    // Fire a dummy fetch to localhost — this triggers the browser's loopback permission dialog
+    fetch(FC.url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: FC.model, messages: [{ role: 'user', content: 'ping' }], max_tokens: 1 }),
+    }).then(() => {
+      localStorage.setItem('forge_access_granted', '1');
+      document.getElementById('forgeGate').classList.add('dismissed');
+    }).catch(() => {
+      // Permission granted but server not running, or user denied — dismiss anyway since browser asked
+      localStorage.setItem('forge_access_granted', '1');
+      document.getElementById('forgeGate').classList.add('dismissed');
+    });
   };
 
   // ---- SETTINGS ----
