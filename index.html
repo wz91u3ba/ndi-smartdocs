@@ -1069,11 +1069,12 @@
   }
   .forge-gear:hover { color: #ddd; }
   .forge-clear-btn {
-    background: none; border: none; color: #555; cursor: pointer;
-    padding: 4px; border-radius: 4px; transition: color 0.2s;
-    display: flex; align-items: center;
+    background: none; border: 1.5px solid #ff6b6b; color: #ff6b6b; cursor: pointer;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; padding: 0;
   }
-  .forge-clear-btn:hover { color: #ff6b6b; }
+  .forge-clear-btn:hover { background: rgba(255,107,107,0.15); color: #ff4444; border-color: #ff4444; }
 
   /* Chat */
   .forge-chat {
@@ -1330,6 +1331,24 @@
   }
   .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
   .forge-tagline-text em { color: #444; font-style: normal; font-weight: 400; }
+
+  /* Forge Signal comparison */
+  .forge-signal {
+    max-width: 975px; margin: 0 auto;
+    padding: 0 24px 48px; text-align: center;
+  }
+  .forge-signal-inner {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    color: #666; letter-spacing: 0.5px;
+  }
+  .forge-signal-logo {
+    width: 22px; height: 22px; border-radius: 5px;
+    vertical-align: middle;
+  }
+  .forge-signal-inner strong {
+    color: #F8B42C; font-weight: 700;
+  }
 
   /* ===== EVA — Unified Dark Section ===== */
   .eva-section {
@@ -2275,8 +2294,8 @@
         </div>
         <div class="forge-head-right">
           <span class="forge-pill">IN-BROWSER</span>
-          <button class="forge-clear-btn" onclick="forgeClearChat()" title="Clear chat">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <button class="forge-clear-btn" onclick="forgeClearChat()" title="Destroy AI">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
           <button class="forge-gear" onclick="forgeToggleSettings()" title="Settings">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -2352,6 +2371,14 @@
   <!-- FORGE TAGLINE -->
   <div class="forge-tagline">
     <div class="forge-tagline-text"><span>RAVEN</span> <em>|</em> Secure Local AI</div>
+  </div>
+
+  <!-- SIGNAL COMPARISON -->
+  <div class="forge-signal">
+    <div class="forge-signal-inner">
+      <img src="signal_logo.png" alt="Signal" class="forge-signal-logo">
+      <strong>Forge</strong> is the Signal of AI
+    </div>
   </div>
 
   </div><!-- /forge-dark-zone -->
@@ -2521,8 +2548,10 @@
         <div>
           <div class="footer-col-title">Tools</div>
           <ul class="footer-links">
-            <li><a href="#smartdoc">NDi SmartDoc</a></li>
-            <li><a href="#superprompt">NDi SuperPrompt™</a></li>
+            <li><a href="#smartdoc">SmartDoc</a></li>
+            <li><a href="#superprompt">SuperPrompt™</a></li>
+            <li><a href="#forge">Forge</a></li>
+            <li><a href="#eva">EVA</a></li>
           </ul>
         </div>
 
@@ -3416,7 +3445,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 // ========== RAVEN FORGE (WebLLM — runs entirely in browser) ==========
 (function() {
-  let forgeMessages = JSON.parse(localStorage.getItem('forge_history') || '[]');
+  // Always start fresh — no AI persistence across refreshes
+  localStorage.removeItem('forge_history');
+  let forgeMessages = [];
   let forgeStreaming = false;
   let forgeEngine = null;
 
@@ -3679,25 +3710,30 @@ CONSTRAINTS:
     showToast('Forge settings saved', 'raven');
   };
 
-  // ---- CLEAR CHAT ----
-  window.forgeClearChat = function() {
+  // ---- DESTROY AI (red X) ----
+  window.forgeClearChat = async function() {
     if (forgeStreaming) return;
+    // Unload the WebLLM engine entirely
+    if (forgeEngine) {
+      try { await forgeEngine.unload(); } catch(e) {}
+      forgeEngine = null;
+    }
+    // Clear all state
     forgeMessages = [];
     localStorage.removeItem('forge_history');
     chatEl.innerHTML = '';
     if (welcomeEl) { welcomeEl.style.display = ''; chatEl.appendChild(welcomeEl); }
+    // Reset gate UI back to initial state
+    gateEl.classList.remove('dismissed');
+    loadBtn.disabled = false;
+    loadBtnText.textContent = 'Load AI Model';
+    const svg = loadBtn.querySelector('svg');
+    if (svg) svg.style.display = '';
+    loadProgress.style.display = 'none';
+    loadFill.style.width = '0%';
+    loadStatus.textContent = 'Preparing download...';
+    loadError.style.display = 'none';
   };
-
-  // ---- MEMORY (restore chat history) ----
-  // Restore previous messages into the UI
-  if (forgeMessages.length) {
-    welcomeEl.style.display = 'none';
-    forgeMessages.forEach(m => {
-      if (m.role === 'user' || m.role === 'assistant') {
-        forgeRenderMsg(m.role, m.content);
-      }
-    });
-  }
 
 })();
 
