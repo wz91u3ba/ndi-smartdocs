@@ -82,7 +82,7 @@
     z-index: 0;
   }
 
-  .app { position: relative; z-index: 1; }
+  .app { position: relative; z-index: 1; overflow-x: hidden; }
 
   /* ===== TOPBAR ===== */
   .topbar {
@@ -886,6 +886,8 @@
     .raven-cta-icon { width: 72px; height: 72px; }
     .raven-cta-text { text-align: center; }
     .raven-cta-desc { margin: 0 auto; }
+    .raven-cta-social, .raven-cta-btn { width: 200px; }
+    .raven-cta-wrap { padding: 48px 16px; }
   }
 
   /* ===== FOOTER ===== */
@@ -1847,22 +1849,60 @@
     .hero-desc { margin-left: auto; margin-right: auto; }
   }
   @media (max-width: 600px) {
+    /* Global mobile overflow prevention */
+    .app { overflow-x: hidden; }
+
+    /* Topbar */
     .topbar { padding: 12px 16px; gap: 12px; }
+    .topbar-attribution-text { display: none; }
+    .topbar-attribution-logo { height: 14px; }
+    .topbar-divider { display: none; }
+    .btn-partner { padding: 0 10px; font-size: 9px; height: 32px; gap: 6px; letter-spacing: 0.3px; }
+    .btn-partner-divider { display: none; }
+    .sdvosb-logo { height: 18px; }
+    .ndi-logo { height: 24px; }
+
+    /* Hero */
     .hero { padding: 32px 16px 28px; }
     .hero-graphic { width: 180px; height: 180px; }
     .hero-robot-container { width: 100px; height: 100px; }
+    .hero-ctas { flex-direction: column; }
+    .hero-cta-primary, .hero-cta-partner { width: 100%; justify-content: center; }
+
+    /* Main content */
     .main { padding: 32px 16px 60px; }
     .drop-zone { padding: 40px 20px; }
     .result-actions { flex-direction: column; }
     .btn-action { width: 100%; justify-content: center; }
     .section-header { flex-direction: column; align-items: flex-start; }
-    .floating-nav { display: none; }
+
+    /* White-bg hero sections */
+    .sd-hero, .sp-hero, .forge-hero { padding: 48px 16px; }
     .sd-hero-stats, .sp-hero-stats { flex-wrap: wrap; gap: 16px; padding: 14px 20px; justify-content: center; }
     .sd-hero-stat-divider, .sp-hero-stat-divider { display: none; }
+
+    /* Research cards */
+    .research-section { padding: 40px 16px; }
     .research-cards { grid-template-columns: 1fr; }
-    .hero-ctas { flex-direction: column; }
-    .hero-cta-primary, .hero-cta-partner { width: 100%; justify-content: center; }
-    .topbar-attribution-text { display: none; }
+
+    /* RAVEN CTA */
+    .raven-cta-title { font-size: 24px; }
+
+    /* Forge */
+    .forge-wrap { padding: 0 16px 40px; }
+    .forge-runner { padding: 0 16px; }
+    .forge-tagline { padding: 20px 16px 40px; }
+
+    /* EVA */
+    .vt-hero { padding: 48px 16px 40px; }
+    .eva-works-with { padding: 20px 16px 0; }
+    .eva-tagline { padding: 20px 16px 40px; }
+
+    /* Footer */
+    .footer-inner { padding: 40px 16px 0; }
+
+    /* Nav */
+    .floating-nav { display: none; }
   }
 </style>
 </head>
