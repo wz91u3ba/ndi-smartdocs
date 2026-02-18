@@ -195,12 +195,6 @@
     font-family: 'DM Mono', monospace; font-size: 10px;
     color: var(--success); letter-spacing: 1px; font-weight: 700;
   }
-  .hero h1 {
-    font-family: 'Nunito Sans', sans-serif;
-    font-size: clamp(52px, 7vw, 80px); font-weight: 900;
-    color: #fff; letter-spacing: -2px; line-height: 0.95;
-    margin-bottom: 20px;
-  }
   .hero-subtitle {
     font-family: 'Nunito Sans', sans-serif;
     font-size: clamp(18px, 2.2vw, 24px); font-weight: 400;
@@ -208,39 +202,44 @@
     margin-bottom: 36px; max-width: 520px;
     letter-spacing: -0.3px;
   }
+  .hero-wordmark {
+    height: 52px; margin-bottom: 20px;
+    filter: brightness(0) invert(1);
+  }
   .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
   .hero-cta-primary {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 32px; border-radius: 6px;
-    background: transparent;
-    color: #fff; text-decoration: none;
-    border: 1.5px solid rgba(255,255,255,0.5);
+    padding: 0 28px; height: 48px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--d-blue), var(--x-blue));
+    border: none; color: #fff; text-decoration: none;
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-    transition: all 0.25s;
+    font-size: 13px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase; transition: all 0.25s;
+    box-shadow: 0 0 20px rgba(7,176,232,0.15);
   }
   .hero-cta-primary:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: #fff;
+    background: linear-gradient(135deg, var(--d-blue-hover), var(--d-blue));
+    box-shadow: 0 0 30px rgba(7,176,232,0.3);
     transform: translateY(-1px);
   }
   .hero-cta-partner {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 28px; border-radius: 6px;
-    background: var(--d-blue);
-    color: #fff; text-decoration: none;
+    padding: 0 18px; height: 48px; border-radius: 8px;
+    background: var(--grey-1); color: var(--n-blue);
+    text-decoration: none;
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-    transition: all 0.25s;
-    box-shadow: 0 4px 20px rgba(7,176,232,0.3);
+    font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
+    text-transform: uppercase; transition: all 0.2s;
   }
   .hero-cta-partner:hover {
-    background: var(--d-blue-hover);
-    box-shadow: 0 8px 32px rgba(7,176,232,0.4);
+    background: #fff; color: var(--n-blue-deep);
+    box-shadow: 0 2px 12px rgba(241,242,242,0.3);
     transform: translateY(-1px);
   }
-  .hero-cta-partner-divider { display: none; }
-  .hero-cta-partner img { display: none; }
+  .hero-cta-partner-divider {
+    width: 1px; height: 14px; background: rgba(2,38,64,0.2);
+  }
+  .hero-cta-partner img { height: 22px; border-radius: 3px; flex-shrink: 0; }
 
   /* ===== HERO ROBOT GRAPHIC ===== */
   .hero-graphic {
@@ -1840,7 +1839,7 @@
 
     /* Hero */
     .hero { padding: 40px 16px 36px; }
-    .hero h1 { font-size: 40px; letter-spacing: -1px; }
+    .hero-wordmark { height: 36px; }
     .hero-subtitle { font-size: 16px; }
     .built-by-bar { font-size: 13px; padding: 14px 16px; }
     .hero-ctas { flex-direction: column; }
@@ -1964,11 +1963,11 @@
         <div class="hero-status-pill">
           <div class="status-dot"></div>OPERATIONAL | FEB 2026 | v1.12
         </div>
-        <h1>AutoLabs</h1>
+        <img src="autolabs_just_text.png" alt="AutoLabs" class="hero-wordmark">
         <p class="hero-subtitle">Intelligent Automation for Federal, Defense &amp; Enterprise&mdash;Anywhere, Anytime</p>
         <div class="hero-ctas">
           <a href="#smartdoc" class="hero-cta-primary">Explore Tools</a>
-          <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="hero-cta-partner">Partner With Us</a>
+          <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="hero-cta-partner">PARTNER WITH US<span class="hero-cta-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB"></a>
         </div>
       </div>
       <div class="hero-graphic">
