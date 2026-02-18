@@ -1062,6 +1062,28 @@
     border: 1px solid rgba(248,180,44,0.35);
     background: rgba(248,180,44,0.08);
   }
+  /* Deep Thinking toggle */
+  .forge-think-toggle {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: #666; cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .forge-think-toggle:hover { border-color: rgba(255,255,255,0.2); color: #888; }
+  .forge-think-toggle.active {
+    border-color: rgba(248,180,44,0.5);
+    background: rgba(248,180,44,0.08);
+    box-shadow: 0 0 12px rgba(248,180,44,0.15), 0 0 4px rgba(248,180,44,0.1);
+  }
+  .forge-think-label { color: inherit; }
+  .forge-think-state { color: inherit; transition: color 0.3s ease; }
+  .forge-think-toggle.active .forge-think-state { color: #F8B42C; }
+  .forge-think-toggle.active .forge-think-label { color: rgba(248,180,44,0.7); }
+
   .forge-gear {
     background: none; border: 1.5px solid #555; color: #888; cursor: pointer;
     width: 26px; height: 26px; border-radius: 50%;
@@ -1929,6 +1951,8 @@
     .forge-hero { border-bottom: none; }
     .forge-wrap { padding: 0 16px 32px; }
     .forge { height: 480px; border-radius: 12px; }
+    .forge-think-toggle { display: none; }
+    .forge-pill { font-size: 8px; padding: 2px 6px; }
     .forge-runner { padding: 0 16px; }
     .forge-signal { padding: 32px 16px 40px; }
     .forge-signal-inner { font-size: 20px; gap: 12px; }
@@ -2255,9 +2279,9 @@
     <div class="forge-hero-content">
       <div class="forge-hero-badge">AI Acceleration</div>
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs.</p>
       <div class="forge-hero-stats">
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">4 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">WebGPU</span><span class="forge-hero-stat-label">Accelerated</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2296,12 +2320,16 @@
           <span class="forge-head-title">RAVEN</span>
         </div>
         <div class="forge-head-right">
-          <span class="forge-pill">IN-BROWSER</span>
-          <button class="forge-clear-btn" onclick="forgeClearChat()" title="Destroy AI">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span class="forge-pill">LOCAL v1.41</span>
+          <button class="forge-think-toggle" id="forgeThinkToggle" onclick="forgeToggleThink()" title="Toggle deep thinking">
+            <span class="forge-think-label">DEEP THINKING:</span>
+            <span class="forge-think-state" id="forgeThinkState">OFF</span>
           </button>
           <button class="forge-gear" onclick="forgeToggleSettings()" title="Settings">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="forge-clear-btn" onclick="forgeClearChat()" title="Destroy AI">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
       </div>
@@ -3454,7 +3482,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   let forgeStreaming = false;
   let forgeEngine = null;
 
-  const FORGE_MODEL = 'Qwen2.5-3B-Instruct-q4f16_1-MLC';
+  const FORGE_MODEL = 'Qwen3-4B-q4f16_1-MLC';
+  let forgeDeepThinking = false;
 
   // Config with localStorage persistence
   const FC = {
@@ -3497,7 +3526,9 @@ CONVERSATION MEMORY:
 
 CONSTRAINTS:
 - You have no internet, file access, or tool use. Text responses only.
-- You are not a search engine. Reason from your training knowledge.`;
+- You are not a search engine. Reason from your training knowledge.
+
+${forgeDeepThinking ? '/think' : '/no_think'}`;
     return [{ role: 'system', content: sys }, ...forgeMessages];
   }
 
@@ -3713,6 +3744,15 @@ CONSTRAINTS:
     showToast('Forge settings saved', 'raven');
   };
 
+  // ---- DEEP THINKING TOGGLE ----
+  window.forgeToggleThink = function() {
+    forgeDeepThinking = !forgeDeepThinking;
+    const toggleBtn = document.getElementById('forgeThinkToggle');
+    const stateEl = document.getElementById('forgeThinkState');
+    toggleBtn.classList.toggle('active', forgeDeepThinking);
+    stateEl.textContent = forgeDeepThinking ? 'ON' : 'OFF';
+  };
+
   // ---- DESTROY AI (red X) ----
   window.forgeClearChat = async function() {
     if (forgeStreaming) return;
@@ -3736,6 +3776,10 @@ CONSTRAINTS:
     loadFill.style.width = '0%';
     loadStatus.textContent = 'Preparing download...';
     loadError.style.display = 'none';
+    // Reset deep thinking toggle
+    forgeDeepThinking = false;
+    document.getElementById('forgeThinkToggle').classList.remove('active');
+    document.getElementById('forgeThinkState').textContent = 'OFF';
   };
 
 })();
