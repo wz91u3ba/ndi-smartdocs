@@ -3057,17 +3057,20 @@ function showToast(msg, style) {
   vtSizeCanvas();
   window.addEventListener('resize', vtSizeCanvas);
 
-  // Draw idle flat line with faint glow
+  // Draw idle — clear canvas (no line during loading, subtle line when ready)
   function vtDrawIdle() {
     const w = vtCanvas.width / 2;
     const h = vtCanvas.height / 2;
     vtCtx.clearRect(0, 0, w, h);
-    vtCtx.beginPath();
-    vtCtx.moveTo(0, h / 2);
-    vtCtx.lineTo(w, h / 2);
-    vtCtx.strokeStyle = 'rgba(255,255,255,0.1)';
-    vtCtx.lineWidth = 1.5;
-    vtCtx.stroke();
+    // Only draw the subtle line when model is loaded and not in loading state
+    if (vtModelLoaded && !vtPill.classList.contains('loading')) {
+      vtCtx.beginPath();
+      vtCtx.moveTo(0, h / 2);
+      vtCtx.lineTo(w, h / 2);
+      vtCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+      vtCtx.lineWidth = 1.5;
+      vtCtx.stroke();
+    }
   }
   vtDrawIdle();
 
@@ -3102,27 +3105,34 @@ function showToast(msg, style) {
 
     vtCtx.clearRect(0, 0, w, h);
 
-    // Sample frequency bins → target values with center boost
-    const step = Math.floor(data.length / VT_NUM_POINTS);
-    for (let i = 0; i < VT_NUM_POINTS; i++) {
+    // Mirror from center: sample freq bins, map outward from middle
+    const half = VT_NUM_POINTS / 2;
+    const step = Math.floor(data.length * 0.6 / half); // use lower 60% of spectrum (more musical)
+    for (let i = 0; i < half; i++) {
       const raw = data[i * step] / 255;
-      const distFromCenter = Math.abs(i - VT_NUM_POINTS / 2) / (VT_NUM_POINTS / 2);
-      const target = raw * (1 - distFromCenter * 0.5);
-      // Lerp toward target — rise fast, fall slow for natural decay
-      const speed = target > vtSmoothed[i] ? 0.35 : VT_SMOOTH;
-      vtSmoothed[i] += (target - vtSmoothed[i]) * speed;
+      // Smooth envelope: strongest at center, fades to edges
+      const envelope = Math.cos((i / half) * Math.PI * 0.5); // 1 at center, 0 at edge
+      const target = raw * envelope * 0.85 + 0.02; // tiny base for organic feel
+      const idxR = Math.floor(half) + i; // right half
+      const idxL = Math.floor(half) - 1 - i; // left half (mirror)
+      // Lerp — rise fast, fall slow for soothing decay
+      const speedR = target > vtSmoothed[idxR] ? 0.3 : 0.12;
+      const speedL = target > vtSmoothed[idxL] ? 0.3 : 0.12;
+      vtSmoothed[idxR] += (target - vtSmoothed[idxR]) * speedR;
+      vtSmoothed[idxL] += (target - vtSmoothed[idxL]) * speedL;
     }
 
-    // Gradient
-    const grad = vtCtx.createLinearGradient(0, mid - 20, 0, mid + 20);
+    // Radial gradient from center for depth
+    const cx = w / 2;
+    const grad = vtCtx.createRadialGradient(cx, mid, 0, cx, mid, w * 0.55);
     if (vtRecording) {
-      grad.addColorStop(0, 'rgba(239,68,68,0.85)');
-      grad.addColorStop(0.5, 'rgba(248,113,113,0.5)');
-      grad.addColorStop(1, 'rgba(239,68,68,0.85)');
+      grad.addColorStop(0, 'rgba(248,113,113,0.9)');
+      grad.addColorStop(0.5, 'rgba(239,68,68,0.5)');
+      grad.addColorStop(1, 'rgba(239,68,68,0.05)');
     } else {
-      grad.addColorStop(0, 'rgba(7,176,232,0.8)');
-      grad.addColorStop(0.5, 'rgba(99,102,241,0.5)');
-      grad.addColorStop(1, 'rgba(7,176,232,0.8)');
+      grad.addColorStop(0, 'rgba(7,176,232,0.85)');
+      grad.addColorStop(0.5, 'rgba(99,102,241,0.4)');
+      grad.addColorStop(1, 'rgba(7,176,232,0.05)');
     }
 
     // Draw mirrored smooth wave using quadratic bezier
@@ -3145,17 +3155,17 @@ function showToast(msg, style) {
     vtCtx.fillStyle = grad;
     vtCtx.fill();
 
-    // Center glow line
+    // Soft center glow line
     vtCtx.beginPath();
     for (let i = 0; i < VT_NUM_POINTS; i++) {
       const x = (i / (VT_NUM_POINTS - 1)) * w;
-      const y = mid - vtSmoothed[i] * (mid - 4) * 0.12;
+      const y = mid - vtSmoothed[i] * (mid - 4) * 0.1;
       if (i === 0) { vtCtx.moveTo(x, y); continue; }
       const px = ((i - 1) / (VT_NUM_POINTS - 1)) * w;
-      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4) * 0.12, x, y);
+      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4) * 0.1, x, y);
     }
-    vtCtx.strokeStyle = vtRecording ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.3)';
-    vtCtx.lineWidth = 1.5;
+    vtCtx.strokeStyle = vtRecording ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)';
+    vtCtx.lineWidth = 1;
     vtCtx.stroke();
 
     vtAnimFrame = requestAnimationFrame(vtDrawWaveform);
