@@ -2308,7 +2308,7 @@
             <button class="forge-setup-btn forge-btn-fast" onclick="forgeStartEngine('fast')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>Fast Model</span>
-              <span class="forge-btn-time">~20 SEC</span>
+              <span class="forge-btn-time">~30 SEC</span>
             </button>
             <button class="forge-setup-btn forge-btn-smart" onclick="forgeStartEngine('smart')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18h6M10 22h4M12 2a7 7 0 015 11.9V17H7v-3.1A7 7 0 0112 2z"/></svg>
@@ -2332,7 +2332,7 @@
           <span class="forge-head-title">RAVEN</span>
         </div>
         <div class="forge-head-right">
-          <button class="forge-think-toggle" id="forgeThinkToggle" onclick="forgeToggleThink()" title="Toggle deep thinking">
+          <button class="forge-think-toggle" id="forgeThinkToggle" onclick="forgeToggleThink()" title="Toggle deep thinking" style="display:none">
             <span class="forge-think-label">DEEP THINKING:</span>
             <span class="forge-think-state" id="forgeThinkState">OFF</span>
           </button>
@@ -3536,7 +3536,7 @@ CONSTRAINTS:
 - You have no internet, file access, or tool use. Text responses only.
 - You are not a search engine. Reason from your training knowledge.
 
-${forgeDeepThinking ? '/think' : '/no_think'}`;
+${(forgeActiveModel && forgeActiveModel.id.includes('4B') && forgeDeepThinking) ? '/think' : '/no_think'}`;
     return [{ role: 'system', content: sys }, ...forgeMessages];
   }
 
@@ -3708,6 +3708,7 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
     modelBtns.style.display = 'none';
     loadProgress.style.display = 'block';
     loadError.style.display = 'none';
+    loadFill.style.width = '0%';
     loadStatus.textContent = `Loading ${chosen.label} model...`;
 
     // Update hero stat to match chosen model
@@ -3715,12 +3716,12 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
     if (paramEl && !paramEl.querySelector('span')) paramEl.textContent = chosen.params;
 
     const startTime = Date.now();
+    let maxPct = 0; // clamp — bar only goes forward
     let timerInterval = setInterval(() => {
       const s = Math.floor((Date.now() - startTime) / 1000);
       const mins = Math.floor(s / 60);
       const secs = s % 60;
-      const pct = loadFill.style.width || '0%';
-      loadStatus.textContent = `${pct} — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
+      loadStatus.textContent = `${maxPct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
     }, 1000);
 
     try {
@@ -3729,17 +3730,30 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
       forgeEngine = await CreateMLCEngine(chosen.id, {
         initProgressCallback: (report) => {
           const pct = Math.floor(report.progress * 100);
-          loadFill.style.width = pct + '%';
+          if (pct > maxPct) maxPct = pct; // only go forward
+          loadFill.style.width = maxPct + '%';
           const s = Math.floor((Date.now() - startTime) / 1000);
           const mins = Math.floor(s / 60);
           const secs = s % 60;
-          loadStatus.textContent = `${pct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
+          loadStatus.textContent = `${maxPct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
         },
       }, { context_window_size: 32768 });
 
       clearInterval(timerInterval);
       loadFill.style.width = '100%';
       loadStatus.textContent = 'Ready!';
+
+      // Deep Thinking only available for smart model
+      const thinkToggle = document.getElementById('forgeThinkToggle');
+      if (mode === 'smart') {
+        thinkToggle.style.display = '';
+      } else {
+        thinkToggle.style.display = 'none';
+        forgeDeepThinking = false;
+        thinkToggle.classList.remove('active');
+        document.getElementById('forgeThinkState').textContent = 'OFF';
+      }
+
       setTimeout(() => gateEl.classList.add('dismissed'), 600);
 
     } catch (e) {
@@ -3795,7 +3809,9 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
     loadError.style.display = 'none';
     // Reset deep thinking toggle
     forgeDeepThinking = false;
-    document.getElementById('forgeThinkToggle').classList.remove('active');
+    const thinkEl = document.getElementById('forgeThinkToggle');
+    thinkEl.classList.remove('active');
+    thinkEl.style.display = 'none';
     document.getElementById('forgeThinkState').textContent = 'OFF';
   };
 
