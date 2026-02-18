@@ -1335,19 +1335,18 @@
   /* Forge Signal comparison */
   .forge-signal {
     max-width: 975px; margin: 0 auto;
-    padding: 0 24px 48px; text-align: center;
+    padding: 48px 24px 56px; text-align: center;
   }
   .forge-signal-inner {
-    display: inline-flex; align-items: center; gap: 12px;
-    font-family: 'DM Mono', monospace; font-size: 13px;
-    color: #666; letter-spacing: 0.5px;
+    display: inline-flex; align-items: center; gap: 16px;
+    font-family: 'Nunito Sans', sans-serif; font-size: 28px; font-weight: 700;
+    color: rgba(255,255,255,0.5); letter-spacing: -0.3px;
   }
   .forge-signal-logo {
-    width: 22px; height: 22px; border-radius: 5px;
-    vertical-align: middle;
+    width: 36px; height: 36px; border-radius: 8px;
   }
   .forge-signal-inner strong {
-    color: #F8B42C; font-weight: 700;
+    color: #F8B42C; font-weight: 800;
   }
 
   /* ===== EVA — Unified Dark Section ===== */
@@ -1930,6 +1929,9 @@
     .forge-wrap { padding: 0 16px 32px; }
     .forge { height: 480px; border-radius: 12px; }
     .forge-runner { padding: 0 16px; }
+    .forge-signal { padding: 32px 16px 40px; }
+    .forge-signal-inner { font-size: 20px; gap: 12px; }
+    .forge-signal-logo { width: 28px; height: 28px; }
     .forge-tagline { padding: 20px 16px 36px; }
 
     /* EVA */
@@ -2254,7 +2256,7 @@
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
       <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
       <div class="forge-hero-stats">
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3B</span><span class="forge-hero-stat-label">Parameters</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">WebGPU</span><span class="forge-hero-stat-label">Accelerated</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2340,6 +2342,14 @@
   <div class="forge-dark-zone">
     <div class="forge-dark-glow"></div>
 
+  <!-- SIGNAL COMPARISON -->
+  <div class="forge-signal">
+    <div class="forge-signal-inner">
+      <img src="signal_logo.png" alt="Signal" class="forge-signal-logo">
+      <strong>Forge</strong> is the Signal of AI
+    </div>
+  </div>
+
   <!-- FORGE MODEL RUNNER -->
   <div class="forge-runner">
     <div class="works-with forge-works-with">
@@ -2371,14 +2381,6 @@
   <!-- FORGE TAGLINE -->
   <div class="forge-tagline">
     <div class="forge-tagline-text"><span>RAVEN</span> <em>|</em> Secure Local AI</div>
-  </div>
-
-  <!-- SIGNAL COMPARISON -->
-  <div class="forge-signal">
-    <div class="forge-signal-inner">
-      <img src="signal_logo.png" alt="Signal" class="forge-signal-logo">
-      <strong>Forge</strong> is the Signal of AI
-    </div>
   </div>
 
   </div><!-- /forge-dark-zone -->
