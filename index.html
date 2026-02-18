@@ -1262,6 +1262,11 @@
     font-family: 'DM Mono', monospace; font-size: 11px;
     color: #999; margin-top: 12px; text-align: center;
   }
+  .forge-load-hint {
+    font-family: 'Nunito Sans', sans-serif; font-size: 11px;
+    color: #666; margin-top: 10px; text-align: center;
+    line-height: 1.5;
+  }
   .forge-setup-error {
     font-size: 12px; color: #FF6B6B; margin-top: 14px; line-height: 1.6;
   }
@@ -1510,6 +1515,24 @@
   .vt-rec-btn.processing .vt-mic-icon { display: none; }
   .vt-rec-btn.processing .vt-stop-shape { display: none; }
   .vt-rec-btn.processing .vt-spin { display: block; }
+  /* Water fill during model download */
+  .vt-rec-btn.loading { overflow: hidden; cursor: wait; }
+  .vt-rec-btn.loading .vt-mic-icon { display: none; }
+  .vt-rec-btn .vt-water {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 0%; border-radius: 50%;
+    background: linear-gradient(0deg, rgba(7,176,232,0.9), rgba(99,102,241,0.7));
+    transition: height 0.4s ease-out;
+    pointer-events: none;
+  }
+  .vt-rec-btn .vt-water-pct {
+    position: relative; z-index: 1;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    font-weight: 700; color: #fff; letter-spacing: -0.5px;
+    display: none;
+  }
+  .vt-rec-btn.loading .vt-water-pct { display: block; }
+  .vt-rec-btn.loading:hover { transform: none; }
 
   /* Transcript — below the pill (dark theme) */
   .vt-transcript {
@@ -2232,6 +2255,7 @@
           <div class="forge-load-progress" id="forgeLoadProgress" style="display:none;">
             <div class="forge-load-bar"><div class="forge-load-fill" id="forgeLoadFill"></div></div>
             <div class="forge-load-status" id="forgeLoadStatus">Preparing download...</div>
+            <div class="forge-load-hint">One-time download — cached in your browser for instant loads after this.</div>
           </div>
           <div class="forge-setup-error" id="forgeLoadError" style="display:none;"></div>
         </div>
@@ -2403,6 +2427,8 @@
           </svg>
           <div class="vt-stop-shape"></div>
           <div class="vt-spin"></div>
+          <div class="vt-water" id="vtWater"></div>
+          <span class="vt-water-pct" id="vtWaterPct">0%</span>
         </button>
       </div>
     </div>
@@ -3110,10 +3136,16 @@ function showToast(msg, style) {
     vtPillStatus.textContent = 'Loading model (~240MB)...';
     vtUpdateSquiggle();
 
+    // Water fill on mic button
+    const recBtn = document.getElementById('vtRecBtn');
+    const water = document.getElementById('vtWater');
+    const waterPct = document.getElementById('vtWaterPct');
+    recBtn.classList.add('loading');
+    let maxPct = 0;
+
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
     // Point model loading at our R2 CDN — zero HuggingFace requests
-    // WASM files live in /lib/ next to the JS (webpack resolves relative to itself)
     env.remoteHost = EVA_CDN + '/models';
     env.remotePathTemplate = '{model}/';
     env.allowLocalModels = false;
@@ -3121,8 +3153,28 @@ function showToast(msg, style) {
     vtWhisperPipeline = await pipeline(
       'automatic-speech-recognition',
       'onnx-community/whisper-small.en',
-      { dtype: 'q8', device: 'wasm' }
+      {
+        dtype: 'q8', device: 'wasm',
+        progress_callback: (p) => {
+          if (p.status === 'progress' && p.progress != null) {
+            const pct = Math.round(p.progress);
+            if (pct > maxPct) maxPct = pct;
+            water.style.height = maxPct + '%';
+            waterPct.textContent = maxPct + '%';
+          }
+        }
+      }
     );
+
+    // Fill complete
+    water.style.height = '100%';
+    waterPct.textContent = '100%';
+    setTimeout(() => {
+      recBtn.classList.remove('loading');
+      water.style.height = '0%';
+      waterPct.textContent = '';
+    }, 600);
+
     vtModelLoaded = true;
     vtPill.classList.remove('loading');
     vtPillStatus.textContent = '';
