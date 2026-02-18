@@ -90,9 +90,9 @@
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 36px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
     backdrop-filter: blur(20px);
-    background: rgba(1,26,46,0.8);
+    background: rgba(1,13,24,0.85);
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     transition: background 0.4s ease, border-color 0.4s ease;
   }
@@ -165,20 +165,19 @@
     50% { opacity: 0.5; box-shadow: 0 0 4px var(--success); }
   }
 
-  /* ===== HERO (centered, dramatic) ===== */
+  /* ===== HERO (RAVEN-style, cinematic) ===== */
   .hero {
     position: relative; overflow: hidden; z-index: 100;
-    padding: 80px 60px 72px;
-    background: var(--n-blue-deep);
+    padding: 100px 60px 80px;
+    background: #010d18;
     animation: fade-up 0.8s ease-out;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(7,176,232,0.08);
   }
   .hero::before {
     content: '';
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(7,176,232,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(0,201,167,0.03) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(7,176,232,0.05) 0%, transparent 60%);
     pointer-events: none;
   }
   .hero-layout {
@@ -186,68 +185,76 @@
     max-width: 975px; margin: 0 auto; width: 100%;
     text-align: center;
   }
-  .hero-wordmark {
-    height: 48px; margin-bottom: 32px;
-    opacity: 0.95;
+  .hero-kicker {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: #4a6070; letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 600; margin-bottom: 28px;
   }
   .hero h1 {
-    font-size: clamp(32px, 4.5vw, 52px); font-weight: 900;
-    color: #fff; letter-spacing: -0.5px; line-height: 1.15;
-    margin-bottom: 24px;
+    font-size: clamp(38px, 5.5vw, 68px); font-weight: 900;
+    color: #fff; letter-spacing: -1.5px; line-height: 1.08;
+    margin-bottom: 40px;
   }
-  .hero h1 span {
+  .hero h1 em {
+    font-style: normal;
     color: var(--d-blue);
   }
-  .hero-desc {
-    font-size: 17px; color: #8fa4b3; max-width: 560px;
-    line-height: 1.8; margin: 0 auto 36px;
+  .hero-wordmark {
+    height: 56px; margin-bottom: 36px;
+    opacity: 0.95;
   }
-  .hero-desc strong { color: #c0d0dc; }
+  .hero-rule {
+    width: 64px; height: 1px; margin: 0 auto 32px;
+    background: rgba(255,255,255,0.1);
+  }
+  .hero-desc {
+    font-size: 17px; color: #5a7485; max-width: 580px;
+    line-height: 1.9; margin: 0 auto 44px;
+  }
+  .hero-desc strong { color: #8fa4b3; }
   .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; }
   .hero-cta-primary {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 28px; border-radius: 10px;
+    padding: 15px 32px; border-radius: 10px;
     background: linear-gradient(135deg, var(--d-blue), var(--x-blue));
     color: #fff; text-decoration: none;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
     text-transform: uppercase; transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(7,176,232,0.25);
+    box-shadow: 0 4px 24px rgba(7,176,232,0.2);
   }
   .hero-cta-primary:hover {
-    box-shadow: 0 8px 32px rgba(7,176,232,0.35), 0 0 60px rgba(7,176,232,0.1);
+    box-shadow: 0 8px 40px rgba(7,176,232,0.35), 0 0 80px rgba(7,176,232,0.08);
     transform: translateY(-2px);
   }
   .hero-cta-partner {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 0 22px; height: 48px; border-radius: 10px;
-    background: var(--grey-1); color: var(--n-blue);
+    padding: 0 22px; height: 50px; border-radius: 10px;
+    background: rgba(255,255,255,0.06); color: #8fa4b3;
+    border: 1px solid rgba(255,255,255,0.08);
     text-decoration: none;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
     text-transform: uppercase; transition: all 0.2s;
   }
   .hero-cta-partner:hover {
-    background: #fff;
-    box-shadow: 0 4px 16px rgba(241,242,242,0.3);
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.15);
+    color: #c0d0dc;
     transform: translateY(-2px);
   }
   .hero-cta-partner-divider {
-    width: 1px; height: 16px; background: rgba(2,38,64,0.15);
+    width: 1px; height: 16px; background: rgba(255,255,255,0.12);
   }
-  .hero-cta-partner img { height: 22px; border-radius: 2px; }
+  .hero-cta-partner img { height: 22px; border-radius: 2px; filter: brightness(0.9); }
   .hero-status-pill {
     display: inline-flex; align-items: center; gap: 8px;
-    margin-bottom: 28px; padding: 6px 16px;
+    margin-top: 48px; padding: 6px 16px;
     border-radius: 50px;
-    background: rgba(0,201,167,0.08);
-    border: 1px solid rgba(0,201,167,0.2);
+    background: rgba(0,201,167,0.06);
+    border: 1px solid rgba(0,201,167,0.15);
     font-family: 'DM Mono', monospace; font-size: 10px;
     color: var(--success); letter-spacing: 1px; font-weight: 700;
-  }
-  .hero-divider {
-    width: 48px; height: 1px; margin: 0 auto 28px;
-    background: linear-gradient(90deg, transparent, rgba(7,176,232,0.3), transparent);
   }
 
   /* ===== MAIN CONTENT ===== */
@@ -1698,15 +1705,16 @@
 
   /* ===== RESEARCH DIVISION SECTION ===== */
   .research-section {
-    padding: 48px 32px;
+    padding: 0 32px 56px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    background: #010d18;
   }
   .research-section::before {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(7,176,232,0.06) 0%, transparent 70%);
+    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(7,176,232,0.04) 0%, transparent 70%);
     pointer-events: none;
   }
   .research-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
@@ -1716,13 +1724,13 @@
   }
   .research-card {
     padding: 28px 20px; border-radius: 12px;
-    background: rgba(7,176,232,0.04);
-    border: 1px solid var(--border);
-    transition: all 0.3s;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s; text-align: left;
   }
   .research-card:hover {
-    border-color: var(--border-hover);
-    background: rgba(7,176,232,0.07);
+    border-color: rgba(7,176,232,0.2);
+    background: rgba(7,176,232,0.04);
     transform: translateY(-2px);
   }
   .research-card-icon {
@@ -1733,14 +1741,15 @@
     letter-spacing: 0.3px; margin-bottom: 8px;
   }
   .research-card-desc {
-    font-size: 13px; color: #8fa4b3; line-height: 1.6;
+    font-size: 13px; color: #5a7485; line-height: 1.6;
   }
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 900px) {
-    .hero { padding: 48px 24px 40px; }
-    .hero-wordmark { height: 36px; margin-bottom: 24px; }
-    .hero h1 { font-size: 28px; }
+    .hero { padding: 64px 24px 48px; }
+    .hero h1 { font-size: 36px; letter-spacing: -1px; }
+    .hero-wordmark { height: 40px; margin-bottom: 28px; }
+    .hero-kicker { font-size: 10px; letter-spacing: 2px; margin-bottom: 20px; }
   }
   @media (max-width: 768px) {
     /* Global */
@@ -1758,11 +1767,13 @@
     .ndi-logo { height: 24px; }
 
     /* Hero */
-    .hero { padding: 32px 16px 28px; }
-    .hero-wordmark { height: 28px; margin-bottom: 20px; }
-    .hero h1 { font-size: 22px; letter-spacing: -0.3px; }
+    .hero { padding: 48px 16px 36px; }
+    .hero h1 { font-size: 28px; letter-spacing: -0.5px; }
     .hero h1 br { display: none; }
+    .hero-wordmark { height: 32px; margin-bottom: 24px; }
+    .hero-kicker { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 16px; }
     .hero-desc { font-size: 15px; }
+    .hero-status-pill { margin-top: 32px; }
     .hero-ctas { flex-direction: column; }
     .hero-cta-primary, .hero-cta-partner { width: 100%; justify-content: center; }
 
@@ -1880,12 +1891,10 @@
   <!-- ===== HERO ===== -->
   <div class="hero">
     <div class="hero-layout">
-      <div class="hero-status-pill">
-        <div class="status-dot"></div>OPERATIONAL | FEB 2026 | v1.12
-      </div>
+      <div class="hero-kicker">Network Designs, Inc. — AI &amp; Automation Division</div>
+      <h1>Built by the team<br>that built <em>RAVEN.</em></h1>
       <img src="autolabs_white.png" alt="AutoLabs" class="hero-wordmark">
-      <h1>The AI &amp; Automation<br>Research Division of<br><span>Network Designs, Inc.</span></h1>
-      <div class="hero-divider"></div>
+      <div class="hero-rule"></div>
       <p class="hero-desc">
         Production-grade intelligent tools for <strong>federal, defense, and enterprise</strong> ecosystems. Zero-trust by design. Nothing ever leaves your machine.
       </p>
@@ -1895,6 +1904,9 @@
           Explore Tools
         </a>
         <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="hero-cta-partner">PARTNER WITH US<span class="hero-cta-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB"></a>
+      </div>
+      <div class="hero-status-pill">
+        <div class="status-dot"></div>OPERATIONAL | FEB 2026 | v1.12
       </div>
     </div>
   </div>
