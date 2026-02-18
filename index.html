@@ -82,7 +82,7 @@
     z-index: 0;
   }
 
-  .app { position: relative; z-index: 1; overflow-x: hidden; }
+  .app { position: relative; z-index: 1; }
 
   /* ===== TOPBAR ===== */
   .topbar {
@@ -91,9 +91,10 @@
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(20px);
     background: rgba(1,26,46,0.8);
-    position: sticky; top: 0; z-index: 100;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     transition: background 0.4s ease, border-color 0.4s ease;
   }
+  .topbar-spacer { height: 70px; }
   .topbar.dark-mode {
     background: rgba(10,10,10,0.95);
     border-bottom-color: rgba(255,255,255,0.06);
@@ -164,8 +165,9 @@
 
   /* ===== HERO (dark landing — compact) ===== */
   .hero {
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; z-index: 100;
     padding: 64px 60px 56px;
+    background: var(--n-blue-deep);
     animation: fade-up 0.8s ease-out;
     display: flex; align-items: center;
     border-bottom: 1px solid var(--border);
@@ -973,6 +975,85 @@
   .footer-bottom a:hover { color: var(--d-blue); }
   .footer-bottom-links { display: flex; gap: 20px; }
 
+  /* Footer CTA Banner */
+  .footer-cta-banner {
+    border-top: 1px solid rgba(2,38,64,0.08);
+    padding: 48px 0;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 32px;
+  }
+  .footer-cta-section {
+    max-width: 560px;
+  }
+  .footer-cta-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
+    color: var(--n-blue); margin-bottom: 12px;
+  }
+  .footer-cta-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--d-blue); box-shadow: 0 0 8px rgba(7,176,232,0.4);
+  }
+  .footer-cta-title {
+    font-size: 22px; font-weight: 800; color: var(--n-blue);
+    line-height: 1.3; margin-bottom: 10px;
+  }
+  .footer-cta-desc {
+    font-size: 14px; color: #5a7485; line-height: 1.7; margin-bottom: 20px;
+  }
+  .footer-cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 8px;
+    background: var(--n-blue); color: #fff; border: none; cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif; font-size: 13px;
+    font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .footer-cta-btn:hover { background: var(--x-blue); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(2,38,64,0.2); }
+  .footer-cta-divider {
+    width: 100%; height: 1px;
+    background: rgba(2,38,64,0.08);
+  }
+  /* Download section */
+  .footer-download-section {
+    max-width: 480px;
+  }
+  .footer-download-title {
+    font-size: 16px; font-weight: 800; color: var(--n-blue);
+    margin-bottom: 6px;
+  }
+  .footer-download-desc {
+    font-size: 13px; color: #5a7485; line-height: 1.6; margin-bottom: 16px;
+  }
+  .footer-download-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px; border-radius: 8px;
+    background: #fff; color: var(--n-blue); border: 1.5px solid rgba(2,38,64,0.15);
+    cursor: pointer; font-family: 'Nunito Sans', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+    transition: all 0.2s;
+  }
+  .footer-download-btn:hover { border-color: var(--d-blue); color: var(--d-blue); background: rgba(7,176,232,0.04); }
+  .footer-download-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+  .footer-download-btn svg { flex-shrink: 0; }
+  .footer-download-progress {
+    margin-top: 12px; width: 100%; max-width: 300px; display: none;
+  }
+  .footer-download-bar {
+    height: 4px; border-radius: 2px; width: 100%;
+    background: rgba(2,38,64,0.06); overflow: hidden;
+  }
+  .footer-download-fill {
+    height: 100%; width: 0%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--d-blue), #05a0d4);
+    transition: width 0.3s ease;
+  }
+  .footer-download-status {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: #8fa4b3; margin-top: 6px; text-align: center;
+  }
+
   /* Footer responsive — see main 768px block below */
 
   /* ===== FORGE HERO ===== */
@@ -1065,6 +1146,12 @@
     display: flex; align-items: center;
   }
   .forge-gear:hover { color: #ddd; }
+  .forge-clear-btn {
+    background: none; border: none; color: #555; cursor: pointer;
+    padding: 4px; border-radius: 4px; transition: color 0.2s;
+    display: flex; align-items: center;
+  }
+  .forge-clear-btn:hover { color: #ff6b6b; }
 
   /* Chat */
   .forge-chat {
@@ -1826,11 +1913,11 @@
   }
   @media (max-width: 768px) {
     /* Global */
-    .app { overflow-x: hidden; }
     .floating-nav { display: none; }
 
     /* Topbar */
     .topbar { padding: 12px 16px; }
+    .topbar-spacer { height: 56px; }
     .topbar-attribution-text { display: none; }
     .topbar-attribution-logo { height: 14px; }
     .topbar-divider { display: none; }
@@ -1920,28 +2007,33 @@
     .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
     .footer-certs { flex-wrap: wrap; gap: 16px; }
     .footer-inner { padding: 36px 16px 0; }
+    .footer-cta-banner { padding: 36px 0; gap: 28px; }
+    .footer-cta-title { font-size: 19px; }
+    .footer-cta-btn { width: 100%; justify-content: center; }
   }
 </style>
 </head>
 <body>
-<div class="app">
 
-  <!-- ===== TOPBAR ===== -->
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="topbar-left">
-        <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="ndiautolight.png" alt="NDi Auto" class="ndi-logo"></a>
-        <div class="topbar-divider"></div>
-        <a href="https://netdes.com" target="_blank" class="topbar-attribution">
-          <span class="topbar-attribution-text">A Division of</span>
-          <img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="Network Designs, Inc." class="topbar-attribution-logo">
-        </a>
-      </div>
-      <div class="topbar-right">
-        <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-partner">PARTNER WITH US<span class="btn-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB Certified" class="sdvosb-logo"></a>
-      </div>
+<!-- ===== TOPBAR (outside .app to avoid stacking context trap) ===== -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank"><img src="ndiautolight.png" alt="NDi Auto" class="ndi-logo"></a>
+      <div class="topbar-divider"></div>
+      <a href="https://netdes.com" target="_blank" class="topbar-attribution">
+        <span class="topbar-attribution-text">A Division of</span>
+        <img src="https://netdes.com/wp-content/uploads/logo-header.png" alt="Network Designs, Inc." class="topbar-attribution-logo">
+      </a>
+    </div>
+    <div class="topbar-right">
+      <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="btn-partner">PARTNER WITH US<span class="btn-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB Certified" class="sdvosb-logo"></a>
     </div>
   </div>
+</div>
+<div class="topbar-spacer"></div>
+
+<div class="app">
 
   <!-- ===== FLOATING NAV ===== -->
   <nav class="floating-nav">
@@ -2224,7 +2316,7 @@
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
       <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No cloud. No data leakage.</p>
       <div class="forge-hero-stats">
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">3B</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">WebGPU</span><span class="forge-hero-stat-label">Accelerated</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2264,6 +2356,9 @@
         </div>
         <div class="forge-head-right">
           <span class="forge-pill">IN-BROWSER</span>
+          <button class="forge-clear-btn" onclick="forgeClearChat()" title="Clear chat">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
           <button class="forge-gear" onclick="forgeToggleSettings()" title="Settings">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
@@ -2539,6 +2634,32 @@
           <div class="footer-contact-item">
             <strong>Email</strong><br>
             <a href="mailto:info@netdes.com">info@netdes.com</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partner CTA + Download -->
+      <div class="footer-cta-banner">
+        <div class="footer-cta-section">
+          <div class="footer-cta-badge"><span class="footer-cta-badge-dot"></span>ACTIVELY PURSUING</div>
+          <div class="footer-cta-title">VA &amp; DoD AI Partnerships</div>
+          <p class="footer-cta-desc">Network Designs is a Service-Disabled Veteran-Owned Small Business with 30+ years of federal IT delivery. We're actively pursuing VA and DoD AI/ML work — and looking for partners who move fast.</p>
+          <a href="mailto:info@netdes.com?subject=AI%20Partnership%20Inquiry" class="footer-cta-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact Us to Partner
+          </a>
+        </div>
+        <div class="footer-cta-divider"></div>
+        <div class="footer-download-section">
+          <div class="footer-download-title">Take NDi Auto Offline</div>
+          <p class="footer-download-desc">Download this entire site as a single HTML file. Double-click to open — works anywhere, no internet required.</p>
+          <button class="footer-download-btn" id="offlineDownloadBtn" onclick="buildOfflinePackage()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download to Desktop
+          </button>
+          <div class="footer-download-progress" id="offlineProgress">
+            <div class="footer-download-bar"><div class="footer-download-fill" id="offlineFill"></div></div>
+            <div class="footer-download-status" id="offlineStatus">Bundling...</div>
           </div>
         </div>
       </div>
@@ -3101,7 +3222,7 @@ function showToast(msg, style) {
   async function vtLoadModel() {
     if (vtWhisperPipeline) return;
     vtPill.classList.add('loading');
-    vtPillStatus.textContent = 'Loading model...';
+    vtPillStatus.textContent = 'Loading model (~240MB)...';
     vtUpdateSquiggle();
 
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
@@ -3114,7 +3235,7 @@ function showToast(msg, style) {
 
     vtWhisperPipeline = await pipeline(
       'automatic-speech-recognition',
-      'onnx-community/whisper-tiny.en',
+      'onnx-community/whisper-small.en',
       { dtype: 'q8', device: 'wasm' }
     );
     vtModelLoaded = true;
@@ -3131,13 +3252,13 @@ function showToast(msg, style) {
       EVA_CDN + '/lib/ort.bundle.min.mjs',
       EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.wasm',
       EVA_CDN + '/lib/ort-wasm-simd-threaded.jsep.mjs',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/config.json',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/generation_config.json',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/preprocessor_config.json',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/tokenizer.json',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/tokenizer_config.json',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/onnx/encoder_model_quantized.onnx',
-      EVA_CDN + '/models/onnx-community/whisper-tiny.en/onnx/decoder_model_merged_quantized.onnx',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/config.json',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/generation_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/preprocessor_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/tokenizer.json',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/tokenizer_config.json',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/onnx/encoder_model_quantized.onnx',
+      EVA_CDN + '/models/onnx-community/whisper-small.en/onnx/decoder_model_merged_quantized.onnx',
     ];
     // Use low-priority fetch to avoid blocking UI
     files.forEach(url => {
@@ -3425,16 +3546,30 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
   // ---- CHAT ----
   function forgeBuildPayload() {
-    const sys = `You are RAVEN Forge, an expert AI assistant running locally in the user's browser. You are knowledgeable, thoughtful, and thorough.
+    const sys = `You are RAVEN Forge — a sharp, expert AI assistant running 100% locally in the browser. No cloud, no internet, no telemetry.
 
-RULES:
-- Answer the user's actual question completely. Think step-by-step for complex problems.
-- If you write code, make it correct and complete — not just pseudocode or skeleton.
-- Use markdown: **bold** for emphasis, \`code\` for inline code, \`\`\`lang for code blocks, lists for multi-part answers.
-- If the question is ambiguous, address the most likely interpretation and note alternatives.
-- For math, science, logic, and reasoning: show your work clearly.
-- Be concise but never at the cost of correctness or completeness.
-- You do NOT have internet access, file access, or tool use. You can only respond with text.`;
+RESPONSE FORMAT:
+1. **BLUF** (Bottom Line Up Front): Start EVERY answer with a 1-2 sentence direct answer to the question. No preamble, no "Great question!", no filler. Lead with the answer.
+2. **Details**: Then expand with supporting reasoning, steps, or context as needed.
+3. **Structure**: Use numbered lists for sequential steps. Use bullet lists for non-sequential items. Use **bold** for key terms. Use \`code\` for inline code and \`\`\`lang for code blocks. Use headers (## / ###) to organize long answers.
+
+QUALITY STANDARDS:
+- Be precise and concise. Every sentence must earn its place. Cut filler words.
+- For code: write correct, complete, runnable code — never pseudocode or skeleton unless explicitly asked.
+- For analysis: state your conclusion first, then the evidence that supports it.
+- For comparisons: use a clear structure (table, pros/cons list, or side-by-side).
+- For math/logic/reasoning: show your work step by step. State assumptions.
+- If a question is ambiguous, answer the most likely interpretation, then briefly note alternatives.
+- If you don't know something with certainty, say so directly — don't hedge or waffle.
+
+CONVERSATION MEMORY:
+- Reference prior messages in this conversation when relevant. Build on what was already discussed.
+- If the user refines or follows up, acknowledge the shift and adjust — don't repeat previous context unnecessarily.
+- Track the user's intent across the conversation. If they asked about X and now ask about Y, connect them if related.
+
+CONSTRAINTS:
+- You have no internet, file access, or tool use. Text responses only.
+- You are not a search engine. Reason from your training knowledge.`;
     return [{ role: 'system', content: sys }, ...forgeMessages];
   }
 
@@ -3454,15 +3589,12 @@ RULES:
     text = text.replace(/^### (.+)$/gm, '<h4 style="font-size:14px;font-weight:700;color:#fff;margin:10px 0 4px">$1</h4>');
     text = text.replace(/^## (.+)$/gm, '<h3 style="font-size:15px;font-weight:700;color:#fff;margin:12px 0 4px">$1</h3>');
     text = text.replace(/^# (.+)$/gm, '<h2 style="font-size:16px;font-weight:700;color:#fff;margin:14px 0 6px">$1</h2>');
-    // Lists — group consecutive lines
-    text = text.replace(/(^[-*] .+$\n?)+/gm, m => {
-      const items = m.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
-      return `<ul>${items}</ul>`;
-    });
-    text = text.replace(/(^\d+\. .+$\n?)+/gm, m => {
-      const items = m.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
-      return `<ol>${items}</ol>`;
-    });
+    // Lists — match each line individually, then merge adjacent
+    text = text.replace(/^[-*] (.+)$/gm, '<ul><li>$1</li></ul>');
+    text = text.replace(/^\d+[\.\)] (.+)$/gm, '<ol><li>$1</li></ol>');
+    // Merge adjacent list tags (handles blank lines between items too)
+    text = text.replace(/<\/ul>(\s|<br>)*<ul>/g, '');
+    text = text.replace(/<\/ol>(\s|<br>)*<ol>/g, '');
     // Line breaks — but not after block elements
     text = text.replace(/\n/g, '<br>');
     text = text.replace(/(<\/ul>|<\/ol>|<\/h[234]>|<\/pre>)<br>/g, '$1');
@@ -3588,7 +3720,11 @@ RULES:
   window.forgeStartEngine = async function() {
     if (!navigator.gpu) {
       loadError.style.display = 'block';
-      loadError.innerHTML = 'Your browser doesn\'t support WebGPU.<br>Use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>.';
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isMobile = isIOS || /Android/i.test(navigator.userAgent);
+      loadError.innerHTML = isMobile
+        ? 'Forge requires <strong>WebGPU</strong>, which isn\'t available on mobile browsers yet.<br>Use a <strong>desktop computer</strong> with Chrome or Edge.'
+        : 'Your browser doesn\'t support <strong>WebGPU</strong>.<br>Use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong> on desktop.';
       return;
     }
 
@@ -3649,6 +3785,15 @@ RULES:
     showToast('Forge settings saved', 'raven');
   };
 
+  // ---- CLEAR CHAT ----
+  window.forgeClearChat = function() {
+    if (forgeStreaming) return;
+    forgeMessages = [];
+    localStorage.removeItem('forge_history');
+    chatEl.innerHTML = '';
+    if (welcomeEl) { welcomeEl.style.display = ''; chatEl.appendChild(welcomeEl); }
+  };
+
   // ---- MEMORY (restore chat history) ----
   // Restore previous messages into the UI
   if (forgeMessages.length) {
@@ -3661,6 +3806,146 @@ RULES:
   }
 
 })();
+
+// ========== OFFLINE PACKAGE BUILDER ==========
+async function buildOfflinePackage() {
+  const btn = document.getElementById('offlineDownloadBtn');
+  const progress = document.getElementById('offlineProgress');
+  const fill = document.getElementById('offlineFill');
+  const status = document.getElementById('offlineStatus');
+
+  btn.disabled = true;
+  progress.style.display = 'block';
+  fill.style.width = '0%';
+  status.textContent = 'Fetching page source...';
+
+  function updateProgress(pct, msg) {
+    fill.style.width = pct + '%';
+    status.textContent = msg;
+  }
+
+  try {
+    // Step 1: Get the raw HTML of this page
+    updateProgress(5, 'Fetching page HTML...');
+    const resp = await fetch(window.location.href);
+    let html = await resp.text();
+
+    // Step 2: Fetch and inline external JS libraries
+    const scripts = [
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    ];
+
+    for (let i = 0; i < scripts.length; i++) {
+      const pct = 10 + Math.floor((i / scripts.length) * 30);
+      const name = scripts[i].split('/').pop();
+      updateProgress(pct, `Inlining ${name}...`);
+      try {
+        const r = await fetch(scripts[i]);
+        const code = (await r.text()).replace(/<\/script>/gi, '<\\/script>');
+        html = html.replace(
+          `<script src="${scripts[i]}"><\/script>`,
+          `<script>/* ${name} */\n${code}<\/script>`
+        );
+      } catch { /* skip if fails */ }
+    }
+
+    // Step 3: Inline the PDF worker — fetch code, store in a script block, create blob URL at runtime
+    updateProgress(45, 'Inlining PDF worker...');
+    try {
+      const workerResp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js');
+      const workerCode = await workerResp.text();
+      // Inject a hidden script that creates the blob URL before pdfjsLib uses it
+      const safeWorkerCode = workerCode.replace(/<\/script>/gi, '<\\/script>');
+      const workerScript = `<script id="pdf-worker-inline" type="text/js-worker">${safeWorkerCode}<\/script>`;
+      const workerBootstrap = `<script>
+var wEl=document.getElementById('pdf-worker-inline');
+window.__pdfWorkerBlobUrl=URL.createObjectURL(new Blob([wEl.textContent],{type:'application/javascript'}));
+<\/script>`;
+      html = html.replace('</head>', workerScript + '\n' + workerBootstrap + '\n</head>');
+      html = html.replace(
+        `pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'`,
+        `pdfjsLib.GlobalWorkerOptions.workerSrc = window.__pdfWorkerBlobUrl`
+      );
+    } catch { /* skip — PDF processing won't work offline, but rest of site will */ }
+
+    // Step 4: Inline Google Fonts as embedded CSS
+    updateProgress(50, 'Embedding fonts...');
+    try {
+      const fontResp = await fetch('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;1,6..12,400&family=DM+Mono:wght@400;500&display=swap');
+      const fontCSS = await fontResp.text();
+      html = html.replace(
+        /<link rel="preconnect" href="https:\/\/fonts\.googleapis\.com">\n<link href="https:\/\/fonts\.googleapis\.com[^"]*" rel="stylesheet">/,
+        `<style>/* Google Fonts */\n${fontCSS}</style>`
+      );
+    } catch { /* falls back to system fonts */ }
+
+    // Step 5: Inline local images as base64 data URIs
+    const images = ['ndiautolight.png', 'ndiautodark.png', 'sdvosb.png', 'robot_white.png', 'raven-icon.png', 'raven-social.png', 'robooo.png', 'favicon.ico'];
+    for (let i = 0; i < images.length; i++) {
+      const pct = 55 + Math.floor((i / images.length) * 25);
+      updateProgress(pct, `Embedding ${images[i]}...`);
+      try {
+        const imgResp = await fetch(images[i]);
+        const blob = await imgResp.blob();
+        const dataUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        // Replace all occurrences of this image filename
+        const escaped = images[i].replace('.', '\\.');
+        html = html.replace(new RegExp(`(src|href)="${escaped}"`, 'g'), `$1="${dataUrl}"`);
+      } catch { /* skip */ }
+    }
+
+    // Step 6: Add offline banner + strip Forge/EVA CDN-dependent loading
+    updateProgress(85, 'Finalizing offline package...');
+
+    // Add an offline notice banner after <body>
+    const offlineBanner = `<div style="background:linear-gradient(135deg,#022640,#003867);color:#fff;text-align:center;padding:10px 16px;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.5px;">OFFLINE VERSION — NDi Auto by Network Designs, Inc. | <a href="https://ndiauto.com" style="color:#07B0E8;text-decoration:none;">ndiauto.com</a></div>`;
+    html = html.replace('<div class="app">', offlineBanner + '\n<div class="app">');
+
+    // Disable EVA preload so it doesn't fire network requests offline
+    html = html.replace(
+      /setTimeout\(\(\) => \{ if \(!vtPreloaded\)/,
+      'setTimeout(() => { if (false && !vtPreloaded)'
+    );
+
+    // Step 7: Build the blob and trigger download
+    updateProgress(95, 'Preparing download...');
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const d = new Date();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const yy = String(d.getFullYear()).slice(-2);
+    const filename = `NDi_Auto_${mm}-${dd}-${yy}.html`;
+
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    updateProgress(100, `Downloaded ${filename}`);
+    btn.disabled = false;
+
+    setTimeout(() => {
+      fill.style.width = '0%';
+      progress.style.display = 'none';
+    }, 4000);
+
+  } catch (e) {
+    status.textContent = 'Error: ' + e.message;
+    btn.disabled = false;
+    setTimeout(() => { progress.style.display = 'none'; }, 5000);
+  }
+}
 </script>
 </body>
 </html>
