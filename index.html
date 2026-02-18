@@ -1264,17 +1264,13 @@
   .forge-gate.dismissed { opacity: 0; visibility: hidden; pointer-events: none; }
   .forge-setup { max-width: 380px; width: 100%; text-align: center; }
   .forge-setup-icon { width: 40px; height: 40px; border-radius: 10px; opacity: 0.5; margin-bottom: 16px; }
-  .forge-setup-title {
-    font-family: 'Nunito Sans', sans-serif; font-size: 20px; font-weight: 800;
-    color: #f0f0f0; margin-bottom: 8px;
-  }
   .forge-setup-sub {
     font-size: 13px; color: #bbb; line-height: 1.7; margin-bottom: 24px;
   }
   .forge-setup-sub strong { color: #eee; font-weight: 700; }
   .forge-setup-btn {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; padding: 13px 32px; border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 13px 20px; border-radius: 10px;
     background: #F8B42C; color: #000; border: none; cursor: pointer;
     font-family: 'Nunito Sans', sans-serif; font-size: 13px;
     font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
@@ -1300,11 +1296,10 @@
     padding: 2px 6px; border-radius: 3px;
     border: 1px solid rgba(248,180,44,0.4);
     color: #F8B42C; background: rgba(248,180,44,0.08);
-    margin-left: auto;
   }
   .forge-btn-time {
     font-size: 10px; font-weight: 600; opacity: 0.6;
-    letter-spacing: 0;
+    letter-spacing: 0; margin-left: auto;
   }
   .forge-spin {
     width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
@@ -2302,7 +2297,6 @@
       <div class="forge-gate" id="forgeGate">
         <div class="forge-setup">
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
-          <div class="forge-setup-title">RAVEN Forge</div>
           <p class="forge-setup-sub">Entirely in your browser. Download &amp; cache once.<br><strong>No data ever leaves your device.</strong></p>
           <div class="forge-model-btns" id="forgeModelBtns">
             <button class="forge-setup-btn forge-btn-fast" onclick="forgeStartEngine('fast')">
