@@ -3354,8 +3354,10 @@ function showToast(msg, style) {
   });
 })();
 
-// ========== PDF.js Worker ==========
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// ========== PDF.js Worker (deferred — runs after defer scripts load) ==========
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+});
 
 // ========== FLOATING NAV + TOPBAR: scroll-aware theming ==========
 (function() {
