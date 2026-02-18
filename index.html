@@ -25,7 +25,7 @@
     --d-blue: #07B0E8;
     --d-blue-hover: #05a0d4;
     --d-blue-glow: rgba(7,176,232,0.15);
-    --d-blue-glow-strong: rgba(7,176,232,0.35);
+
     --x-blue: #003867;
     --grey-1: #F1F2F2;
     --white: #FFFFFF;
@@ -585,45 +585,6 @@
   .btn-action-download { flex: 3; }
   .btn-action-copy { flex: 2; }
 
-  /* ===== PROMPT SECTION ===== */
-  .prompt-section {
-    margin-top: 40px; padding-top: 32px;
-    border-top: 1px solid var(--border);
-    animation: fade-up 0.8s ease-out 0.3s both;
-  }
-  .section-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
-  }
-  .section-title {
-    font-size: 12px; font-weight: 700; color: var(--text-secondary);
-    text-transform: uppercase; letter-spacing: 1.5px;
-  }
-  .section-badge {
-    font-family: 'DM Mono', monospace; font-size: 9px;
-    padding: 3px 8px; border-radius: 3px;
-    background: var(--success-bg); border: 1px solid var(--success-border);
-    color: var(--success); letter-spacing: 0.8px;
-  }
-  .prompt-box {
-    background: var(--surface-0);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    font-family: 'DM Mono', monospace; font-size: 11.5px;
-    color: var(--text-tertiary); line-height: 1.7;
-    max-height: 180px; overflow-y: auto;
-    white-space: pre-wrap; word-break: break-word;
-  }
-  .prompt-box::-webkit-scrollbar { width: 4px; }
-  .prompt-box::-webkit-scrollbar-track { background: transparent; }
-  .prompt-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .super-prompt-hint {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--text-tertiary); letter-spacing: 0.3px;
-  }
-
   /* ===== WORKS WITH MARQUEE ===== */
   .works-with {
     margin-top: 24px; padding-top: 20px;
@@ -783,31 +744,6 @@
   .super-prompt-content::-webkit-scrollbar { width: 4px; }
   .super-prompt-content::-webkit-scrollbar-track { background: transparent; }
   .super-prompt-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .super-prompt-actions {
-    display: flex; align-items: center; gap: 16px;
-    margin-top: 16px; flex-wrap: wrap;
-  }
-  .btn-action-primary {
-    background: linear-gradient(135deg, var(--d-blue), var(--x-blue));
-    border: none; color: #fff;
-  }
-  .btn-action-primary:hover {
-    background: linear-gradient(135deg, var(--d-blue-hover), var(--d-blue));
-    border: none; color: #fff;
-  }
-  .btn-super {
-    padding: 0 28px !important; height: 48px !important;
-    font-size: 13px !important;
-    box-shadow: 0 0 20px rgba(7,176,232,0.15);
-  }
-  .btn-super:hover {
-    box-shadow: 0 0 30px rgba(7,176,232,0.3) !important;
-  }
-  .super-prompt-hint {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--text-tertiary); letter-spacing: 0.3px;
-  }
-
   /* ===== RAVEN CTA ===== */
   .raven-cta-wrap {
     position: relative;
@@ -1346,7 +1282,7 @@
   /* Forge model runner */
   .forge-runner {
     padding: 0 24px;
-    max-width: 1098px; margin: 0 auto;
+    max-width: 975px; margin: 0 auto;
   }
   .forge-works-with {
     margin-top: 0; padding: 40px 0 32px;
@@ -1822,25 +1758,6 @@
     pointer-events: none;
   }
   .research-content { position: relative; z-index: 1; max-width: 975px; margin: 0 auto; }
-  .research-badge {
-    display: inline-block;
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--d-blue); letter-spacing: 3px; text-transform: uppercase;
-    font-weight: 700; margin-bottom: 28px;
-    padding: 8px 20px; border-radius: 50px;
-    border: 1px solid rgba(7,176,232,0.3);
-    background: rgba(7,176,232,0.06);
-  }
-  .research-title {
-    font-size: clamp(28px, 4vw, 44px); font-weight: 900;
-    color: #fff; letter-spacing: -0.5px; line-height: 1.2;
-    margin-bottom: 24px;
-  }
-  .research-title span { color: var(--d-blue); }
-  .research-desc {
-    font-size: 17px; color: #c0d0dc; line-height: 1.8;
-    max-width: 640px; margin: 0 auto 36px;
-  }
   .research-cards {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
     max-width: 975px; margin: 0 auto;
@@ -1949,7 +1866,6 @@
 
     /* Forge */
     .forge-msg { max-width: 92%; }
-    .forge-hero { border-bottom: none; }
     .forge-wrap { padding: 0 16px 32px; }
     .forge { height: 480px; border-radius: 12px; }
     .forge-think-toggle { display: none; }
@@ -2277,7 +2193,7 @@
     <div class="forge-hero-content">
       <div class="forge-hero-badge">AI Acceleration</div>
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">No APIs — Chat securely &amp; freely.</p>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs.</p>
       <div class="forge-hero-stats">
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">4 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2502,12 +2418,12 @@
       </div>
       <div class="vt-transcript-body" id="vtTranscriptBody" contenteditable="true" spellcheck="true"></div>
       <div class="vt-actions">
-        <button class="vt-btn-copy" onclick="vtDownload()">
+        <button class="vt-btn-download" onclick="vtDownload()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download
         </button>
-        <button class="vt-btn-download" onclick="vtCopy()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-linecap="round"/></svg>
+        <button class="vt-btn-copy" onclick="vtCopy()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012-2v1" stroke-linecap="round"/></svg>
           Copy
         </button>
       </div>
@@ -2978,15 +2894,20 @@ async function beginProcess() {
   resultSection.classList.add('visible');
 }
 
-// ========== ACTIONS ==========
-function downloadCorpus() {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([masterCorpus], { type: 'text/plain' }));
+// ========== HELPERS ==========
+function fmtDate(sep='-') {
   const d = new Date();
   const mm = String(d.getMonth()+1).padStart(2,'0');
   const dd = String(d.getDate()).padStart(2,'0');
   const yy = String(d.getFullYear()).slice(-2);
-  a.download = `NDi_SmartDoc_${mm}-${dd}-${yy}.txt`;
+  return `${mm}${sep}${dd}${sep}${yy}`;
+}
+
+// ========== ACTIONS ==========
+function downloadCorpus() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([masterCorpus], { type: 'text/plain' }));
+  a.download = `NDi_SmartDoc_${fmtDate()}.txt`;
   a.click(); URL.revokeObjectURL(a.href);
   showToast('SmartDoc downloaded');
 }
@@ -3385,7 +3306,7 @@ function showToast(msg, style) {
     const text = vtTranscriptBody.innerText.trim();
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.querySelector('.vt-btn-download');
+      const btn = document.querySelector('.vt-btn-copy');
       const orig = btn.innerHTML;
       btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
       setTimeout(() => btn.innerHTML = orig, 1500);
@@ -3399,11 +3320,7 @@ function showToast(msg, style) {
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    const d = new Date();
-    const mm = String(d.getMonth()+1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    const yy = String(d.getFullYear()).slice(-2);
-    a.download = `NDi_EVA_${mm}-${dd}-${yy}.txt`;
+    a.download = `NDi_EVA_${fmtDate()}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -3474,12 +3391,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 // ========== LIVE DATE (header + footer) ==========
 (function() {
-  const d = new Date();
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  const yy = String(d.getFullYear()).slice(-2);
-  const dateStr = `${mm}.${dd}.${yy}`;
-  document.querySelectorAll('.live-date').forEach(el => el.textContent = dateStr);
+  document.querySelectorAll('.live-date').forEach(el => el.textContent = fmtDate('.'));
 })();
 
 // ========== RAVEN FORGE (WebLLM — runs entirely in browser) ==========
@@ -3669,7 +3581,6 @@ ${(forgeActiveModel && forgeActiveModel.id.includes('4B') && forgeDeepThinking) 
     const cleaned = forgeStripThink(full);
     bubble.innerHTML = forgeMd(cleaned || '(Empty response)');
     forgeMessages.push({ role: 'assistant', content: cleaned });
-    localStorage.setItem('forge_history', JSON.stringify(forgeMessages));
     forgeStreaming = false;
   };
 
