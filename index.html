@@ -1281,8 +1281,24 @@
     transition: all 0.2s;
     box-shadow: 0 2px 16px rgba(248,180,44,0.25);
   }
-  .forge-setup-btn:hover { background: #f9c35a; transform: translateY(-1px); }
+  .forge-setup-btn:hover { transform: translateY(-1px); }
   .forge-setup-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+  .forge-model-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .forge-btn-fast {
+    background: #F8B42C; color: #000;
+    box-shadow: 0 2px 16px rgba(248,180,44,0.25);
+  }
+  .forge-btn-fast:hover { background: #f9c35a; }
+  .forge-btn-smart {
+    background: rgba(255,255,255,0.08); color: #e0e0e0;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: none;
+  }
+  .forge-btn-smart:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
+  .forge-btn-time {
+    font-size: 10px; font-weight: 600; opacity: 0.6;
+    margin-left: auto; letter-spacing: 0;
+  }
   .forge-spin {
     width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
     border-top-color: #000; border-radius: 50%;
@@ -2300,11 +2316,19 @@
         <div class="forge-setup">
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
           <div class="forge-setup-title">RAVEN Forge</div>
-          <p class="forge-setup-sub">3B Parameter AI — Entirely in your browser.<br>Download &amp; cache once. <strong>No data ever leaves your device.</strong></p>
-          <button class="forge-setup-btn" id="forgeLoadBtn" onclick="forgeStartEngine()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span id="forgeLoadBtnText">Load AI Model</span>
-          </button>
+          <p class="forge-setup-sub">Entirely in your browser. Download &amp; cache once.<br><strong>No data ever leaves your device.</strong></p>
+          <div class="forge-model-btns" id="forgeModelBtns">
+            <button class="forge-setup-btn forge-btn-fast" onclick="forgeStartEngine('fast')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Load Fast Model</span>
+              <span class="forge-btn-time">~20s</span>
+            </button>
+            <button class="forge-setup-btn forge-btn-smart" onclick="forgeStartEngine('smart')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18h6M10 22h4M12 2a7 7 0 015 11.9V17H7v-3.1A7 7 0 0112 2z"/></svg>
+              <span>Load Smart Model</span>
+              <span class="forge-btn-time">~1-2 min</span>
+            </button>
+          </div>
           <div class="forge-load-progress" id="forgeLoadProgress" style="display:none;">
             <div class="forge-load-bar"><div class="forge-load-fill" id="forgeLoadFill"></div></div>
             <div class="forge-load-status" id="forgeLoadStatus">Preparing download...</div>
@@ -2320,11 +2344,11 @@
           <span class="forge-head-title">RAVEN</span>
         </div>
         <div class="forge-head-right">
-          <span class="forge-pill">LOCAL v1.41</span>
           <button class="forge-think-toggle" id="forgeThinkToggle" onclick="forgeToggleThink()" title="Toggle deep thinking">
             <span class="forge-think-label">DEEP THINKING:</span>
             <span class="forge-think-state" id="forgeThinkState">OFF</span>
           </button>
+          <span class="forge-pill">LOCAL v1.14</span>
           <button class="forge-gear" onclick="forgeToggleSettings()" title="Settings">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
@@ -2345,7 +2369,7 @@
       <!-- Input -->
       <div class="forge-input-wrap">
         <div class="forge-bar">
-          <textarea class="forge-textarea" id="forgeInput" rows="1" placeholder="Message RAVEN..." onkeydown="forgeKeydown(event)" oninput="forgeResizeInput()"></textarea>
+          <textarea class="forge-textarea" id="forgeInput" rows="1" placeholder="Message RAVEN Forge..." onkeydown="forgeKeydown(event)" oninput="forgeResizeInput()"></textarea>
           <button class="forge-send" id="forgeSendBtn" disabled onclick="forgeSend()" title="Send">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
           </button>
@@ -3482,7 +3506,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
   let forgeStreaming = false;
   let forgeEngine = null;
 
-  const FORGE_MODEL = 'Qwen3-4B-q4f16_1-MLC';
+  const FORGE_MODELS = {
+    fast: { id: 'Qwen3-1.7B-q4f16_1-MLC', label: '1.7B', params: '1.7 Billion' },
+    smart: { id: 'Qwen3-4B-q4f16_1-MLC', label: '4B', params: '4 Billion' },
+  };
+  let forgeActiveModel = null;
   let forgeDeepThinking = false;
 
   // Config with localStorage persistence
@@ -3530,6 +3558,11 @@ CONSTRAINTS:
 
 ${forgeDeepThinking ? '/think' : '/no_think'}`;
     return [{ role: 'system', content: sys }, ...forgeMessages];
+  }
+
+  // Strip Qwen3 <think>...</think> reasoning blocks from output
+  function forgeStripThink(text) {
+    return text.replace(/<think>[\s\S]*?<\/think>/g, '').replace(/<think>[\s\S]*$/g, '').trim();
   }
 
   function forgeMd(text) {
@@ -3611,7 +3644,8 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
 
     function renderStream() {
       renderQueued = false;
-      bubble.innerHTML = forgeMd(full) + '<span class="forge-cursor"></span>';
+      const display = forgeStripThink(full);
+      bubble.innerHTML = forgeMd(display) + '<span class="forge-cursor"></span>';
       chatEl.scrollTop = chatEl.scrollHeight;
     }
 
@@ -3641,15 +3675,16 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
       }
     } catch (e) {
       if (!full) {
-        forgeShowError(bubble, e.message, 'error: ' + e.name + ': ' + e.message + '\nmodel: ' + FORGE_MODEL);
+        forgeShowError(bubble, e.message, 'error: ' + e.name + ': ' + e.message + '\nmodel: ' + (forgeActiveModel ? forgeActiveModel.id : 'unknown'));
         forgeMessages.push({ role: 'assistant', content: '(Error)' });
         forgeStreaming = false;
         return;
       }
     }
 
-    bubble.innerHTML = forgeMd(full || '(Empty response)');
-    forgeMessages.push({ role: 'assistant', content: full });
+    const cleaned = forgeStripThink(full);
+    bubble.innerHTML = forgeMd(cleaned || '(Empty response)');
+    forgeMessages.push({ role: 'assistant', content: cleaned });
     localStorage.setItem('forge_history', JSON.stringify(forgeMessages));
     forgeStreaming = false;
   };
@@ -3669,14 +3704,13 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
 
   // ---- WEBLLM ENGINE ----
   const gateEl = document.getElementById('forgeGate');
-  const loadBtn = document.getElementById('forgeLoadBtn');
-  const loadBtnText = document.getElementById('forgeLoadBtnText');
+  const modelBtns = document.getElementById('forgeModelBtns');
   const loadProgress = document.getElementById('forgeLoadProgress');
   const loadFill = document.getElementById('forgeLoadFill');
   const loadStatus = document.getElementById('forgeLoadStatus');
   const loadError = document.getElementById('forgeLoadError');
 
-  window.forgeStartEngine = async function() {
+  window.forgeStartEngine = async function(mode) {
     if (!navigator.gpu) {
       loadError.style.display = 'block';
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -3687,11 +3721,18 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
       return;
     }
 
-    loadBtn.disabled = true;
-    loadBtnText.textContent = 'Downloading...';
-    loadBtn.querySelector('svg').style.display = 'none';
+    const chosen = FORGE_MODELS[mode] || FORGE_MODELS.fast;
+    forgeActiveModel = chosen;
+
+    // Hide both buttons, show progress
+    modelBtns.style.display = 'none';
     loadProgress.style.display = 'block';
     loadError.style.display = 'none';
+    loadStatus.textContent = `Loading ${chosen.label} model...`;
+
+    // Update hero stat to match chosen model
+    const paramEl = document.querySelector('.forge-hero-stat-value');
+    if (paramEl && !paramEl.querySelector('span')) paramEl.textContent = chosen.params;
 
     const startTime = Date.now();
     let timerInterval = setInterval(() => {
@@ -3705,7 +3746,7 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
     try {
       const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
 
-      forgeEngine = await CreateMLCEngine(FORGE_MODEL, {
+      forgeEngine = await CreateMLCEngine(chosen.id, {
         initProgressCallback: (report) => {
           const pct = Math.floor(report.progress * 100);
           loadFill.style.width = pct + '%';
@@ -3719,14 +3760,12 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
       clearInterval(timerInterval);
       loadFill.style.width = '100%';
       loadStatus.textContent = 'Ready!';
-      loadBtnText.textContent = 'Loaded';
       setTimeout(() => gateEl.classList.add('dismissed'), 600);
 
     } catch (e) {
       clearInterval(timerInterval);
-      loadBtn.disabled = false;
-      loadBtnText.textContent = 'Retry';
-      loadBtn.querySelector('svg').style.display = '';
+      modelBtns.style.display = '';
+      loadProgress.style.display = 'none';
       loadError.style.display = 'block';
       loadError.textContent = e.message;
     }
@@ -3763,15 +3802,13 @@ ${forgeDeepThinking ? '/think' : '/no_think'}`;
     }
     // Clear all state
     forgeMessages = [];
+    forgeActiveModel = null;
     localStorage.removeItem('forge_history');
     chatEl.innerHTML = '';
     if (welcomeEl) { welcomeEl.style.display = ''; chatEl.appendChild(welcomeEl); }
     // Reset gate UI back to initial state
     gateEl.classList.remove('dismissed');
-    loadBtn.disabled = false;
-    loadBtnText.textContent = 'Load AI Model';
-    const svg = loadBtn.querySelector('svg');
-    if (svg) svg.style.display = '';
+    modelBtns.style.display = '';
     loadProgress.style.display = 'none';
     loadFill.style.width = '0%';
     loadStatus.textContent = 'Preparing download...';
