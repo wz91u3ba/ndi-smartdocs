@@ -1295,9 +1295,16 @@
     box-shadow: none;
   }
   .forge-btn-smart:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
+  .forge-btn-badge {
+    font-size: 8px; font-weight: 700; letter-spacing: 1px;
+    padding: 2px 6px; border-radius: 3px;
+    border: 1px solid rgba(248,180,44,0.4);
+    color: #F8B42C; background: rgba(248,180,44,0.08);
+    margin-left: auto;
+  }
   .forge-btn-time {
     font-size: 10px; font-weight: 600; opacity: 0.6;
-    margin-left: auto; letter-spacing: 0;
+    letter-spacing: 0;
   }
   .forge-spin {
     width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15);
@@ -1370,23 +1377,6 @@
   }
   .forge-tagline-text span { color: #F8B42C; font-weight: 700; }
   .forge-tagline-text em { color: #444; font-style: normal; font-weight: 400; }
-
-  /* Forge Signal comparison */
-  .forge-signal {
-    max-width: 975px; margin: 0 auto;
-    padding: 48px 24px 56px; text-align: center;
-  }
-  .forge-signal-inner {
-    display: inline-flex; align-items: center; gap: 16px;
-    font-family: 'Nunito Sans', sans-serif; font-size: 28px; font-weight: 700;
-    color: rgba(255,255,255,0.5); letter-spacing: -0.3px;
-  }
-  .forge-signal-logo {
-    width: 36px; height: 36px; border-radius: 8px;
-  }
-  .forge-signal-inner strong {
-    color: #F8B42C; font-weight: 800;
-  }
 
   /* ===== EVA — Unified Dark Section ===== */
   .eva-section {
@@ -1970,9 +1960,6 @@
     .forge-think-toggle { display: none; }
     .forge-pill { font-size: 8px; padding: 2px 6px; }
     .forge-runner { padding: 0 16px; }
-    .forge-signal { padding: 32px 16px 40px; }
-    .forge-signal-inner { font-size: 20px; gap: 12px; }
-    .forge-signal-logo { width: 28px; height: 28px; }
     .forge-tagline { padding: 20px 16px 36px; }
 
     /* EVA */
@@ -2295,7 +2282,7 @@
     <div class="forge-hero-content">
       <div class="forge-hero-badge">AI Acceleration</div>
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs.</p>
+      <p class="forge-hero-sub">No APIs — Chat securely &amp; freely.</p>
       <div class="forge-hero-stats">
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">4 Billion</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2320,13 +2307,14 @@
           <div class="forge-model-btns" id="forgeModelBtns">
             <button class="forge-setup-btn forge-btn-fast" onclick="forgeStartEngine('fast')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Load Fast Model</span>
-              <span class="forge-btn-time">~20s</span>
+              <span>Fast Model</span>
+              <span class="forge-btn-time">~20 SEC</span>
             </button>
             <button class="forge-setup-btn forge-btn-smart" onclick="forgeStartEngine('smart')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18h6M10 22h4M12 2a7 7 0 015 11.9V17H7v-3.1A7 7 0 0112 2z"/></svg>
-              <span>Load Smart Model</span>
-              <span class="forge-btn-time">~1-2 min</span>
+              <span>Smart Model</span>
+              <span class="forge-btn-badge">DEEP THINKING</span>
+              <span class="forge-btn-time">~90 SEC</span>
             </button>
           </div>
           <div class="forge-load-progress" id="forgeLoadProgress" style="display:none;">
@@ -2394,14 +2382,6 @@
   <!-- FORGE DARK ZONE -->
   <div class="forge-dark-zone">
     <div class="forge-dark-glow"></div>
-
-  <!-- SIGNAL COMPARISON -->
-  <div class="forge-signal">
-    <div class="forge-signal-inner">
-      <img src="signal_logo.png" alt="Signal" class="forge-signal-logo">
-      <strong>Forge</strong> is the Signal of AI
-    </div>
-  </div>
 
   <!-- FORGE MODEL RUNNER -->
   <div class="forge-runner">
