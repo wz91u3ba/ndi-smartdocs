@@ -1460,21 +1460,8 @@
     display: block;
   }
 
-  /* Squiggle loading animation (SVG sine wave) */
-  .vt-squiggle {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; transition: opacity 0.4s;
-  }
-  .vt-tool.loading .vt-squiggle { opacity: 1; }
-  .vt-squiggle path {
-    fill: none; stroke: url(#vtSquiggleGrad); stroke-width: 2;
-    stroke-linecap: round;
-    animation: vt-squiggle-flow 1.5s ease-in-out infinite;
-  }
-  @keyframes vt-squiggle-flow {
-    0% { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: -60; }
-  }
+  /* Squiggle loading animation — hidden, water fill on button is enough */
+  .vt-squiggle { display: none; }
 
   /* Status text — left of waveform during loading */
   .vt-pill-status {
@@ -1570,6 +1557,21 @@
   }
   .vt-rec-btn.loading .vt-water-pct { display: block; }
   .vt-rec-btn.loading:hover { transform: none; }
+  /* Red water fill while recording */
+  .vt-rec-btn.recording .vt-water {
+    background: linear-gradient(0deg, rgba(239,68,68,0.95) 0%, rgba(239,68,68,0.7) 100%);
+  }
+  .vt-rec-btn.recording .vt-water::before {
+    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(239,68,68,0.95), transparent);
+  }
+  /* Drain during transcription processing */
+  .vt-rec-btn.processing .vt-water {
+    background: linear-gradient(0deg, rgba(99,102,241,0.9) 0%, rgba(7,176,232,0.7) 100%);
+    transition: height 3s linear;
+  }
+  .vt-rec-btn.processing .vt-water::before {
+    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(99,102,241,0.9), transparent);
+  }
 
   /* Transcript — below the pill (dark theme) */
   .vt-transcript {
@@ -3186,12 +3188,13 @@ function showToast(msg, style) {
     vtPillStatus.textContent = 'Loading model (~240MB)...';
     vtUpdateSquiggle();
 
-    // Water fill on mic button
+    // Water fill on mic button — track total progress across all files
     const recBtn = document.getElementById('vtRecBtn');
     const water = document.getElementById('vtWater');
     const waterPct = document.getElementById('vtWaterPct');
     recBtn.classList.add('loading');
-    let maxPct = 0;
+    const fileProgress = {};
+    let totalFiles = 0;
 
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
@@ -3206,17 +3209,26 @@ function showToast(msg, style) {
       {
         dtype: 'q8', device: 'wasm',
         progress_callback: (p) => {
-          if (p.status === 'progress' && p.progress != null) {
-            const pct = Math.round(p.progress);
-            if (pct > maxPct) maxPct = pct;
-            water.style.height = maxPct + '%';
-            waterPct.textContent = maxPct + '%';
+          if (p.status === 'initiate' && p.file) {
+            totalFiles++;
+            fileProgress[p.file] = 0;
+          }
+          if (p.status === 'progress' && p.file && p.progress != null) {
+            fileProgress[p.file] = p.progress;
+            const files = Object.values(fileProgress);
+            const avg = files.length ? files.reduce((a,b) => a+b, 0) / Math.max(totalFiles, files.length) : 0;
+            const pct = Math.min(Math.round(avg), 99);
+            water.style.height = pct + '%';
+            waterPct.textContent = pct + '%';
+          }
+          if (p.status === 'done' && p.file) {
+            fileProgress[p.file] = 100;
           }
         }
       }
     );
 
-    // Fill complete
+    // Fill complete — only now show 100%
     water.style.height = '100%';
     waterPct.textContent = '100%';
     setTimeout(() => {
@@ -3329,6 +3341,11 @@ function showToast(msg, style) {
     vtPill.classList.add('recording');
     vtRecBtn.classList.add('recording');
 
+    // Red water fill — rises while recording
+    const water = document.getElementById('vtWater');
+    water.style.transition = 'height 120s linear';
+    water.style.height = '100%';
+
     // Audio analyser
     vtAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const source = vtAudioCtx.createMediaStreamSource(vtStream);
@@ -3367,12 +3384,26 @@ function showToast(msg, style) {
       });
     }
 
-    if (vtChunks.length === 0) return;
+    if (vtChunks.length === 0) {
+      const water = document.getElementById('vtWater');
+      water.style.transition = 'height 0.3s ease-in';
+      water.style.height = '0%';
+      return;
+    }
 
-    // Transcribe
+    // Transcribe — drain the water as it processes
     vtProcessing = true;
     vtRecBtn.classList.add('processing');
     vtPillStatus.textContent = 'Transcribing...';
+    const water = document.getElementById('vtWater');
+    // Freeze current fill height, then drain over ~4s
+    const currentH = water.style.height || '0%';
+    water.style.transition = 'none';
+    water.style.height = currentH;
+    requestAnimationFrame(() => {
+      water.style.transition = 'height 4s ease-out';
+      water.style.height = '0%';
+    });
 
     try {
       const blob = new Blob(vtChunks, { type: 'audio/webm' });
@@ -3400,6 +3431,11 @@ function showToast(msg, style) {
 
     vtProcessing = false;
     vtRecBtn.classList.remove('processing');
+    // Ensure water is fully drained and transition reset
+    const waterEnd = document.getElementById('vtWater');
+    waterEnd.style.transition = 'height 0.3s ease-in';
+    waterEnd.style.height = '0%';
+    setTimeout(() => { waterEnd.style.transition = 'height 0.5s cubic-bezier(0.4,0,0.2,1)'; }, 350);
     if (!vtPillStatus.textContent.startsWith('Error')) vtPillStatus.textContent = '';
   }
 
