@@ -1439,21 +1439,61 @@
     box-shadow: 0 8px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
     display: flex; align-items: center; gap: 16px;
     min-height: 68px;
+    position: relative; overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
   }
   .vt-tool.recording {
     border-color: rgba(239,68,68,0.25);
     box-shadow: 0 0 0 1px rgba(239,68,68,0.15), 0 0 60px rgba(239,68,68,0.1), 0 8px 40px rgba(0,0,0,0.25);
   }
-  .vt-tool.loading {
-    border-color: rgba(7,176,232,0.12);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
+
+  /* Laser fill bar — loading & processing states */
+  .vt-tool.loading, .vt-tool.processing {
+    background: rgba(8,18,32,0.92);
+    border-color: rgba(7,176,232,0.08);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+  .vt-laser {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 0%;
+    background: linear-gradient(90deg, var(--d-blue) 0%, #0ad4ff 70%, #5de8ff 100%);
+    border-radius: 60px 0 0 60px;
+    z-index: 1; opacity: 0; pointer-events: none;
+    box-shadow: 4px 0 24px rgba(7,176,232,0.5), 0 0 40px rgba(7,176,232,0.15);
+  }
+  .vt-laser::after {
+    content: ''; position: absolute; top: 0; right: -2px; bottom: 0; width: 6px;
+    background: #fff; border-radius: 0 1px 1px 0;
+    box-shadow: 0 0 16px rgba(255,255,255,0.9), 0 0 40px rgba(7,176,232,0.8);
+    opacity: 0.9;
+  }
+  .vt-laser-status {
+    position: absolute; inset: 0; z-index: 2;
+    display: none; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,0.95); letter-spacing: 0.8px;
+    pointer-events: none;
+  }
+  .vt-laser-status span {
+    animation: status-roll 0.4s ease-out;
+  }
+  .vt-tool.loading .vt-laser-status,
+  .vt-tool.processing .vt-laser-status { display: flex; }
+  /* Hide pill contents during loading/processing */
+  .vt-tool.loading .vt-pill-status,
+  .vt-tool.loading .vt-wave-area,
+  .vt-tool.loading .vt-pill-right,
+  .vt-tool.processing .vt-pill-status,
+  .vt-tool.processing .vt-wave-area,
+  .vt-tool.processing .vt-pill-right {
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
   }
 
   /* Waveform — left side of pill */
   .vt-wave-area {
     flex: 1; height: 48px; position: relative; overflow: hidden;
     display: flex; align-items: center;
+    transition: opacity 0.3s;
   }
   .vt-wave-canvas {
     width: 100%; height: 100%;
@@ -1468,7 +1508,7 @@
     font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
     color: rgba(255,255,255,0.35); letter-spacing: 0.3px;
     white-space: nowrap; flex-shrink: 0;
-    transition: color 0.3s;
+    transition: color 0.3s, opacity 0.3s;
   }
   .vt-tool.recording .vt-pill-status { color: rgba(255,255,255,0.7); }
   .vt-tool.loading .vt-pill-status { color: rgba(255,255,255,0.4); }
@@ -1476,6 +1516,7 @@
   /* Right side controls */
   .vt-pill-right {
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    transition: opacity 0.3s;
   }
   .vt-timer {
     font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500;
@@ -1501,18 +1542,6 @@
     box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 20px rgba(239,68,68,0.2);
     animation: vt-breathe 2s ease-in-out infinite;
   }
-  .vt-rec-btn.processing {
-    background: linear-gradient(135deg, #00C9A7, var(--d-blue));
-    cursor: wait;
-    animation: vt-ring-spin 1.2s linear infinite;
-    box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2);
-  }
-  .vt-rec-btn.processing:hover { transform: none; }
-  @keyframes vt-ring-spin {
-    0% { box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
-    50% { box-shadow: 0 0 0 3px rgba(0,201,167,0.3), 0 0 24px rgba(0,201,167,0.35), inset 0 0 0 2px rgba(255,255,255,0.3); }
-    100% { box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
-  }
   @keyframes vt-breathe {
     0%,100% { box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 12px rgba(239,68,68,0.15); }
     50% { box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 24px rgba(239,68,68,0.3); }
@@ -1523,56 +1552,9 @@
   }
   .vt-rec-btn.recording .vt-mic-icon { display: none; }
   .vt-rec-btn.recording .vt-stop-shape { display: block; }
-  .vt-rec-btn .vt-spin {
-    width: 22px; height: 22px; border: 2.5px solid rgba(255,255,255,0.2);
-    border-top-color: #fff; border-radius: 50%;
-    animation: forge-spin 0.6s linear infinite;
-    display: none;
-  }
-  .vt-rec-btn.processing .vt-mic-icon { display: none; }
-  .vt-rec-btn.processing .vt-stop-shape { display: none; }
-  .vt-rec-btn.processing .vt-spin { display: block; }
-  /* Water fill during model download */
-  .vt-rec-btn.loading { overflow: hidden; cursor: wait; background: #1a2a3a; }
-  .vt-rec-btn.loading .vt-mic-icon { display: none; }
-  .vt-rec-btn .vt-water {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 0%;
-    background: linear-gradient(0deg, rgba(7,176,232,0.95) 0%, rgba(99,102,241,0.8) 100%);
-    transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
-    pointer-events: none;
-  }
-  .vt-rec-btn .vt-water::before {
-    content: '';
-    position: absolute; top: -6px; left: -10%; right: -10%;
-    height: 12px;
-    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(7,176,232,0.95), transparent);
-    animation: vt-wave 1.8s ease-in-out infinite;
-    border-radius: 40%;
-  }
-  @keyframes vt-wave {
-    0%, 100% { transform: translateX(-5%) rotate(-2deg); }
-    50% { transform: translateX(5%) rotate(2deg); }
-  }
-  .vt-rec-btn .vt-water-pct {
-    display: none;
-  }
-  .vt-rec-btn.loading:hover { transform: none; }
-  /* Red water fill while recording */
-  .vt-rec-btn.recording .vt-water {
-    background: linear-gradient(0deg, rgba(239,68,68,0.95) 0%, rgba(239,68,68,0.7) 100%);
-  }
-  .vt-rec-btn.recording .vt-water::before {
-    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(239,68,68,0.95), transparent);
-  }
-  /* Drain during transcription processing */
-  .vt-rec-btn.processing .vt-water {
-    background: linear-gradient(0deg, rgba(99,102,241,0.9) 0%, rgba(7,176,232,0.7) 100%);
-    transition: height 3s linear;
-  }
-  .vt-rec-btn.processing .vt-water::before {
-    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(99,102,241,0.9), transparent);
-  }
+  .vt-rec-btn .vt-spin { display: none; }
+  .vt-rec-btn .vt-water { display: none; }
+  .vt-rec-btn .vt-water-pct { display: none; }
 
   /* Transcript — below the pill (dark theme) */
   .vt-transcript {
@@ -2271,7 +2253,7 @@
     <div class="forge-hero-content">
       <div class="forge-hero-badge">AI Acceleration</div>
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
-      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs.</p>
+      <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs, No Internet. Chat securely &amp; freely.</p>
       <div class="forge-hero-stats">
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">1.7B/4B</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
@@ -2453,6 +2435,10 @@
 
     <!-- Horizontal pill -->
     <div class="vt-tool" id="vtPill">
+
+      <!-- Laser fill bar (shown during loading/transcribing) -->
+      <div class="vt-laser" id="vtLaser"></div>
+      <div class="vt-laser-status" id="vtLaserStatus"></div>
 
       <!-- Left: status text (shown during loading/transcribing) -->
       <span class="vt-pill-status" id="vtPillStatus"></span>
@@ -3026,6 +3012,7 @@ function showToast(msg, style) {
   let vtSeconds = 0;
   let vtWhisperPipeline = null;
   let vtModelLoaded = false;
+  let vtModelLoading = false;
   let vtSquigglePhase = 0;
 
   // DOM refs
@@ -3039,6 +3026,50 @@ function showToast(msg, style) {
   const vtTranscript = document.getElementById('vtTranscript');
   const vtTranscriptBody = document.getElementById('vtTranscriptBody');
   const vtWordCount = document.getElementById('vtWordCount');
+  const vtLaser = document.getElementById('vtLaser');
+  const vtLaserStatus = document.getElementById('vtLaserStatus');
+
+  // Laser bar helpers
+  let vtLaserTarget = 0;
+  let vtLaserCurrent = 0;
+  let vtLaserFrame = null;
+
+  function vtStartLaser() {
+    vtLaser.style.width = '0%';
+    vtLaser.style.opacity = '1';
+    vtLaser.style.transition = '';
+    vtLaserTarget = 0;
+    vtLaserCurrent = 0;
+  }
+  function vtAnimateLaser() {
+    vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.08;
+    vtLaser.style.width = (vtLaserCurrent < 0.5 ? 0 : vtLaserCurrent).toFixed(2) + '%';
+    vtLaserFrame = requestAnimationFrame(vtAnimateLaser);
+  }
+  function vtStopLaserAnim() {
+    if (vtLaserFrame) { cancelAnimationFrame(vtLaserFrame); vtLaserFrame = null; }
+  }
+  function vtSurgeLaserDone() {
+    return new Promise(resolve => {
+      vtStopLaserAnim();
+      vtLaser.style.transition = 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      vtLaser.style.width = '100%';
+      vtLaserStatus.innerHTML = '<span>Done</span>';
+      setTimeout(() => {
+        vtLaser.style.transition = 'opacity 0.3s';
+        vtLaser.style.opacity = '0';
+        setTimeout(() => {
+          vtLaser.style.transition = '';
+          vtLaser.style.width = '0%';
+          vtLaserStatus.innerHTML = '';
+          resolve();
+        }, 350);
+      }, 500);
+    });
+  }
+  function vtSetLaserMsg(msg) {
+    vtLaserStatus.innerHTML = '<span>' + msg + '</span>';
+  }
 
   // Canvas sizing
   function vtSizeCanvas() {
@@ -3176,20 +3207,29 @@ function showToast(msg, style) {
   // Load Whisper model — self-hosted from files.ndiauto.com
   async function vtLoadModel() {
     if (vtWhisperPipeline) return;
+    vtModelLoading = true;
     vtPill.classList.add('loading');
-    vtPillStatus.textContent = 'Loading model (~240MB)...';
-    vtUpdateSquiggle();
+    vtStartLaser();
+    vtSetLaserMsg('Downloading model (~240MB)…');
+    vtAnimateLaser();
 
-    // Water fill on mic button — track total progress across all files
-    const recBtn = document.getElementById('vtRecBtn');
-    const water = document.getElementById('vtWater');
-    recBtn.classList.add('loading');
     const fileProgress = {};
     let totalFiles = 0;
+    let msgCycle = 0;
+    const loadMsgs = [
+      'Downloading model (~240MB)…',
+      'Loading speech recognition engine…',
+      'Initializing pipeline…',
+      'Compiling WASM modules…',
+      'Almost ready…',
+    ];
+    const msgTimer = setInterval(() => {
+      msgCycle++;
+      if (msgCycle < loadMsgs.length) vtSetLaserMsg(loadMsgs[msgCycle]);
+    }, 3000);
 
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
-    // Point model loading at our R2 CDN — zero HuggingFace requests
     env.remoteHost = EVA_CDN + '/models';
     env.remotePathTemplate = '{model}/';
     env.allowLocalModels = false;
@@ -3208,8 +3248,7 @@ function showToast(msg, style) {
             fileProgress[p.file] = p.progress;
             const files = Object.values(fileProgress);
             const avg = files.length ? files.reduce((a,b) => a+b, 0) / Math.max(totalFiles, files.length) : 0;
-            const pct = Math.min(Math.round(avg), 99);
-            water.style.height = pct + '%';
+            vtLaserTarget = Math.min(avg * 0.92, 92);
           }
           if (p.status === 'done' && p.file) {
             fileProgress[p.file] = 100;
@@ -3218,20 +3257,12 @@ function showToast(msg, style) {
       }
     );
 
-    // Fill complete
-    water.style.height = '100%';
-    setTimeout(() => {
-      water.style.transition = 'height 0.4s ease-in';
-      water.style.height = '0%';
-      setTimeout(() => {
-        recBtn.classList.remove('loading');
-        water.style.transition = 'height 0.5s cubic-bezier(0.4,0,0.2,1)';
-      }, 450);
-    }, 800);
+    clearInterval(msgTimer);
+    await vtSurgeLaserDone();
 
     vtModelLoaded = true;
+    vtModelLoading = false;
     vtPill.classList.remove('loading');
-    vtPillStatus.textContent = '';
     vtDrawIdle();
   }
 
@@ -3304,23 +3335,23 @@ function showToast(msg, style) {
   // Start recording
   async function vtStartRecording() {
     if (!vtModelLoaded) {
-      vtRecBtn.classList.add('processing');
       try { await vtLoadModel(); } catch(e) {
         console.error('EVA model load failed:', e);
-        vtPillStatus.textContent = 'Error: ' + (e.message || e).toString().slice(0, 60);
+        vtStopLaserAnim();
+        vtLaser.style.opacity = '0';
+        vtLaser.style.width = '0%';
+        vtSetLaserMsg('');
+        vtModelLoading = false;
         vtPill.classList.remove('loading');
-        vtRecBtn.classList.remove('processing');
-        setTimeout(() => { vtPillStatus.textContent = ''; }, 8000);
+        showToast('Model load failed', 'error');
         return;
       }
-      vtRecBtn.classList.remove('processing');
     }
 
     try {
       vtStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch(e) {
-      vtPillStatus.textContent = 'Mic access denied';
-      setTimeout(() => { vtPillStatus.textContent = ''; }, 2000);
+      showToast('Mic access denied', 'error');
       return;
     }
 
@@ -3328,11 +3359,6 @@ function showToast(msg, style) {
     vtChunks = [];
     vtPill.classList.add('recording');
     vtRecBtn.classList.add('recording');
-
-    // Red water fill — rises while recording
-    const water = document.getElementById('vtWater');
-    water.style.transition = 'height 120s linear';
-    water.style.height = '100%';
 
     // Audio analyser
     vtAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -3372,26 +3398,28 @@ function showToast(msg, style) {
       });
     }
 
-    if (vtChunks.length === 0) {
-      const water = document.getElementById('vtWater');
-      water.style.transition = 'height 0.3s ease-in';
-      water.style.height = '0%';
-      return;
-    }
+    if (vtChunks.length === 0) return;
 
-    // Transcribe — drain the water as it processes
+    // Transcribe — show laser bar on the pill
     vtProcessing = true;
-    vtRecBtn.classList.add('processing');
-    vtPillStatus.textContent = 'Transcribing...';
-    const water = document.getElementById('vtWater');
-    // Freeze current fill height, then drain over ~4s
-    const currentH = water.style.height || '0%';
-    water.style.transition = 'none';
-    water.style.height = currentH;
-    requestAnimationFrame(() => {
-      water.style.transition = 'height 4s ease-out';
-      water.style.height = '0%';
-    });
+    vtPill.classList.add('processing');
+    vtStartLaser();
+    vtSetLaserMsg('Transcribing…');
+
+    // Indeterminate fill — ease toward ~85% over ~8s
+    const transcribeStart = Date.now();
+    const transcribeDuration = 8000;
+    function vtTranscribeFill() {
+      const elapsed = Date.now() - transcribeStart;
+      const t = Math.min(1, elapsed / transcribeDuration);
+      // Ease-out curve, caps at 85%
+      vtLaserTarget = (1 - Math.pow(1 - t, 3)) * 85;
+      vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.08;
+      vtLaser.style.width = (vtLaserCurrent < 0.5 ? 0 : vtLaserCurrent).toFixed(2) + '%';
+      if (vtProcessing) requestAnimationFrame(vtTranscribeFill);
+    }
+    vtLaser.style.opacity = '1';
+    requestAnimationFrame(vtTranscribeFill);
 
     try {
       const blob = new Blob(vtChunks, { type: 'audio/webm' });
@@ -3402,34 +3430,26 @@ function showToast(msg, style) {
       });
       console.log('EVA: pipeline result', JSON.stringify(result).slice(0, 300));
       let text = (result.text || (Array.isArray(result) && result[0]?.text) || '').trim();
-      // Filter Whisper hallucinations on silence/noise
       text = text.replace(/\[.*?\]/g, '').replace(/\(.*?\)/g, '').trim();
       if (text && text.length > 1) {
         vtTranscriptText += (vtTranscriptText ? ' ' : '') + text;
         vtUpdateTranscript();
       } else {
-        vtPillStatus.textContent = '';
         showToast('No audio was picked up', 'error');
       }
     } catch(e) {
       console.error('EVA transcription error:', e);
-      vtPillStatus.textContent = 'Error: ' + (e.message || e).toString().slice(0, 50);
-      setTimeout(() => { vtPillStatus.textContent = ''; }, 6000);
+      showToast('Transcription error', 'error');
     }
 
     vtProcessing = false;
-    vtRecBtn.classList.remove('processing');
-    // Ensure water is fully drained and transition reset
-    const waterEnd = document.getElementById('vtWater');
-    waterEnd.style.transition = 'height 0.3s ease-in';
-    waterEnd.style.height = '0%';
-    setTimeout(() => { waterEnd.style.transition = 'height 0.5s cubic-bezier(0.4,0,0.2,1)'; }, 350);
-    if (!vtPillStatus.textContent.startsWith('Error')) vtPillStatus.textContent = '';
+    await vtSurgeLaserDone();
+    vtPill.classList.remove('processing');
   }
 
   // Toggle
   window.vtToggleRecord = function() {
-    if (vtProcessing) return;
+    if (vtProcessing || vtModelLoading) return;
     vtRecording ? vtStopRecording() : vtStartRecording();
   };
 
