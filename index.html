@@ -1549,13 +1549,8 @@
     50% { transform: translateX(5%) rotate(2deg); }
   }
   .vt-rec-btn .vt-water-pct {
-    position: relative; z-index: 1;
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    font-weight: 700; color: #fff; letter-spacing: -0.5px;
     display: none;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   }
-  .vt-rec-btn.loading .vt-water-pct { display: block; }
   .vt-rec-btn.loading:hover { transform: none; }
   /* Red water fill while recording */
   .vt-rec-btn.recording .vt-water {
@@ -3190,7 +3185,6 @@ function showToast(msg, style) {
     // Water fill on mic button — track total progress across all files
     const recBtn = document.getElementById('vtRecBtn');
     const water = document.getElementById('vtWater');
-    const waterPct = document.getElementById('vtWaterPct');
     recBtn.classList.add('loading');
     const fileProgress = {};
     let totalFiles = 0;
@@ -3218,7 +3212,6 @@ function showToast(msg, style) {
             const avg = files.length ? files.reduce((a,b) => a+b, 0) / Math.max(totalFiles, files.length) : 0;
             const pct = Math.min(Math.round(avg), 99);
             water.style.height = pct + '%';
-            waterPct.textContent = pct + '%';
           }
           if (p.status === 'done' && p.file) {
             fileProgress[p.file] = 100;
@@ -3227,13 +3220,11 @@ function showToast(msg, style) {
       }
     );
 
-    // Fill complete — only now show 100%
+    // Fill complete
     water.style.height = '100%';
-    waterPct.textContent = '100%';
     setTimeout(() => {
       water.style.transition = 'height 0.4s ease-in';
       water.style.height = '0%';
-      waterPct.textContent = '';
       setTimeout(() => {
         recBtn.classList.remove('loading');
         water.style.transition = 'height 0.5s cubic-bezier(0.4,0,0.2,1)';
