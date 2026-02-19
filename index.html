@@ -3041,13 +3041,17 @@ function showToast(msg, style) {
     vtLaser.style.opacity = '0';
     vtLaserTarget = 0;
     vtLaserCurrent = 0;
-    // Brief delay then show — prevents sliver flash
+    vtLaserDrift = 0;
     requestAnimationFrame(() => {
       vtLaser.style.opacity = '1';
     });
   }
+  let vtLaserDrift = 0;
   function vtAnimateLaser() {
-    vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.12;
+    // Slow drift so bar never freezes — creeps ~0.3%/sec even when progress stalls
+    vtLaserDrift += 0.005;
+    const driftTarget = Math.min(vtLaserTarget + vtLaserDrift, 95);
+    vtLaserCurrent += (driftTarget - vtLaserCurrent) * 0.12;
     vtLaser.style.width = (vtLaserCurrent < 0.5 ? 0 : vtLaserCurrent).toFixed(2) + '%';
     vtLaserFrame = requestAnimationFrame(vtAnimateLaser);
   }
@@ -3220,18 +3224,24 @@ function showToast(msg, style) {
 
     const fileProgress = {};
     let totalFiles = 0;
-    let msgCycle = 0;
-    const loadMsgs = [
-      'Downloading model (~240MB)…',
-      'Loading speech recognition engine…',
-      'Initializing pipeline…',
-      'Compiling WASM modules…',
-      'Almost ready…',
+    let lastMsgThreshold = -1;
+    // Messages tied to actual progress thresholds
+    const loadMsgThresholds = [
+      [0,  'Downloading model…'],
+      [20, 'Downloading model files…'],
+      [50, 'Loading speech engine…'],
+      [75, 'Compiling WASM modules…'],
+      [90, 'Finalizing…'],
     ];
-    const msgTimer = setInterval(() => {
-      msgCycle++;
-      if (msgCycle < loadMsgs.length) vtSetLaserMsg(loadMsgs[msgCycle]);
-    }, 3000);
+    function vtUpdateLoadMsg(pct) {
+      for (let i = loadMsgThresholds.length - 1; i >= 0; i--) {
+        if (pct >= loadMsgThresholds[i][0] && i > lastMsgThreshold) {
+          lastMsgThreshold = i;
+          vtSetLaserMsg(loadMsgThresholds[i][1]);
+          break;
+        }
+      }
+    }
 
     const { pipeline, env } = await import(EVA_CDN + '/lib/transformers.min.js');
 
@@ -3254,6 +3264,7 @@ function showToast(msg, style) {
             const files = Object.values(fileProgress);
             const avg = files.length ? files.reduce((a,b) => a+b, 0) / Math.max(totalFiles, files.length) : 0;
             vtLaserTarget = Math.min(avg * 0.92, 92);
+            vtUpdateLoadMsg(Math.round(avg));
           }
           if (p.status === 'done' && p.file) {
             fileProgress[p.file] = 100;
@@ -3262,7 +3273,6 @@ function showToast(msg, style) {
       }
     );
 
-    clearInterval(msgTimer);
     await vtSurgeLaserDone();
 
     vtModelLoaded = true;
