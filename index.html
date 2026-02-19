@@ -1351,7 +1351,7 @@
     position: absolute; inset: 0;
     background:
       radial-gradient(ellipse 70% 50% at 50% 0%, rgba(7,176,232,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 20% 80%, rgba(99,102,241,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 60% at 20% 80%, rgba(0,201,167,0.05) 0%, transparent 50%),
       radial-gradient(ellipse 40% 40% at 80% 60%, rgba(7,176,232,0.04) 0%, transparent 50%);
     pointer-events: none; z-index: 0;
   }
@@ -1366,7 +1366,7 @@
   }
   .eva-glow-bar {
     position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 2;
-    background: linear-gradient(90deg, transparent, var(--d-blue), #6366f1, var(--d-blue), transparent);
+    background: linear-gradient(90deg, transparent, var(--d-blue), #00C9A7, var(--d-blue), transparent);
     background-size: 200% 100%;
     animation: glow-sweep 4s ease-in-out infinite;
   }
@@ -1393,7 +1393,7 @@
     margin-bottom: 18px;
   }
   .vt-hero-title span {
-    background: linear-gradient(135deg, var(--d-blue), #6366f1);
+    background: linear-gradient(135deg, var(--d-blue), #00C9A7);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
   }
@@ -1488,7 +1488,7 @@
   /* Record / Stop button — circle on right of pill */
   .vt-rec-btn {
     width: 48px; height: 48px; border-radius: 50%; border: none;
-    background: linear-gradient(135deg, var(--d-blue), #6366f1);
+    background: linear-gradient(135deg, var(--d-blue), #00C9A7);
     color: #fff; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 0 0 3px rgba(7,176,232,0.08);
@@ -1502,16 +1502,16 @@
     animation: vt-breathe 2s ease-in-out infinite;
   }
   .vt-rec-btn.processing {
-    background: linear-gradient(135deg, #6366f1, var(--d-blue));
+    background: linear-gradient(135deg, #00C9A7, var(--d-blue));
     cursor: wait;
     animation: vt-ring-spin 1.2s linear infinite;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2);
+    box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2);
   }
   .vt-rec-btn.processing:hover { transform: none; }
   @keyframes vt-ring-spin {
-    0% { box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
-    50% { box-shadow: 0 0 0 3px rgba(99,102,241,0.3), 0 0 24px rgba(99,102,241,0.35), inset 0 0 0 2px rgba(255,255,255,0.3); }
-    100% { box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
+    0% { box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
+    50% { box-shadow: 0 0 0 3px rgba(0,201,167,0.3), 0 0 24px rgba(0,201,167,0.35), inset 0 0 0 2px rgba(255,255,255,0.3); }
+    100% { box-shadow: 0 0 0 3px rgba(0,201,167,0.15), 0 0 16px rgba(0,201,167,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
   }
   @keyframes vt-breathe {
     0%,100% { box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 12px rgba(239,68,68,0.15); }
@@ -1620,7 +1620,7 @@
   .vt-btn-copy {
     flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 10px; border-radius: 10px; border: none; cursor: pointer;
-    background: linear-gradient(135deg, var(--d-blue), #6366f1);
+    background: linear-gradient(135deg, var(--d-blue), #00C9A7);
     color: #fff; font-family: 'Nunito Sans', sans-serif; font-size: 13px; font-weight: 700;
     letter-spacing: 0.5px; transition: all 0.2s;
     box-shadow: 0 2px 12px rgba(7,176,232,0.15);
@@ -1999,7 +1999,7 @@
     <a href="#superprompt"><span class="nav-dot"></span>SuperPrompt</a>
     <a href="#raven"><span class="nav-dot"></span>RAVEN</a>
     <a href="#forge"><span class="nav-dot"></span>Forge</a>
-    <a href="#eva"><span class="nav-dot"></span>EVA</a>
+    <a href="#eva"><span class="nav-dot"></span>Eva</a>
   </nav>
 
   <!-- ===== HERO ===== -->
@@ -2414,7 +2414,7 @@
     <div class="vt-hero">
       <div class="vt-hero-content">
         <div class="vt-hero-badge">Voice Intelligence</div>
-        <h2 class="vt-hero-title">NDi <span>EVA</span></h2>
+        <h2 class="vt-hero-title">NDi <span>Eva</span></h2>
         <p class="vt-hero-sub"><strong style="color:#fff;font-size:20px;">Speak. Transcribe. Deploy.</strong><br>Real-time voice-to-text running entirely in your browser. Zero latency.</p>
         <div class="vt-hero-stats">
           <div class="vt-hero-stat"><span class="vt-hero-stat-value">0ms</span><span class="vt-hero-stat-label">Latency</span></div>
@@ -2436,15 +2436,15 @@
       <defs>
         <linearGradient id="vtWaveGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#07B0E8"/>
-          <stop offset="100%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#00C9A7"/>
         </linearGradient>
         <linearGradient id="vtWaveRedGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#ef4444"/>
           <stop offset="100%" stop-color="#f87171"/>
         </linearGradient>
         <linearGradient id="vtSquiggleGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="rgba(99,102,241,0)"/>
-          <stop offset="30%" stop-color="#6366f1"/>
+          <stop offset="0%" stop-color="rgba(0,201,167,0)"/>
+          <stop offset="30%" stop-color="#00C9A7"/>
           <stop offset="70%" stop-color="#07B0E8"/>
           <stop offset="100%" stop-color="rgba(7,176,232,0)"/>
         </linearGradient>
@@ -2576,7 +2576,7 @@
             <li><a href="#smartdoc">SmartDoc</a></li>
             <li><a href="#superprompt">SuperPrompt™</a></li>
             <li><a href="#forge">Forge</a></li>
-            <li><a href="#eva">EVA</a></li>
+            <li><a href="#eva">Eva</a></li>
           </ul>
         </div>
 
@@ -3452,7 +3452,7 @@ function showToast(msg, style) {
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `NDi_EVA_${fmtDate()}.txt`;
+    a.download = `NDi_Eva_${fmtDate()}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
