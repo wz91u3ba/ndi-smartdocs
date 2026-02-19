@@ -3035,14 +3035,19 @@ function showToast(msg, style) {
   let vtLaserFrame = null;
 
   function vtStartLaser() {
-    vtLaser.style.width = '0%';
-    vtLaser.style.opacity = '1';
+    vtStopLaserAnim();
     vtLaser.style.transition = '';
+    vtLaser.style.width = '0%';
+    vtLaser.style.opacity = '0';
     vtLaserTarget = 0;
     vtLaserCurrent = 0;
+    // Brief delay then show — prevents sliver flash
+    requestAnimationFrame(() => {
+      vtLaser.style.opacity = '1';
+    });
   }
   function vtAnimateLaser() {
-    vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.08;
+    vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.12;
     vtLaser.style.width = (vtLaserCurrent < 0.5 ? 0 : vtLaserCurrent).toFixed(2) + '%';
     vtLaserFrame = requestAnimationFrame(vtAnimateLaser);
   }
@@ -3403,23 +3408,23 @@ function showToast(msg, style) {
     // Transcribe — show laser bar on the pill
     vtProcessing = true;
     vtPill.classList.add('processing');
-    vtStartLaser();
+    vtStopLaserAnim();
+    vtLaser.style.transition = '';
+    vtLaser.style.width = '0%';
+    vtLaser.style.opacity = '1';
+    vtLaserCurrent = 0;
     vtSetLaserMsg('Transcribing…');
 
-    // Indeterminate fill — ease toward ~85% over ~8s
-    const transcribeStart = Date.now();
-    const transcribeDuration = 8000;
-    function vtTranscribeFill() {
-      const elapsed = Date.now() - transcribeStart;
-      const t = Math.min(1, elapsed / transcribeDuration);
-      // Ease-out curve, caps at 85%
-      vtLaserTarget = (1 - Math.pow(1 - t, 3)) * 85;
-      vtLaserCurrent += (vtLaserTarget - vtLaserCurrent) * 0.08;
-      vtLaser.style.width = (vtLaserCurrent < 0.5 ? 0 : vtLaserCurrent).toFixed(2) + '%';
-      if (vtProcessing) requestAnimationFrame(vtTranscribeFill);
-    }
-    vtLaser.style.opacity = '1';
-    requestAnimationFrame(vtTranscribeFill);
+    // Indeterminate fill — CSS transition drives smooth motion
+    // Jump to 8% immediately so it's visible, then ease to 85%
+    requestAnimationFrame(() => {
+      vtLaser.style.transition = 'width 0.6s ease-out';
+      vtLaser.style.width = '8%';
+      setTimeout(() => {
+        vtLaser.style.transition = 'width 8s cubic-bezier(0.1, 0.6, 0.3, 1)';
+        vtLaser.style.width = '85%';
+      }, 700);
+    });
 
     try {
       const blob = new Blob(vtChunks, { type: 'audio/webm' });
