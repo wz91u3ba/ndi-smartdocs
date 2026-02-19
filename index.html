@@ -1540,20 +1540,33 @@
   .vt-rec-btn.processing .vt-stop-shape { display: none; }
   .vt-rec-btn.processing .vt-spin { display: block; }
   /* Water fill during model download */
-  .vt-rec-btn.loading { overflow: hidden; cursor: wait; }
+  .vt-rec-btn.loading { overflow: hidden; cursor: wait; background: #1a2a3a; }
   .vt-rec-btn.loading .vt-mic-icon { display: none; }
   .vt-rec-btn .vt-water {
     position: absolute; bottom: 0; left: 0; right: 0;
-    height: 0%; border-radius: 50%;
-    background: linear-gradient(0deg, rgba(7,176,232,0.9), rgba(99,102,241,0.7));
-    transition: height 0.4s ease-out;
+    height: 0%;
+    background: linear-gradient(0deg, rgba(7,176,232,0.95) 0%, rgba(99,102,241,0.8) 100%);
+    transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
     pointer-events: none;
+  }
+  .vt-rec-btn .vt-water::before {
+    content: '';
+    position: absolute; top: -6px; left: -10%; right: -10%;
+    height: 12px;
+    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(7,176,232,0.95), transparent);
+    animation: vt-wave 1.8s ease-in-out infinite;
+    border-radius: 40%;
+  }
+  @keyframes vt-wave {
+    0%, 100% { transform: translateX(-5%) rotate(-2deg); }
+    50% { transform: translateX(5%) rotate(2deg); }
   }
   .vt-rec-btn .vt-water-pct {
     position: relative; z-index: 1;
     font-family: 'DM Mono', monospace; font-size: 10px;
     font-weight: 700; color: #fff; letter-spacing: -0.5px;
     display: none;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   }
   .vt-rec-btn.loading .vt-water-pct { display: block; }
   .vt-rec-btn.loading:hover { transform: none; }
@@ -3207,10 +3220,14 @@ function showToast(msg, style) {
     water.style.height = '100%';
     waterPct.textContent = '100%';
     setTimeout(() => {
-      recBtn.classList.remove('loading');
+      water.style.transition = 'height 0.4s ease-in';
       water.style.height = '0%';
       waterPct.textContent = '';
-    }, 600);
+      setTimeout(() => {
+        recBtn.classList.remove('loading');
+        water.style.transition = 'height 0.5s cubic-bezier(0.4,0,0.2,1)';
+      }, 450);
+    }, 800);
 
     vtModelLoaded = true;
     vtPill.classList.remove('loading');
