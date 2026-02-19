@@ -1446,8 +1446,8 @@
     box-shadow: 0 0 0 1px rgba(239,68,68,0.15), 0 0 60px rgba(239,68,68,0.1), 0 8px 40px rgba(0,0,0,0.25);
   }
   .vt-tool.loading {
-    border-color: rgba(99,102,241,0.2);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 0 40px rgba(99,102,241,0.08), 0 8px 40px rgba(0,0,0,0.25);
+    border-color: rgba(7,176,232,0.12);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
   }
 
   /* Waveform — left side of pill */
@@ -1471,7 +1471,7 @@
     transition: color 0.3s;
   }
   .vt-tool.recording .vt-pill-status { color: rgba(255,255,255,0.7); }
-  .vt-tool.loading .vt-pill-status { color: rgba(99,102,241,0.7); }
+  .vt-tool.loading .vt-pill-status { color: rgba(255,255,255,0.4); }
 
   /* Right side controls */
   .vt-pill-right {
@@ -1504,9 +1504,15 @@
   .vt-rec-btn.processing {
     background: linear-gradient(135deg, #6366f1, var(--d-blue));
     cursor: wait;
-    animation: none;
+    animation: vt-ring-spin 1.2s linear infinite;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2);
   }
   .vt-rec-btn.processing:hover { transform: none; }
+  @keyframes vt-ring-spin {
+    0% { box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
+    50% { box-shadow: 0 0 0 3px rgba(99,102,241,0.3), 0 0 24px rgba(99,102,241,0.35), inset 0 0 0 2px rgba(255,255,255,0.3); }
+    100% { box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 16px rgba(99,102,241,0.2), inset 0 0 0 2px rgba(255,255,255,0.15); }
+  }
   @keyframes vt-breathe {
     0%,100% { box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 12px rgba(239,68,68,0.15); }
     50% { box-shadow: 0 0 0 3px rgba(239,68,68,0.12), 0 0 24px rgba(239,68,68,0.3); }
@@ -3046,20 +3052,11 @@ function showToast(msg, style) {
   vtSizeCanvas();
   window.addEventListener('resize', vtSizeCanvas);
 
-  // Draw idle — clear canvas (no line during loading, subtle line when ready)
+  // Draw idle — just clear canvas, no line
   function vtDrawIdle() {
     const w = vtCanvas.width / 2;
     const h = vtCanvas.height / 2;
     vtCtx.clearRect(0, 0, w, h);
-    // Only draw the subtle line when model is loaded and not in loading state
-    if (vtModelLoaded && !vtPill.classList.contains('loading')) {
-      vtCtx.beginPath();
-      vtCtx.moveTo(0, h / 2);
-      vtCtx.lineTo(w, h / 2);
-      vtCtx.strokeStyle = 'rgba(255,255,255,0.1)';
-      vtCtx.lineWidth = 1.5;
-      vtCtx.stroke();
-    }
   }
   vtDrawIdle();
 
@@ -3079,10 +3076,10 @@ function showToast(msg, style) {
     }
   }
 
-  // Smoothed waveform state — lerp between frames for buttery animation
-  const VT_NUM_POINTS = 48;
-  const VT_SMOOTH = 0.18; // lower = smoother (0-1)
-  let vtSmoothed = new Float32Array(VT_NUM_POINTS);
+  // Siri-style flowing multi-sine waveform
+  let vtSmoothedAmp = 0;
+  let vtPhase = 0;
+  let vtSmoothed = new Float32Array(48);
 
   function vtDrawWaveform() {
     if (!vtAnalyser) return;
@@ -3092,70 +3089,71 @@ function showToast(msg, style) {
     const data = new Uint8Array(vtAnalyser.frequencyBinCount);
     vtAnalyser.getByteFrequencyData(data);
 
+    // Get overall amplitude — smooth it heavily
+    const rawAmp = data.reduce((a, b) => a + b, 0) / data.length / 255;
+    const targetAmp = Math.max(rawAmp * 2.5, 0.03);
+    vtSmoothedAmp += (targetAmp - vtSmoothedAmp) * (targetAmp > vtSmoothedAmp ? 0.15 : 0.06);
+    vtPhase += 0.04 + vtSmoothedAmp * 0.06;
+
     vtCtx.clearRect(0, 0, w, h);
 
-    // Mirror from center: sample freq bins, map outward from middle
-    const half = VT_NUM_POINTS / 2;
-    const step = Math.floor(data.length * 0.6 / half); // use lower 60% of spectrum (more musical)
-    for (let i = 0; i < half; i++) {
-      const raw = data[i * step] / 255;
-      // Smooth envelope: strongest at center, fades to edges
-      const envelope = Math.cos((i / half) * Math.PI * 0.5); // 1 at center, 0 at edge
-      const target = raw * envelope * 0.85 + 0.02; // tiny base for organic feel
-      const idxR = Math.floor(half) + i; // right half
-      const idxL = Math.floor(half) - 1 - i; // left half (mirror)
-      // Lerp — rise fast, fall slow for soothing decay
-      const speedR = target > vtSmoothed[idxR] ? 0.3 : 0.12;
-      const speedL = target > vtSmoothed[idxL] ? 0.3 : 0.12;
-      vtSmoothed[idxR] += (target - vtSmoothed[idxR]) * speedR;
-      vtSmoothed[idxL] += (target - vtSmoothed[idxL]) * speedL;
-    }
+    // Draw 3 layered sine waves — each with different frequency/phase/opacity
+    const waves = [
+      { freq: 0.015, amp: 1.0, speed: 1.0, alpha: 0.5, width: 2.5 },
+      { freq: 0.025, amp: 0.7, speed: 1.4, alpha: 0.3, width: 1.8 },
+      { freq: 0.035, amp: 0.5, speed: 0.7, alpha: 0.15, width: 1.2 },
+    ];
 
-    // Radial gradient from center for depth
-    const cx = w / 2;
-    const grad = vtCtx.createRadialGradient(cx, mid, 0, cx, mid, w * 0.55);
-    if (vtRecording) {
-      grad.addColorStop(0, 'rgba(248,113,113,0.9)');
-      grad.addColorStop(0.5, 'rgba(239,68,68,0.5)');
-      grad.addColorStop(1, 'rgba(239,68,68,0.05)');
-    } else {
-      grad.addColorStop(0, 'rgba(7,176,232,0.85)');
-      grad.addColorStop(0.5, 'rgba(99,102,241,0.4)');
-      grad.addColorStop(1, 'rgba(7,176,232,0.05)');
-    }
+    const isRec = vtRecording;
 
-    // Draw mirrored smooth wave using quadratic bezier
+    waves.forEach(wave => {
+      vtCtx.beginPath();
+      vtCtx.moveTo(0, mid);
+
+      for (let x = 0; x <= w; x += 2) {
+        const t = x / w;
+        // Envelope: strong in center, fades to edges
+        const env = Math.sin(t * Math.PI);
+        const y = mid + Math.sin(x * wave.freq + vtPhase * wave.speed) *
+          vtSmoothedAmp * wave.amp * (mid - 4) * env *
+          (1 + Math.sin(x * wave.freq * 0.5 + vtPhase * 0.3) * 0.3);
+        vtCtx.lineTo(x, y);
+      }
+
+      vtCtx.lineTo(w, mid);
+      vtCtx.strokeStyle = isRec
+        ? `rgba(248,113,113,${wave.alpha})`
+        : `rgba(7,176,232,${wave.alpha})`;
+      vtCtx.lineWidth = wave.width;
+      vtCtx.lineCap = 'round';
+      vtCtx.lineJoin = 'round';
+      vtCtx.stroke();
+    });
+
+    // Filled glow underneath the main wave
     vtCtx.beginPath();
-    for (let i = 0; i < VT_NUM_POINTS; i++) {
-      const x = (i / (VT_NUM_POINTS - 1)) * w;
-      const amp = vtSmoothed[i] * (mid - 4);
-      if (i === 0) { vtCtx.moveTo(x, mid - amp); continue; }
-      const px = ((i - 1) / (VT_NUM_POINTS - 1)) * w;
-      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4), x, mid - amp);
+    vtCtx.moveTo(0, mid);
+    for (let x = 0; x <= w; x += 2) {
+      const t = x / w;
+      const env = Math.sin(t * Math.PI);
+      const y = mid + Math.sin(x * 0.015 + vtPhase) *
+        vtSmoothedAmp * (mid - 4) * env;
+      vtCtx.lineTo(x, y);
     }
-    for (let i = VT_NUM_POINTS - 1; i >= 0; i--) {
-      const x = (i / (VT_NUM_POINTS - 1)) * w;
-      const amp = vtSmoothed[i] * (mid - 4);
-      if (i === VT_NUM_POINTS - 1) { vtCtx.lineTo(x, mid + amp); continue; }
-      const nx = ((i + 1) / (VT_NUM_POINTS - 1)) * w;
-      vtCtx.quadraticCurveTo((nx + x) / 2, mid + vtSmoothed[i + 1] * (mid - 4), x, mid + amp);
-    }
+    vtCtx.lineTo(w, mid);
     vtCtx.closePath();
-    vtCtx.fillStyle = grad;
-    vtCtx.fill();
-
-    // Soft center glow line
-    vtCtx.beginPath();
-    for (let i = 0; i < VT_NUM_POINTS; i++) {
-      const x = (i / (VT_NUM_POINTS - 1)) * w;
-      const y = mid - vtSmoothed[i] * (mid - 4) * 0.1;
-      if (i === 0) { vtCtx.moveTo(x, y); continue; }
-      const px = ((i - 1) / (VT_NUM_POINTS - 1)) * w;
-      vtCtx.quadraticCurveTo((px + x) / 2, mid - vtSmoothed[i - 1] * (mid - 4) * 0.1, x, y);
+    const glow = vtCtx.createLinearGradient(0, mid - 20, 0, mid + 20);
+    if (isRec) {
+      glow.addColorStop(0, 'rgba(239,68,68,0.12)');
+      glow.addColorStop(0.5, 'rgba(239,68,68,0.04)');
+      glow.addColorStop(1, 'rgba(239,68,68,0.12)');
+    } else {
+      glow.addColorStop(0, 'rgba(7,176,232,0.1)');
+      glow.addColorStop(0.5, 'rgba(7,176,232,0.03)');
+      glow.addColorStop(1, 'rgba(7,176,232,0.1)');
     }
-    vtCtx.strokeStyle = vtRecording ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.2)';
-    vtCtx.lineWidth = 1;
-    vtCtx.stroke();
+    vtCtx.fillStyle = glow;
+    vtCtx.fill();
 
     vtAnimFrame = requestAnimationFrame(vtDrawWaveform);
   }
