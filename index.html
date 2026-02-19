@@ -201,13 +201,21 @@
   .hero-subtitle {
     font-family: 'Nunito Sans', sans-serif;
     font-size: clamp(18px, 2.2vw, 22px); font-weight: 400;
-    color: rgba(255,255,255,0.75); line-height: 1.5;
+    color: rgba(255,255,255,0.7); line-height: 1.5;
     margin-bottom: 40px; max-width: 480px;
     letter-spacing: -0.2px;
   }
+  .hero-subtitle strong {
+    color: #fff; font-weight: 700;
+  }
   .hero-wordmark {
-    height: 58px; margin-bottom: 22px;
+    height: 48px; margin-bottom: 22px;
     filter: drop-shadow(0 2px 16px rgba(7,176,232,0.18));
+    display: block;
+    max-width: 320px;
+    width: auto;
+    object-fit: contain;
+    object-position: left;
   }
   .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
   .hero-cta-primary {
@@ -1986,7 +1994,7 @@
           <div class="status-dot"></div>OPERATIONAL | FEB 2026 | v1.12
         </div>
         <img src="autolabs_text_white.png" alt="AutoLabs" class="hero-wordmark">
-        <p class="hero-subtitle">Intelligent Automation for Federal, Defense &amp; Enterprise&mdash;Anywhere, Anytime</p>
+        <p class="hero-subtitle">Intelligent Automation for <strong>Federal, Defense &amp; Enterprise</strong>&mdash;Anywhere, Anytime</p>
         <div class="hero-ctas">
           <a href="#smartdoc" class="hero-cta-primary">Explore Tools</a>
           <a href="https://www.linkedin.com/company/network-designs-inc-/" target="_blank" class="hero-cta-partner">PARTNER WITH US<span class="hero-cta-partner-divider"></span><img src="sdvosb.png" alt="SDVOSB"></a>
