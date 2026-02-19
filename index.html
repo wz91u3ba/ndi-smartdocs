@@ -1510,7 +1510,7 @@
     white-space: nowrap; flex-shrink: 0;
     transition: color 0.3s, opacity 0.3s;
   }
-  .vt-tool.recording .vt-pill-status { color: rgba(255,255,255,0.7); }
+  .vt-tool.recording .vt-pill-status { color: rgba(248,113,113,0.9); font-weight: 600; }
   .vt-tool.loading .vt-pill-status { color: rgba(255,255,255,0.4); }
 
   /* Right side controls */
@@ -3131,7 +3131,7 @@ function showToast(msg, style) {
 
     // Get overall amplitude — smooth it heavily
     const rawAmp = data.reduce((a, b) => a + b, 0) / data.length / 255;
-    const targetAmp = Math.max(rawAmp * 2.5, 0.03);
+    const targetAmp = Math.max(rawAmp * 2.5, 0.12);
     vtSmoothedAmp += (targetAmp - vtSmoothedAmp) * (targetAmp > vtSmoothedAmp ? 0.15 : 0.06);
     vtPhase += 0.04 + vtSmoothedAmp * 0.06;
 
@@ -3162,7 +3162,7 @@ function showToast(msg, style) {
 
       vtCtx.lineTo(w, mid);
       vtCtx.strokeStyle = isRec
-        ? `rgba(248,113,113,${wave.alpha})`
+        ? `rgba(248,113,113,${Math.min(wave.alpha * 1.8, 0.9)})`
         : `rgba(7,176,232,${wave.alpha})`;
       vtCtx.lineWidth = wave.width;
       vtCtx.lineCap = 'round';
@@ -3374,6 +3374,7 @@ function showToast(msg, style) {
     vtChunks = [];
     vtPill.classList.add('recording');
     vtRecBtn.classList.add('recording');
+    vtPillStatus.textContent = 'Recording…';
 
     // Audio analyser
     vtAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -3397,6 +3398,7 @@ function showToast(msg, style) {
     vtRecording = false;
     vtPill.classList.remove('recording');
     vtRecBtn.classList.remove('recording');
+    vtPillStatus.textContent = '';
     vtStopTimer();
     vtSmoothed.fill(0);
 
