@@ -3695,26 +3695,34 @@ document.addEventListener('DOMContentLoaded', () => {
     forgeRenderMsg('user', text);
 
     forgeStreaming = true;
-    // Show typing dots while waiting for first token
+    const dotsHTML = '<span class="forge-typing"><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span></span>';
     const msgDiv = forgeRenderMsg('assistant', '', false);
     const bubble = msgDiv.querySelector('.forge-msg-bubble');
-    bubble.innerHTML = '<span class="forge-typing"><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span></span>';
+    bubble.innerHTML = dotsHTML;
     chatEl.scrollTop = chatEl.scrollHeight;
     let full = '';
-    let firstToken = true;
     let renderQueued = false;
+    let renderFrame = null;
 
     function renderStream() {
       renderQueued = false;
+      renderFrame = null;
       const display = forgeStripThink(full);
-      bubble.innerHTML = forgeMd(display) + '<span class="forge-cursor"></span>';
+      if (!display) {
+        // Still in <think> block — keep showing dots
+        if (!bubble.querySelector('.forge-typing')) {
+          bubble.innerHTML = dotsHTML;
+        }
+      } else {
+        bubble.innerHTML = forgeMd(display) + '<span class="forge-cursor"></span>';
+      }
       chatEl.scrollTop = chatEl.scrollHeight;
     }
 
     function queueRender() {
       if (!renderQueued) {
         renderQueued = true;
-        requestAnimationFrame(renderStream);
+        renderFrame = requestAnimationFrame(renderStream);
       }
     }
 
@@ -3744,6 +3752,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Cancel any pending render to prevent cursor from being re-added
+    if (renderFrame) cancelAnimationFrame(renderFrame);
     const cleaned = forgeStripThink(full);
     bubble.innerHTML = forgeMd(cleaned || '(Empty response)');
     forgeMessages.push({ role: 'assistant', content: cleaned });
