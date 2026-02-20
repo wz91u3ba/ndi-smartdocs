@@ -1266,11 +1266,20 @@
   .forge-setup-btn:hover { transform: translateY(-1px); }
   .forge-setup-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
   .forge-model-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .forge-btn-fast {
+  .forge-btn-instant {
     background: #F8B42C; color: #000;
     box-shadow: 0 2px 16px rgba(248,180,44,0.25);
   }
-  .forge-btn-fast:hover { background: #f9c35a; }
+  .forge-btn-instant:hover { background: #f9c35a; }
+  .forge-btn-badge-new {
+    border-color: rgba(0,0,0,0.2); color: #000; background: rgba(0,0,0,0.08);
+  }
+  .forge-btn-fast {
+    background: rgba(255,255,255,0.08); color: #e0e0e0;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: none;
+  }
+  .forge-btn-fast:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
   .forge-btn-smart {
     background: rgba(255,255,255,0.08); color: #e0e0e0;
     border: 1px solid rgba(255,255,255,0.15);
@@ -2283,11 +2292,11 @@
       <h2 class="forge-hero-title">RAVEN <span>Forge</span></h2>
       <p class="forge-hero-sub">Local AI that runs <strong>entirely in your browser</strong>. No APIs, No Internet. Chat securely &amp; freely.</p>
       <div class="forge-hero-stats">
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">1.7B/4B</span><span class="forge-hero-stat-label">Parameters</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">0.6B–4B</span><span class="forge-hero-stat-label">Parameters</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value">WebGPU</span><span class="forge-hero-stat-label">Accelerated</span></div>
         <div class="forge-hero-stat-divider"></div>
-        <div class="forge-hero-stat"><span class="forge-hero-stat-value">32K Token</span><span class="forge-hero-stat-label">Context Window</span></div>
+        <div class="forge-hero-stat"><span class="forge-hero-stat-value">4K Token</span><span class="forge-hero-stat-label">Context Window</span></div>
         <div class="forge-hero-stat-divider"></div>
         <div class="forge-hero-stat"><span class="forge-hero-stat-value"><span class="no-cloud-icon"><svg viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6.5 17A4.5 4.5 0 015.1 8.2a6 6 0 0111.8 0A4.5 4.5 0 0117.5 17H6.5z" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="19" x2="21" y2="1" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round"/></svg></span></span><span class="forge-hero-stat-label">No Cloud</span></div>
       </div>
@@ -2303,6 +2312,12 @@
           <img src="raven-icon.png" alt="RAVEN" class="forge-setup-icon">
           <p class="forge-setup-sub">Entirely in your browser. Download &amp; cache once.<br><strong>No data ever leaves your device.</strong></p>
           <div class="forge-model-btns" id="forgeModelBtns">
+            <button class="forge-setup-btn forge-btn-instant" onclick="forgeStartEngine('instant')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Instant Model</span>
+              <span class="forge-btn-badge forge-btn-badge-new">0.6B</span>
+              <span class="forge-btn-time">~5 SEC</span>
+            </button>
             <button class="forge-setup-btn forge-btn-fast" onclick="forgeStartEngine('fast')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span>Fast Model</span>
@@ -3592,6 +3607,12 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 
+// Preload WebLLM runtime after 3s idle so it's warm when user clicks Load
+let _webllmModule = null;
+setTimeout(() => {
+  import('https://esm.run/@mlc-ai/web-llm').then(m => { _webllmModule = m; }).catch(() => {});
+}, 3000);
+
 // ========== RAVEN FORGE (WebLLM — runs entirely in browser) ==========
 (function() {
   // Always start fresh — no AI persistence across refreshes
@@ -3601,6 +3622,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let forgeEngine = null;
 
   const FORGE_MODELS = {
+    instant: { id: 'Qwen3-0.6B-q4f16_1-MLC', label: '0.6B', params: '600 Million' },
     fast: { id: 'Qwen3-1.7B-q4f16_1-MLC', label: '1.7B', params: '1.7 Billion' },
     smart: { id: 'Qwen3-4B-q4f16_1-MLC', label: '4B', params: '4 Billion' },
   };
@@ -3715,13 +3737,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let full = '';
     let renderQueued = false;
     let renderFrame = null;
+    let lastRenderedLen = 0;
 
     function renderStream() {
       renderQueued = false;
       renderFrame = null;
+      // Skip render if nothing changed
+      if (full.length === lastRenderedLen) return;
+      lastRenderedLen = full.length;
       const display = forgeStripThink(full);
       if (!display) {
-        // Still in <think> block — keep showing dots
         if (!bubble.querySelector('.forge-typing')) {
           bubble.innerHTML = dotsHTML;
         }
@@ -3854,19 +3879,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 
     try {
-      const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
+      const mod = _webllmModule || await import('https://esm.run/@mlc-ai/web-llm');
 
-      forgeEngine = await CreateMLCEngine(chosen.id, {
-        initProgressCallback: (report) => {
-          const pct = Math.floor(report.progress * 100);
-          if (pct > maxPct) maxPct = pct; // only go forward
-          loadFill.style.width = maxPct + '%';
-          const s = Math.floor((Date.now() - startTime) / 1000);
-          const mins = Math.floor(s / 60);
-          const secs = s % 60;
-          loadStatus.textContent = `${maxPct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
-        },
-      }, { context_window_size: 32768 });
+      // Try Web Worker for non-blocking UI, fall back to main thread
+      let engine;
+      try {
+        const workerCode = `import{WebWorkerMLCEngineHandler}from"https://esm.run/@mlc-ai/web-llm";const h=new WebWorkerMLCEngineHandler();self.onmessage=m=>h.onmessage(m);`;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(blob);
+        const worker = new Worker(workerUrl, { type: 'module' });
+        URL.revokeObjectURL(workerUrl);
+
+        engine = await mod.CreateWebWorkerMLCEngine(worker, chosen.id, {
+          initProgressCallback: (report) => {
+            const pct = Math.floor(report.progress * 100);
+            if (pct > maxPct) maxPct = pct;
+            loadFill.style.width = maxPct + '%';
+            const s = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
+            loadStatus.textContent = `${maxPct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
+          },
+        }, { context_window_size: 4096 });
+      } catch (workerErr) {
+        // Fallback: main thread (older browsers, blob worker restrictions)
+        engine = await mod.CreateMLCEngine(chosen.id, {
+          initProgressCallback: (report) => {
+            const pct = Math.floor(report.progress * 100);
+            if (pct > maxPct) maxPct = pct;
+            loadFill.style.width = maxPct + '%';
+            const s = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
+            loadStatus.textContent = `${maxPct}% — ${mins > 0 ? mins + 'm ' : ''}${secs}s elapsed`;
+          },
+        }, { context_window_size: 4096 });
+      }
+      forgeEngine = engine;
 
       clearInterval(timerInterval);
       loadFill.style.width = '100%';
