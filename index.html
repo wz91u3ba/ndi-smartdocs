@@ -1108,6 +1108,17 @@
   }
   .forge-msg-bubble pre code { background: none; padding: 0; color: #ddd; }
   .forge-msg-bubble strong { color: #fff; }
+  .forge-copy-btn {
+    display: block; margin-top: 8px; padding: 4px 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 5px; cursor: pointer; color: #666;
+    transition: all 0.2s; line-height: 1;
+  }
+  .forge-copy-btn:hover { color: #F8B42C; border-color: rgba(248,180,44,0.3); background: rgba(248,180,44,0.06); }
+  .forge-msg-meta {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: #555; margin-top: 4px; letter-spacing: 0.3px;
+  }
   .forge-msg-bubble ul, .forge-msg-bubble ol { padding-left: 20px; margin: 6px 0; }
   .forge-msg-bubble ul { list-style: disc; }
   .forge-msg-bubble ol { list-style: decimal; }
@@ -3598,7 +3609,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Config with localStorage persistence
   const FC = {
-    get temp() { return parseFloat(localStorage.getItem('forge_temp') || '0.5'); },
+    get temp() { return parseFloat(localStorage.getItem('forge_temp') || '0.7'); },
     get tokens() { return parseInt(localStorage.getItem('forge_max_tokens') || '2048'); },
   };
 
@@ -3695,6 +3706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     forgeRenderMsg('user', text);
 
     forgeStreaming = true;
+    const streamStart = Date.now();
     const dotsHTML = '<span class="forge-typing"><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span><span class="forge-typing-dot"></span></span>';
     const msgDiv = forgeRenderMsg('assistant', '', false);
     const bubble = msgDiv.querySelector('.forge-msg-bubble');
@@ -3733,7 +3745,6 @@ document.addEventListener('DOMContentLoaded', () => {
         temperature: FC.temp,
         max_tokens: FC.tokens,
         top_p: 0.9,
-        frequency_penalty: 0.3,
       });
 
       for await (const chunk of chunks) {
@@ -3748,6 +3759,9 @@ document.addEventListener('DOMContentLoaded', () => {
         forgeShowError(bubble, e.message, 'error: ' + e.name + ': ' + e.message + '\nmodel: ' + (forgeActiveModel ? forgeActiveModel.id : 'unknown'));
         forgeMessages.push({ role: 'assistant', content: '(Error)' });
         forgeStreaming = false;
+        sendBtn.disabled = !inputEl.value.trim();
+        sendBtn.classList.toggle('active', !!inputEl.value.trim());
+        inputEl.focus();
         return;
       }
     }
@@ -3756,8 +3770,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (renderFrame) cancelAnimationFrame(renderFrame);
     const cleaned = forgeStripThink(full);
     bubble.innerHTML = forgeMd(cleaned || '(Empty response)');
+
+    // Copy button on assistant message
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'forge-copy-btn';
+    copyBtn.title = 'Copy response';
+    copyBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(cleaned).then(() => {
+        copyBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+        }, 1500);
+      });
+    };
+    bubble.appendChild(copyBtn);
+
+    // Token speed
+    const tokenCount = full.split(/\s+/).length;
+    const elapsed = (Date.now() - streamStart) / 1000;
+    const tps = elapsed > 0 ? (tokenCount / elapsed).toFixed(1) : '–';
+    const speedEl = document.createElement('div');
+    speedEl.className = 'forge-msg-meta';
+    speedEl.textContent = `${tokenCount} tokens · ${tps} tok/s`;
+    bubble.parentElement.appendChild(speedEl);
+
     forgeMessages.push({ role: 'assistant', content: cleaned });
     forgeStreaming = false;
+    sendBtn.disabled = !inputEl.value.trim();
+    sendBtn.classList.toggle('active', !!inputEl.value.trim());
+    inputEl.focus();
   };
 
   // ---- INPUT ----
@@ -3830,6 +3872,10 @@ document.addEventListener('DOMContentLoaded', () => {
       loadFill.style.width = '100%';
       loadStatus.textContent = 'Ready!';
 
+      // Update header pill to show active model
+      const pillEl = document.querySelector('.forge-pill');
+      if (pillEl) pillEl.textContent = `LOCAL · ${chosen.label}`;
+
       // Deep Thinking only available for smart model
       const thinkToggle = document.getElementById('forgeThinkToggle');
       if (mode === 'smart') {
@@ -3894,6 +3940,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFill.style.width = '0%';
     loadStatus.textContent = 'Preparing download...';
     loadError.style.display = 'none';
+    // Reset header pill
+    const pillEl = document.querySelector('.forge-pill');
+    if (pillEl) pillEl.textContent = 'LOCAL v1.14';
     // Reset deep thinking toggle
     forgeDeepThinking = false;
     const thinkEl = document.getElementById('forgeThinkToggle');
